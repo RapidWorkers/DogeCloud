@@ -8,7 +8,7 @@ extern "C" {
 		struct {//manipulate packet structure in program
 			unsigned char opCode;//operation code -> to classify packet
 			char UserSessionKey[64];
-			char UserFileServerAuthKey[64]//random sha256 hash
+			char UserFileServerAuthKey[64];//random sha256 hash
 		} Packet;
 		char buffer[125];//send this buffer to socket and first byte of buffer means opCode for classifying packet
 	} sf_AuthUser;

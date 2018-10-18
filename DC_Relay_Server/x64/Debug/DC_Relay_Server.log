@@ -1,1 +1,3 @@
-﻿
+﻿  Main.c
+c:\users\1\documents\github\dogecloud\dc_relay_server\main.c(6): warning C4013: 'system'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+  DC_Relay_Server.vcxproj -> C:\Users\1\Documents\GitHub\DogeCloud\x64\Debug\DC_Relay_Server.exe

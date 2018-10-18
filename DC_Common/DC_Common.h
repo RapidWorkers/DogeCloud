@@ -1,3 +1,8 @@
+#include "DataManagePacket.h"
+#include "SessionPacket.h"
+#include "UserCommPacket.h"
+#include "FileServerCommPacket.h"
+
 #ifdef __cplusplus //check if cpp compiler compile this code.
 extern "C" {
 #endif
