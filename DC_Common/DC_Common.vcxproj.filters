@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="lib">
+      <UniqueIdentifier>{71b9ded2-845e-4afd-9a97-c0b88a571ae8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\SQLite">
+      <UniqueIdentifier>{dbbd996d-16bb-4445-b1ce-5100fb2104b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source Code">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="lib\dllLEA">
+      <UniqueIdentifier>{489e5031-e5a7-4b17-9569-718e1e0d388c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\crypto-algorithms">
+      <UniqueIdentifier>{b6c54d7e-e5c2-45b5-9a5c-df45e0e8ffec}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\lib\SQLite\sqlite3.c">
+      <Filter>lib\SQLite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\crypto-algorithms\sha256.c">
+      <Filter>lib\crypto-algorithms</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.c">
+      <Filter>Source Code</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="SessionPacket.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\SQLite\sqlite3.h">
+      <Filter>lib\SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\SQLite\sqlite3ext.h">
+      <Filter>lib\SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\dllLEA\include\config.h">
+      <Filter>lib\dllLEA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\dllLEA\include\lea.h">
+      <Filter>lib\dllLEA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\crypto-algorithms\sha256.h">
+      <Filter>lib\crypto-algorithms</Filter>
+    </ClInclude>
+    <ClInclude Include="UserCommPacket.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="DataManagePacket.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="FileServerCommPacket.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="DC_Common.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

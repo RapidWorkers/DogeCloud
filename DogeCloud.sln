@@ -1,0 +1,70 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2047
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DogeCloud", "DogeCloud\DogeCloud.vcxproj", "{5499DDA9-E9D5-4EF3-8232-B20B962CB2CC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{12A95FF3-8445-4D41-B296-C883B2109F5A} = {12A95FF3-8445-4D41-B296-C883B2109F5A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DC_Relay_Server", "DC_Relay_Server\DC_Relay_Server.vcxproj", "{ABB41424-D41D-4A21-8B25-528F6DF20C74}"
+	ProjectSection(ProjectDependencies) = postProject
+		{12A95FF3-8445-4D41-B296-C883B2109F5A} = {12A95FF3-8445-4D41-B296-C883B2109F5A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DC_Common", "DC_Common\DC_Common.vcxproj", "{12A95FF3-8445-4D41-B296-C883B2109F5A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DC_File_Server", "DC_File_Server\DC_File_Server.vcxproj", "{1D16F2FE-8C26-440E-BAF9-234911BE3C2B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{12A95FF3-8445-4D41-B296-C883B2109F5A} = {12A95FF3-8445-4D41-B296-C883B2109F5A}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5499DDA9-E9D5-4EF3-8232-B20B962CB2CC}.Debug|x64.ActiveCfg = Debug|x64
+		{5499DDA9-E9D5-4EF3-8232-B20B962CB2CC}.Debug|x64.Build.0 = Debug|x64
+		{5499DDA9-E9D5-4EF3-8232-B20B962CB2CC}.Debug|x86.ActiveCfg = Debug|Win32
+		{5499DDA9-E9D5-4EF3-8232-B20B962CB2CC}.Debug|x86.Build.0 = Debug|Win32
+		{5499DDA9-E9D5-4EF3-8232-B20B962CB2CC}.Release|x64.ActiveCfg = Release|x64
+		{5499DDA9-E9D5-4EF3-8232-B20B962CB2CC}.Release|x64.Build.0 = Release|x64
+		{5499DDA9-E9D5-4EF3-8232-B20B962CB2CC}.Release|x86.ActiveCfg = Release|Win32
+		{5499DDA9-E9D5-4EF3-8232-B20B962CB2CC}.Release|x86.Build.0 = Release|Win32
+		{ABB41424-D41D-4A21-8B25-528F6DF20C74}.Debug|x64.ActiveCfg = Debug|x64
+		{ABB41424-D41D-4A21-8B25-528F6DF20C74}.Debug|x64.Build.0 = Debug|x64
+		{ABB41424-D41D-4A21-8B25-528F6DF20C74}.Debug|x86.ActiveCfg = Debug|Win32
+		{ABB41424-D41D-4A21-8B25-528F6DF20C74}.Debug|x86.Build.0 = Debug|Win32
+		{ABB41424-D41D-4A21-8B25-528F6DF20C74}.Release|x64.ActiveCfg = Release|x64
+		{ABB41424-D41D-4A21-8B25-528F6DF20C74}.Release|x64.Build.0 = Release|x64
+		{ABB41424-D41D-4A21-8B25-528F6DF20C74}.Release|x86.ActiveCfg = Release|Win32
+		{ABB41424-D41D-4A21-8B25-528F6DF20C74}.Release|x86.Build.0 = Release|Win32
+		{12A95FF3-8445-4D41-B296-C883B2109F5A}.Debug|x64.ActiveCfg = Debug|x64
+		{12A95FF3-8445-4D41-B296-C883B2109F5A}.Debug|x64.Build.0 = Debug|x64
+		{12A95FF3-8445-4D41-B296-C883B2109F5A}.Debug|x86.ActiveCfg = Debug|Win32
+		{12A95FF3-8445-4D41-B296-C883B2109F5A}.Debug|x86.Build.0 = Debug|Win32
+		{12A95FF3-8445-4D41-B296-C883B2109F5A}.Release|x64.ActiveCfg = Release|x64
+		{12A95FF3-8445-4D41-B296-C883B2109F5A}.Release|x64.Build.0 = Release|x64
+		{12A95FF3-8445-4D41-B296-C883B2109F5A}.Release|x86.ActiveCfg = Release|Win32
+		{12A95FF3-8445-4D41-B296-C883B2109F5A}.Release|x86.Build.0 = Release|Win32
+		{1D16F2FE-8C26-440E-BAF9-234911BE3C2B}.Debug|x64.ActiveCfg = Debug|x64
+		{1D16F2FE-8C26-440E-BAF9-234911BE3C2B}.Debug|x64.Build.0 = Debug|x64
+		{1D16F2FE-8C26-440E-BAF9-234911BE3C2B}.Debug|x86.ActiveCfg = Debug|Win32
+		{1D16F2FE-8C26-440E-BAF9-234911BE3C2B}.Debug|x86.Build.0 = Debug|Win32
+		{1D16F2FE-8C26-440E-BAF9-234911BE3C2B}.Release|x64.ActiveCfg = Release|x64
+		{1D16F2FE-8C26-440E-BAF9-234911BE3C2B}.Release|x64.Build.0 = Release|x64
+		{1D16F2FE-8C26-440E-BAF9-234911BE3C2B}.Release|x86.ActiveCfg = Release|Win32
+		{1D16F2FE-8C26-440E-BAF9-234911BE3C2B}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A1FFBB66-644F-4F7E-B755-6081B1983649}
+	EndGlobalSection
+EndGlobal
