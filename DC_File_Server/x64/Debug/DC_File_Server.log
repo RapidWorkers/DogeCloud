@@ -1,3 +1,1 @@
-﻿  Main.c
-c:\users\1\documents\github\dogecloud\dc_file_server\main.c(6): warning C4013: 'system'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
-  DC_File_Server.vcxproj -> C:\Users\1\Documents\GitHub\DogeCloud\x64\Debug\DC_File_Server.exe
+﻿  DC_File_Server.vcxproj -> I:\Pirate\Desktop\대학교 관련 파일\2018학년도 1-2\고급C프로그래밍\조별프로젝트\DogeCloud\x64\Debug\DC_File_Server.exe

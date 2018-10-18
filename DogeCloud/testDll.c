@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "../DC_Common/DC_Common.h"
 #pragma comment(lib, "DC_Common.lib")
 
@@ -17,18 +20,22 @@ int main() {
 	cs_LoginStart test;
 	cs_LoginStart temp;
 
-	test.Packet.opCode = 102;
-	test.Packet.clientVersion = 123456789;
-	//memcpy(temp.buffer, test.buffer, sizeof(test));
-	//memcpy(bufferMove, test.buffer, sizeof(test));
-	//test.Packet.opCode = 103;
+	test.opCode = 102;
+	test.clientVersion = 2100000000;
 
-	for (int i = 0; i < 5; i++) {
-		temp.buffer[i] = test.buffer[i];
+	char *buf = malloc(sizeof(cs_LoginStart));
+
+	if (buf == NULL) {
+		printf("FATAL ERROR! Memory Allocation Failled!!");
+		exit(1);
 	}
 
-	printf("ORG: opCode: %d clientVersion: %d raw0: %X raw1: %X raw2: %X raw3: %X raw4: %X buf_addr: %p\n", test.Packet.opCode, test.Packet.clientVersion, test.buffer[0], test.buffer[1], test.buffer[2], test.buffer[3], test.buffer[4], test.buffer);
-	printf("RST: opCode: %d clientVersion: %d raw0: %X raw1: %X raw2: %X raw3: %X raw4: %X buf_addr: %p\n", temp.Packet.opCode, temp.Packet.clientVersion, temp.buffer[0], temp.buffer[1], temp.buffer[2], temp.buffer[3], temp.buffer[4], temp.buffer);
+	memcpy(buf, &test, sizeof(cs_LoginStart));
+	memcpy(&temp, buf, sizeof(cs_LoginStart));
+	test.opCode = 103;
+
+	printf("ORG: opCode: %d clientVersion: %d struct_addr: %p\n", test.opCode, test.clientVersion, &test);
+	printf("RST: opCode: %d clientVersion: %d struct_addr: %p\n", temp.opCode, temp.clientVersion, &temp);
 
 	system("pause");
 }
