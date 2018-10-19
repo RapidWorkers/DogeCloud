@@ -21,6 +21,9 @@
   <ItemGroup>
     <ClCompile Include="Main.c" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="RelayServerConfig.ini" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{ABB41424-D41D-4A21-8B25-528F6DF20C74}</ProjectGuid>
