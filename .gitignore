@@ -18,6 +18,11 @@ bld/
 [Oo]bj/
 build/
 
+#do not ignore library directory
+!/lib/
+!/lib/**
+!/lib/**/
+
 # Roslyn cache directories
 *.ide/
 .vs/
