@@ -22,10 +22,10 @@ int main() {
 	cs_LoginStart test;
 	cs_LoginStart temp;
 
-	test.opCode = 102;
+	test.opCode = 139;
 	test.clientVersion = 2100000000;
 
-	char *buf = malloc(sizeof(cs_LoginStart));
+	unsigned char *buf = malloc(sizeof(cs_LoginStart));
 
 	if (buf == NULL) {
 		printf("FATAL ERROR! Memory Allocation Failled!!");
@@ -44,7 +44,6 @@ int main() {
 	SOCKET hSocket;
 	SOCKADDR_IN servAddr;
 
-	char message[30];
 	int strLen;
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) //소켓 라이브러리를 초기화하고 있다
@@ -65,10 +64,17 @@ int main() {
 		printf("connect() error!\n");
 		printf("code : %d", WSAGetLastError());
 	}
-	strLen = recv(hSocket, message, sizeof(message) - 1, 0); //recv 함수 호출을 통해서 서버로부터 전송되는 데이터를 수신하고 있다.
+	send(hSocket, buf, sizeof(test), 0);
+
+	char buf2[sizeof(sc_LoginDoneResp)];
+	strLen = recv(hSocket, buf2, sizeof(buf2), 0); //recv 함수 호출을 통해서 서버로부터 전송되는 데이터를 수신하고 있다.
 	if (strLen == -1)
 		printf("read() error\n");
-	printf("Message from server:%s\n", message);
+	
+	sc_LoginDoneResp LoginDoneResp;
+	memcpy(&LoginDoneResp, buf2, sizeof(LoginDoneResp));
+	printf("RCV: opCode: %d sessionKey: %d statusCode: %d\n", LoginDoneResp.opCode, *(LoginDoneResp.sessionKey), LoginDoneResp.statusCode);
+
 	closesocket(hSocket); //소켓 라이브러리 해제
 	WSACleanup();
 

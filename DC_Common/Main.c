@@ -21,19 +21,19 @@ extern "C" {
 		if (targetErrorLevel < currentErrorLevel) return; //only display error that exceeds user setting
 		switch (targetErrorLevel) {
 		case 0:
-			puts("[DEBUG]: ");
+			printf_s("[DEBUG]: ");
 			break;
 		case 1:
-			puts("[INFO]: ");
+			printf_s("[INFO]: ");
 			break;
 		case 2:
-			puts("[WARN]: ");
+			printf_s("[WARN]: ");
 			break;
 		case 3:
-			puts("[ERROR]: ");
+			printf_s("[ERROR]: ");
 			break;
 		}
-		puts(buffer);//display error info
+		printf_s("%s\n", buffer);//display error info
 		return;
 	}
 

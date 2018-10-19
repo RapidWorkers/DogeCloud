@@ -23,7 +23,7 @@ extern "C" {
 	typedef struct {
 		unsigned char opCode;
 		char statusCode;//0 = fail, 1 = success
-		char SessionKey[32];//use random sha256 hash, if login has failled, fill this with 0
+		char sessionKey[32];//use random sha256 hash, if login has failled, fill this with 0
 	}sc_LoginDoneResp;
 
 	typedef struct {

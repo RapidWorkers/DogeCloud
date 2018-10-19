@@ -32,3 +32,4 @@ int clientCount;
 
 //defining prototypes
 unsigned int WINAPI clientHandler(void* arg);
+void packetHandler(SOCKET* hClientSock, BYTE opCode);
