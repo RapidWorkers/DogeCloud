@@ -1,31 +1,26 @@
-#include <stdio.h>
-#include <WinSock2.h>
-
-#pragma comment(lib, "ws2_32.lib")
-
-#define DEVELOPEMENT_MODE
-
-//FOR TESTING ONLY
-#ifdef DEVELOPEMENT_MODE
-#define BUF_SIZE 2048
-#define QUEUE_SIZE 10
-#define BIND_ADDR "127.0.0.1"
-#define BIND_PORT 15754
-#endif
+#include "RelayServer.h"
 
 int main()
 {
-
+	//Winsock Structures init
 	WSADATA wsaData;
-	SOCKET hServSock, hClntSock;
-	SOCKADDR_IN servAddr, clntAddr;
+	SOCKET hServSock, hClientSock;
+	SOCKADDR_IN servAddr, clientAddr;
 
-	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-		printf("Error: Init Sock fail");
+	//Multithread init
+	HANDLE hThread = NULL;
+	unsigned int threadID;
 
-	hServSock = socket(PF_INET, SOCK_STREAM, 0);
+	//Create Mutex;
+	hMutex = CreateMutex(NULL, FALSE, NULL);
+	DWORD dwErrorCode = 0;
+
+	//init sockets
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)//WSA Startup
+		printDebugMsg(3, ERLEVEL,"Init Sock fail");
+	hServSock = socket(PF_INET, SOCK_STREAM, 0);//init server socket
 	if (hServSock == INVALID_SOCKET)
-		printf("Error: Invalid Sock");
+		printDebugMsg(3, ERLEVEL, "Invalid Sock");
 
 	memset(&servAddr, 0, sizeof(servAddr));
 	servAddr.sin_family = AF_INET;
@@ -33,24 +28,30 @@ int main()
 	servAddr.sin_port = htons(BIND_PORT);
 
 	if (bind(hServSock, &servAddr, sizeof(servAddr)))
-		printf("Error: Bind Fail");
+		printDebugMsg(3, ERLEVEL, "Bind Fail");
 
 	if (listen(hServSock, 5) == SOCKET_ERROR)
-		printf("Error: Listen Fail");
+		printDebugMsg(3, ERLEVEL, "Listen Fail");
 
-	int szClntAddr = sizeof(clntAddr);
-	hClntSock = accept(hServSock, (SOCKADDR*)&clntAddr, &szClntAddr);
+	printDebugMsg(1, ERLEVEL, "Server Started");
 
-	if(hClntSock == INVALID_SOCKET)
-		printf("Error: Accept Fail");
-
-	send(hClntSock, "Hello World!", 13, 0);
-	closesocket(hClntSock);
+	while (1) {
+		int szClntAddr = sizeof(clientAddr);
+		hClientSock = accept(hServSock, (SOCKADDR*)&clientAddr, &szClntAddr);
+		if (hClientSock == INVALID_SOCKET)
+			printDebugMsg(3, ERLEVEL, "Client Accept Fail");
+		WaitForSingleObject(hMutex, INFINITE);
+		hClientSocks[clientCount++] = hClientSock;
+		ReleaseMutex(hMutex);
+		hThread = (HANDLE)_beginthreadex(NULL, 0, clientHandler, (void*)&hClientSock, 0, NULL);
+		printDebugMsg(1, ERLEVEL, "Client Connected");
+		char ipAddr[16];
+		inet_ntop(AF_INET, &clientAddr.sin_addr, ipAddr, 16);
+		printf("%s\n", ipAddr);
+	}
 	closesocket(hServSock);
 	WSACleanup();
-
-	return 0;
-
-	printf("Not ready yet :) \n");
+	printDebugMsg(1, ERLEVEL, "Server Terminated");
 	system("pause");
+	return 0;
 }
