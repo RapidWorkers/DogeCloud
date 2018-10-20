@@ -6,6 +6,7 @@
 #include <WinSock2.h>
 #include <Ws2tcpip.h>
 #include <Windows.h>
+
 #include "../DC_Common/DC_Common.h"
 
 #pragma comment(lib, "ws2_32.lib")
@@ -23,13 +24,16 @@
 #define ERLEVEL 0
 #endif
 
-//Mutex init
-HANDLE hMutex;
-
-//create Client Sock array
-SOCKET hClientSocks[MAX_CON];
-int clientCount;
+//extern var declare
+extern HANDLE hMutex;
+extern SOCKET hClientSocks[MAX_CON];
+extern int clientCount;
 
 //defining prototypes
 unsigned int WINAPI clientHandler(void* arg);
-void packetHandler(SOCKET* hClientSock, BYTE opCode);
+void packetHandler(SOCKET hClientSock, unsigned long opCode);
+
+//Session Proccesors
+void procLoginStart(SOCKET hClientSock);
+void procLoginAccountData(SOCKET hClientSock);
+void procLogout(SOCKET hClientSock);

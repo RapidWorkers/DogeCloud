@@ -4,15 +4,23 @@ extern "C" {
 #endif
 #pragma pack(push, 1) //struct expands every 1 byte
 
-	typedef struct { //use union to send packets network easily
-			unsigned char opCode;//operation code -> to classify packet
-			char UserSessionKey[32];
-			char UserFileServerAuthKey[32];//random sha256 hash
+	typedef union {//use union to send packets network easily
+		struct {
+			unsigned long opCode;//operation code -> to classify packet
+			unsigned long dataLen;
+			unsigned char UserSessionKey[32];
+			unsigned char UserFileServerAuthKey[32];//random sha256 hash
+		} Data;
+		char buf[72];
 	} sf_AuthUser;
 
-	typedef struct {
-			unsigned char opCode;//operation code -> to classify packet
+	typedef union {
+		struct {
+			unsigned long opCode;
+			unsigned long dataLen;
 			unsigned char statusCode; //0 = fail, 1 = success
+		}Data;
+		char buf[9];
 	} sf_AuthUserResp;
 
 #pragma pack(pop)

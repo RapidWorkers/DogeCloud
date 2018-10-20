@@ -1,55 +1,64 @@
 #include "RelayServer.h"
 
-unsigned int WINAPI clientHandler(void* socket) {
-	SOCKET hClientSock = *((SOCKET*)socket);
-	
-	int strLen = 0;
-	BYTE opCodeBuffer;
+//Mutex init
+HANDLE hMutex;
 
-	recv(hClientSock, &opCodeBuffer, 1, 0);//first byte of packet always contains operation code
-	packetHandler(&hClientSock, opCodeBuffer);
+//create Client Sock array
+SOCKET hClientSocks[MAX_CON];
+int clientCount;
 
+int main()
+{
+	//Winsock Structures init
+	WSADATA wsaData;
+	SOCKET hServSock, hClientSock;
+	SOCKADDR_IN servAddr, clientAddr;
 
-	printDebugMsg(1, ERLEVEL, "Connection Closed");
-	WaitForSingleObject(hMutex, INFINITE);
-	for (int i = 0; i < clientCount; i++) {
-		if (hClientSock == hClientSocks[i]) {
-			while (i++ < clientCount - 1)
-				hClientSocks[i] = hClientSocks[i + 1];
-			break;
-		}
+	//Multithread init
+	HANDLE hThread = NULL;
+	unsigned int threadID;
+
+	//Create Mutex;
+	hMutex = CreateMutex(NULL, FALSE, NULL);
+	DWORD dwErrorCode = 0;
+
+	//init sockets
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)//WSA Startup
+		printDebugMsg(3, ERLEVEL,"Init Sock fail");
+	hServSock = socket(PF_INET, SOCK_STREAM, 0);//init server socket
+	if (hServSock == INVALID_SOCKET)
+		printDebugMsg(3, ERLEVEL, "Invalid Sock");
+
+	memset(&servAddr, 0, sizeof(servAddr));
+	servAddr.sin_family = AF_INET;
+	servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	servAddr.sin_port = htons(BIND_PORT);
+
+	if (bind(hServSock, &servAddr, sizeof(servAddr)))
+		printDebugMsg(3, ERLEVEL, "Bind Fail");
+
+	if (listen(hServSock, 5) == SOCKET_ERROR)
+		printDebugMsg(3, ERLEVEL, "Listen Fail");
+
+	printDebugMsg(1, ERLEVEL, "Server Started");
+
+	while (1) {
+		int szClntAddr = sizeof(clientAddr);
+		hClientSock = accept(hServSock, (SOCKADDR*)&clientAddr, &szClntAddr);
+		if (hClientSock == INVALID_SOCKET)
+			printDebugMsg(3, ERLEVEL, "Client Accept Fail");
+		WaitForSingleObject(hMutex, INFINITE);
+		hClientSocks[clientCount++] = hClientSock;
+		ReleaseMutex(hMutex);
+		hThread = (HANDLE)_beginthreadex(NULL, 0, clientHandler, (void*)&hClientSock, 0, NULL);
+		printDebugMsg(1, ERLEVEL, "Client Connected");
+		char ipAddr[16];
+		inet_ntop(AF_INET, &clientAddr.sin_addr, ipAddr, 16);
+		printf("%s\n", ipAddr);
 	}
-	clientCount--;
-	ReleaseMutex(hMutex);
-
-	closesocket(hClientSock);
+	closesocket(hServSock);
+	WSACleanup();
+	printDebugMsg(1, ERLEVEL, "Server Terminated");
+	system("pause");
 	return 0;
-}
-
-void packetHandler(SOCKET *socket, BYTE opCode) {
-	SOCKET hClientSock = *socket;
-	if (socket == NULL) return;
-	switch (opCode) {
-	case 139:
-		printDebugMsg(1, ERLEVEL, "Received LoginStart OpCode (Currently in-dev)");
-		char tmp_buf[sizeof(cs_LoginStart)];
-		*tmp_buf = opCode;
-		recv(hClientSock, tmp_buf+1, sizeof(cs_LoginStart)-1, 0);
-
-		sc_LoginDoneResp LoginDoneResp;
-		LoginDoneResp.opCode = 134;
-		LoginDoneResp.statusCode = 1;
-		for (int i = 0; i < 32; i++)
-			LoginDoneResp.sessionKey[i] = i;
-
-		char buf[sizeof(sc_LoginDoneResp)];
-		memcpy(buf, &LoginDoneResp, sizeof(LoginDoneResp));
-		send(hClientSock, buf, sizeof(buf), 0);
-		printDebugMsg(1, ERLEVEL, "Sent LoginDoneResp to Client");
-		break;
-	default:
-		printDebugMsg(3, ERLEVEL, "Unknown Packet");
-		printDebugMsg(3, ERLEVEL, &opCode);
-		break;
-	}
 }

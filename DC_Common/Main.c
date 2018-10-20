@@ -1,12 +1,8 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include "DC_Common.h"
 
+//external library
 #include "sqlite3.h"
 #include "sha256.h"
-
-#include "SessionPacket.h"
-
 #include "lea.h"
 #pragma comment(lib, "dllLEA.lib")
 
@@ -37,8 +33,12 @@ extern "C" {
 		return;
 	}
 
-	DLL void myFunc() {
-		printf("Hi!\n");
+	DLL void SHA256_Text(const char* text, char* buf) {
+		SHA256_CTX hSHA256;
+		sha256_init(&hSHA256);
+		sha256_update(&hSHA256, text, strlen(text));
+		sha256_final(&hSHA256, buf);
+		return;
 	}
 
 	DLL void testLEA() {
@@ -50,28 +50,6 @@ extern "C" {
 		lea_ctr_enc(encOutput, testCase, sizeof(testCase), "aaabbbcccdddeee", &newKey);//IV will be Saved at end of file, 32bytes
 		lea_ctr_enc(decOutput, encOutput, sizeof(testCase), "aaabbbcccdddeee", &newKey);
 		printf("%s\n", decOutput);
-	}
-
-	DLL void testPacketStructure() {
-		cs_LoginStart test;
-		cs_LoginStart temp;
-
-		test.opCode = 102;
-		test.clientVersion = 123456789;
-
-		char *buf = malloc(sizeof(cs_LoginStart));
-
-		if (buf == NULL) {
-			printf("FATAL ERROR! Memory Allocation Failled!!");
-			exit(1);
-		}
-
-		memcpy(buf, &test, sizeof(cs_LoginStart));
-		memcpy(&temp, buf, sizeof(cs_LoginStart));
-		test.opCode = 103;
-
-		printf("ORG: opCode: %d clientVersion: %d struct_addr: %p\n", test.opCode, test.clientVersion, &test);
-		printf("RST: opCode: %d clientVersion: %d struct_addr: %p\n", temp.opCode, temp.clientVersion, &temp);
 	}
 
 	DLL void testSHA256() {
