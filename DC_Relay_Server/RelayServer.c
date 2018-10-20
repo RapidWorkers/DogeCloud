@@ -22,6 +22,8 @@ int main()
 	hMutex = CreateMutex(NULL, FALSE, NULL);
 	DWORD dwErrorCode = 0;
 
+	printProgramInfo();
+
 	//init sockets
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)//WSA Startup
 		printDebugMsg(3, ERLEVEL,"Init Sock fail");

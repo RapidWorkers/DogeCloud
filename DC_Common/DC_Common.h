@@ -13,6 +13,11 @@
 
 //NOTE: Packet operation Code is defined at *Packet.h
 
+//Program info
+#define MAJOR_VERSION 0
+#define MINOR_VERSION 1
+#define VER_STATUS "In-dev"
+
 #ifdef __cplusplus //check if cpp compiler compile this code.
 extern "C" {
 #endif
@@ -21,6 +26,7 @@ extern "C" {
 	DLLIMP void testLEA();
 	DLLIMP void testSHA256();
 	DLLIMP void printDebugMsg(int targetErrorLevel, int currentErrorLevel, char* buffer);
+	DLLIMP void printProgramInfo();
 
 #ifdef __cplusplus
 }

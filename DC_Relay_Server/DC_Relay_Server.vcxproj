@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.c" />
     <ClCompile Include="RelayServer.c" />
-    <ClCompile Include="SessionProcessor.c" />
+    <ClCompile Include="socketHandler.c" />
+    <ClCompile Include="sessionProcessor.c" />
   </ItemGroup>
   <ItemGroup>
     <None Include="RelayServerConfig.ini" />

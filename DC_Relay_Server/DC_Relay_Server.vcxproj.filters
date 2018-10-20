@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.c">
+    <ClCompile Include="socketHandler.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="sessionProcessor.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="RelayServer.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="SessionProcessor.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

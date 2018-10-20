@@ -9,12 +9,21 @@
 #pragma comment(lib, "DC_Common.lib")
 #pragma comment(lib, "ws2_32.lib")
 
+void printMenu() {
+	system("cls");
+	printProgramInfo();
+	printf_s("\n\t*********  메   뉴   *********");
+	printf_s("\n\t1. 로그인");
+	printf_s("\n\t2. 회원 가입");
+	printf_s("\n\t3. 종료");
+	printf_s("\n\t******************************");
+	printf_s("\n\t메뉴 선택 : 1 (현재 개발중)\n");
+}
+
 int main() {
-	printf("\n============ 2. LEA Library DLL Call Test ============\n");
-	testLEA();
-	printf("\n\n============ 4. Testing SHA256 Library from DLL ============\n");
-	testSHA256();
-	printf("\n\n============ 6. Server Connection Test ============\n");
+
+	printMenu();
+
 	WSADATA wsaData;
 	SOCKET hSocket;
 	SOCKADDR_IN servAddr;
