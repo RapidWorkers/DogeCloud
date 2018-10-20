@@ -15,7 +15,7 @@ Kwangwoon Univ. School of Computer and Info. Eng. / Advanced C Programming Proje
 
 ## Library License
 * crypto-algorithms by Brad Conte (brad@bradconte.com) (Public Domain)
-* dllLEA by National Securety Research (leacipher@nsr.re.kr) (Free-to-use)
+* dllLEA by National Security Research Institute (leacipher@nsr.re.kr) (Free-to-use)
 * SQLite (Public Domain)
 
 ## License
