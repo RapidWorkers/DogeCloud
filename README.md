@@ -1,7 +1,7 @@
 # DogeCloud
 Kwangwoon Univ. School of Computer and Info. Eng. / Advanced C Programming Project / DogeCloud Server
 
-[![License](http://img.shields.io/badge/license-GNU%20LGPL-brightgreen.svg)](http://www.gnu.org/licenses/gpl.html)
+[![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/RapidWorkers/DogeCloud/blob/master/LICENSE)
 
 ## Requirements
 * Microsoft(R) Visual Studio (>=2017)
