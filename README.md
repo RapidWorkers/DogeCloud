@@ -6,6 +6,7 @@ Kwangwoon Univ. School of Computer and Info. Eng. / Advanced C Programming Proje
 ## Requirements
 * Microsoft(R) Visual Studio (>=2017)
 * MariaDB (planned)
+* Windows O/S (Due to WinSock2 Library, not compatible with *nix)
 
 ## Maintainers
 @RapidWorkers
@@ -38,7 +39,8 @@ Kwangwoon Univ. School of Computer and Info. Eng. / Advanced C Programming Proje
    MA 02111-1301, USA 
 ```
 ## License
-Copyright (C) 2018 S.H.Kim (soohyunkim@kw.ac.kr) and K.J Choi
+```
+Copyright (C) 2018 S.H.Kim (soohyunkim@kw.ac.kr) and K.J Choi (chlrhkdwls99@naver.com)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -53,3 +55,4 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+```
