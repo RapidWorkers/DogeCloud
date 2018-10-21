@@ -24,7 +24,6 @@ extern "C" {
 	//prototype for dll exported function, which used in other program to load function
 	DLLIMP void SHA256_Text(const char* text, char* buf);
 	DLLIMP void testLEA();
-	DLLIMP void testSHA256();
 	DLLIMP void printDebugMsg(int targetErrorLevel, int currentErrorLevel, char* buffer);
 	DLLIMP void printProgramInfo();
 

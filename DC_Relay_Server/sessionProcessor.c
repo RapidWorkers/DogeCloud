@@ -89,5 +89,19 @@ void procLoginAccountData(SOCKET hClientSock) {
 }
 
 void procLogout(SOCKET hClientSock) {
+	cs_LogoutStart LogoutStart;
+	sc_LogoutDone LogoutDone;
+
+	recv(hClientSock, LogoutStart.buf + 4, sizeof(LogoutStart) - 4, 0);
+
+	LogoutDone.Data.opCode = htonl(OP_SC_LOGOUTDONE);
+	LogoutDone.Data.dataLen = htonl(1);
+	LogoutDone.Data.statusCode = 1;
+
+	send(hClientSock, LogoutDone.buf, sizeof(LogoutDone), 0);
+	closesocket(hClientSock);
+}
+
+void procRegister(SOCKET hClientSock) {
 	//will be implemented
 }

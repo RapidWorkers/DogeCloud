@@ -4,6 +4,23 @@ extern "C" {
 #endif
 #pragma pack(push, 1) //struct expands every 1 byte
 
+	typedef union {
+		struct {
+			unsigned long opCode;
+			unsigned long dataLen;
+		} Data;
+		char buf[8];
+	} fs_RegisterFileServer;
+
+	typedef union {
+		struct {
+			unsigned long opCode;
+			unsigned long dataLen;
+			unsigned char statusCode; //0 = fail, 1 = success
+		} Data;
+		char buf[9];
+	} sf_RegisterFileServerResp;
+
 	typedef union {//use union to send packets network easily
 		struct {
 			unsigned long opCode;//operation code -> to classify packet

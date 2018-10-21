@@ -52,47 +52,6 @@ extern "C" {
 		printf("%s\n", decOutput);
 	}
 
-	DLL void testSHA256() {
-		unsigned char testCase[] = "Hello World!";
-		unsigned char hashed[32];
-		printf("ORG: %s\n", testCase);
-		SHA256_CTX testSHA;
-		sha256_init(&testSHA);
-		sha256_update(&testSHA, testCase, sizeof(testCase) - 1);
-		sha256_final(&testSHA, hashed);
-
-		printf("Hashed: \n");
-		for (int i = 0; i < 32; i++)
-		{
-			printf("%02x", hashed[i]);
-		}
-		printf("\n");
-
-		unsigned char compareTarget[32] = { 0x7F, 0x83, 0xB1, 0x65 ,0x7F, 0xF1, 0xFC, 0x53, 0xB9, 0x2D, 0xC1, 0x81, 0x48, 0xA1, 0xD6, 0x5D, 0xFC, 0x2D, 0x4B, 0x1F, 0xA3, 0xD6, 0x77, 0x28, 0x4A, 0xDD, 0xD2, 0x00, 0x12, 0x6D, 0x90, 0x69 };
-
-		printf("Compare: \n");
-		for (int i = 0; i < 32; i++)
-		{
-			printf("%02x", compareTarget[i]);
-		}
-		printf("\n");
-
-		int flag = 1;
-
-		for (int i = 0; i < 32; i++) {
-			if (compareTarget[i] != hashed[i]) {
-				flag = 0;
-				break;
-			}
-		}
-
-		if (flag)
-			printf("Hash Match!\n");
-		else
-			printf("Hash Mismatch..");
-
-	}
-
 	DLL void printProgramInfo() {
 		unsigned char logo_txt[] = {
 			0x20, 0x20, 0x5f, 0x5f, 0x5f, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,

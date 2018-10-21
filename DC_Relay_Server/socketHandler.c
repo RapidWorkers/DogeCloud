@@ -46,6 +46,8 @@ void packetHandler(SOCKET hClientSock, unsigned long opCode) {
 		procLoginAccountData(hClientSock);
 		break;
 	case OP_CS_LOGOUTSTART:
+		printDebugMsg(1, ERLEVEL, "LogoutStart OpCode");
+		procLogout(hClientSock);
 		break;
 	default:
 		printDebugMsg(3, ERLEVEL, "Unknown Packet");

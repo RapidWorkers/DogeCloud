@@ -41,7 +41,6 @@ extern "C" {
 		char buf[9];
 	} sc_MemoEditDoneResp;
 
-
 #pragma pack(pop) //revert back to default
 #ifdef __cplusplus
 }
