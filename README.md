@@ -1,6 +1,7 @@
 # DogeCloud
-Kwangwoon Univ. School of Computer and Info. Eng. / Advanced C Programming Project / DogeCloud Server
 [![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://github.com/RapidWorkers/DogeCloud/blob/master/LICENSE)
+
+Kwangwoon Univ. School of Computer and Info. Eng. / Advanced C Programming Project / DogeCloud Server
 
 # Disclaimer
 * 이 프로젝트는 고급 C 프로그래밍의 팀 과제로써 수행되는 것이며 광운대학교의 지원을 받지 않았습니다.
