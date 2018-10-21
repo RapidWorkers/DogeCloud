@@ -21,7 +21,9 @@
   <ItemGroup>
     <ClCompile Include="..\lib\crypto-algorithms\sha256.c" />
     <ClCompile Include="..\lib\SQLite\sqlite3.c" />
-    <ClCompile Include="Main.c" />
+    <ClCompile Include="FileCrypto.c" />
+    <ClCompile Include="DogeCommon.c" />
+    <ClCompile Include="UserDataReader.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\crypto-algorithms\sha256.h" />

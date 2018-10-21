@@ -25,6 +25,9 @@
     <Filter Include="lib\crypto-algorithms">
       <UniqueIdentifier>{b6c54d7e-e5c2-45b5-9a5c-df45e0e8ffec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Packets">
+      <UniqueIdentifier>{2604e3c0-ca79-4024-b606-88b74bf183b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\lib\SQLite\sqlite3.c">
@@ -33,14 +36,17 @@
     <ClCompile Include="..\lib\crypto-algorithms\sha256.c">
       <Filter>lib\crypto-algorithms</Filter>
     </ClCompile>
-    <ClCompile Include="Main.c">
+    <ClCompile Include="FileCrypto.c">
+      <Filter>Source Code</Filter>
+    </ClCompile>
+    <ClCompile Include="UserDataReader.c">
+      <Filter>Source Code</Filter>
+    </ClCompile>
+    <ClCompile Include="DogeCommon.c">
       <Filter>Source Code</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SessionPacket.h">
-      <Filter>Header</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\SQLite\sqlite3.h">
       <Filter>lib\SQLite</Filter>
     </ClInclude>
@@ -56,17 +62,20 @@
     <ClInclude Include="..\lib\crypto-algorithms\sha256.h">
       <Filter>lib\crypto-algorithms</Filter>
     </ClInclude>
-    <ClInclude Include="UserCommPacket.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="DataManagePacket.h">
-      <Filter>Header</Filter>
-    </ClInclude>
-    <ClInclude Include="FileServerCommPacket.h">
-      <Filter>Header</Filter>
-    </ClInclude>
     <ClInclude Include="DC_Common.h">
       <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="UserCommPacket.h">
+      <Filter>Packets</Filter>
+    </ClInclude>
+    <ClInclude Include="SessionPacket.h">
+      <Filter>Packets</Filter>
+    </ClInclude>
+    <ClInclude Include="FileServerCommPacket.h">
+      <Filter>Packets</Filter>
+    </ClInclude>
+    <ClInclude Include="DataManagePacket.h">
+      <Filter>Packets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
