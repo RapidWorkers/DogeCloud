@@ -110,9 +110,6 @@ int main() {
 	else
 		printf("Logout Fail!\n");
 
-	while (send(hSocket, NULL, 0, 0) > 0) //wait for close
-		printf("waiting close\n");
-
 	closesocket(hSocket); //소켓 라이브러리 해제
 	printf("Closed!\n");
 	WSACleanup();

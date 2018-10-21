@@ -9,6 +9,7 @@
 #include "UserCommPacket.h"
 #include "FileServerCommPacket.h"
 
+#define DLL _declspec(dllexport)
 #define DLLIMP _declspec(dllimport)
 
 //NOTE: Packet operation Code is defined at *Packet.h
