@@ -38,7 +38,7 @@ extern "C" {
 			unsigned char statusCode; //0 = fail, 1 = success
 		}Data;
 		char buf[9];
-	} sf_AuthUserResp;
+	} fs_AuthUserResp;
 
 #pragma pack(pop)
 #ifdef __cplusplus

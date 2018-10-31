@@ -8,3 +8,11 @@ DLL void readContactDB(FILE * databaseFile) {
 DLL void readMemoDB(FILE * databaseFile) {
 	//will be implemented
 }
+
+DLL void modifyContactDB(FILE * databaseFile) {
+	//will be implemented
+}
+
+DLL void modifyMemoDB(FILE * databaseFile) {
+	//will be implemented
+}
