@@ -1,4 +1,11 @@
 #pragma once
+
+//Packet opCode Definition
+#define OP_FS_REGISTERFILESERVER 147
+#define OP_SF_REGISTERFILESERVERRESP 148
+#define OP_SF_AUTHUSER 149
+#define OP_FS_AUTHUSERRESP 150
+
 #ifdef __cplusplus //determine if using cpp compiler
 extern "C" {
 #endif

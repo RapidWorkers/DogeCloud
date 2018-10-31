@@ -21,6 +21,9 @@
   <ItemGroup>
     <ClCompile Include="Main.c" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="FileServerConfig.ini" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{1D16F2FE-8C26-440E-BAF9-234911BE3C2B}</ProjectGuid>
