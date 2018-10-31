@@ -1,4 +1,11 @@
 #pragma once
+
+//Packet opCode Definition
+#define OP_FS_REGISTERFILESERVER 147
+#define OP_SF_REGISTERFILESERVERRESP 148
+#define OP_SF_AUTHUSER 149
+#define OP_FS_AUTHUSERRESP 150
+
 #ifdef __cplusplus //determine if using cpp compiler
 extern "C" {
 #endif
@@ -38,7 +45,7 @@ extern "C" {
 			unsigned char statusCode; //0 = fail, 1 = success
 		}Data;
 		char buf[9];
-	} sf_AuthUserResp;
+	} fs_AuthUserResp;
 
 #pragma pack(pop)
 #ifdef __cplusplus

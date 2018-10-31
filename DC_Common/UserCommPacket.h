@@ -1,4 +1,9 @@
 #pragma once
+
+//Packet opCode Definition
+#define OP_CS_MENUSELECT 145
+#define OP_SC_MENUSELECTRESP 146
+
 #ifdef __cplusplus //determine if using cpp compiler
 extern "C" {
 #endif

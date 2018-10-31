@@ -1,4 +1,11 @@
 #pragma once
+
+//Packet opCode Definition
+#define OP_CS_CONTACTEDIT 151
+#define OP_SC_CONTACTEDITDONE 152
+#define OP_CS_MEMOEDITDONE 153
+#define OP_SC_MEMOEDITDONERESP 154
+
 #ifdef __cplusplus //determine if using cpp compiler
 extern "C" {
 #endif
@@ -11,7 +18,7 @@ extern "C" {
 			unsigned char statusCode;//0 = fail, 1 = success
 		} Data;
 		char buf[41];
-	} cs_ContatEditDone;
+	} cs_ContactEditDone;
 
 	typedef union {
 		struct {
