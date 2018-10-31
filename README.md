@@ -48,7 +48,8 @@ Kwangwoon Univ. School of Computer and Info. Eng. / Advanced C Programming Proje
 ```
 ## License
 ```
-Copyright (C) 2018 S.H.Kim (soohyunkim@kw.ac.kr) and K.J Choi (chlrhkdwls99@naver.com)
+Copyright (C) 2018 S.H.Kim (soohyunkim@kw.ac.kr)
+Copyright (C) 2018 K.J Choi (chlrhkdwls99@naver.com)
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
