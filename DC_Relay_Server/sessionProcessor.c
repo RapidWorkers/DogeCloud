@@ -70,8 +70,11 @@ void procLoginAccountData(SOCKET hClientSock) {
 
 		if (flag) {//ID and PWD Match
 			printDebugMsg(1, ERLEVEL, "ACCOUNT MATCH");
+			GenerateSessionKey(LoginDoneResp.Data.sessionKey);
+			printf("Generated Session Key: ");
 			for (int i = 0; i < 32; i++)
-				LoginDoneResp.Data.sessionKey[i] = i;
+				printf("%X ", LoginDoneResp.Data.sessionKey[i]);
+			printf("\n");
 			LoginDoneResp.Data.statusCode = 1;
 		}
 		else {//not match

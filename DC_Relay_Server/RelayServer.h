@@ -37,3 +37,7 @@ void packetHandler(SOCKET hClientSock, unsigned long opCode);
 void procLoginStart(SOCKET hClientSock);
 void procLoginAccountData(SOCKET hClientSock);
 void procLogout(SOCKET hClientSock);
+
+//data Processors
+void procFileUpDemo(SOCKET hClientSock);
+void procFileDownDemo(SOCKET hClientSock);

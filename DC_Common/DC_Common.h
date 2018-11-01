@@ -27,6 +27,8 @@ extern "C" {
 	DLLIMP void testLEA();
 	DLLIMP void printDebugMsg(int targetErrorLevel, int currentErrorLevel, char* buffer);
 	DLLIMP void printProgramInfo();
+	DLLIMP unsigned int GenerateCSPRNG();
+	DLLIMP void GenerateSessionKey(char sessionKey[32]);
 
 #ifdef __cplusplus
 }

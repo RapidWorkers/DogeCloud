@@ -36,6 +36,7 @@ unsigned int WINAPI clientHandler(void* socket) {
 
 void packetHandler(SOCKET hClientSock, unsigned long opCode) {
 	if (hClientSock == INVALID_SOCKET) return;
+	printf("Got OpCode: %d", opCode);
 	switch (opCode) {
 	case OP_CS_LOGINSTART:
 		printDebugMsg(1, ERLEVEL, "LoginStart OpCode");
@@ -49,6 +50,16 @@ void packetHandler(SOCKET hClientSock, unsigned long opCode) {
 		printDebugMsg(1, ERLEVEL, "LogoutStart OpCode");
 		procLogout(hClientSock);
 		break;
+
+	case 250: //FILE UPLOAD DEMO
+		printDebugMsg(1, ERLEVEL, "File Upload Demo Mode");
+		procFileUpDemo(hClientSock);
+		break;
+	case 251: //FILE DOWNLOAD DEMO
+		printDebugMsg(1, ERLEVEL, "File Download Demo Mode");
+		procFileDownDemo(hClientSock);
+		break;
+
 	default:
 		printDebugMsg(3, ERLEVEL, "Unknown Packet");
 		//printDebugMsg(3, ERLEVEL, &opCode);

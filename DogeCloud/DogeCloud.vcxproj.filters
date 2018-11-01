@@ -18,5 +18,16 @@
     <ClCompile Include="DogeCloud.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="AuthHelper.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FileHelper.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="DogeCloud.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
