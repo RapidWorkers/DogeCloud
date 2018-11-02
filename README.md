@@ -16,6 +16,11 @@ Kwangwoon Univ. School of Computer and Info. Eng. / Advanced C Programming Proje
 * 만일 기본 헤더파일들에 대해 경로 오류가 발생할 경우 Visual Studio의 프로젝트 속성에서 Windows SDK 버전을 지정해 주어야 합니다.
 * If there's an path error on default header files like stdio.h, you should check Project Propertis and set the Windows SDK version to what you have. 
 
+## How to Run Program
+1) RelayServer 실행
+2) FileServer 실행 (현재는 FileServer 미구현으로 실행하지 않음)
+3) DogeCloud 실행 (아이디: test, 비밀번호: 1234)
+
 ## Maintainers
 @RapidWorkers
 
