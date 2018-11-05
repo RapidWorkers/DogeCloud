@@ -39,6 +39,10 @@ extern "C" {
 	DLLIMP bool sendRaw(SOCKET socket, char* buffer, int sendByte, int flags);
 	DLLIMP bool recvRaw(SOCKET socket, char* buffer, int recvByte, int flags);
 
+	//File Related Function
+	DLLIMP void getFileHash(FILE *file, char* result);
+	DLLIMP void encryptFileLEA(FILE *infile, FILE *outfile, char* encKey, char* nonceIV);
+
 #ifdef __cplusplus
 }
 #endif

@@ -79,6 +79,9 @@ int main() {
 		case 5:
 			fileDownDemo(hSocket);
 			break;
+		case 6:
+			testSHA();
+			break;
 		default:
 			puts("올바르지 않은 입력입니다.");
 			break;

@@ -89,3 +89,14 @@ void fileUpDemo(SOCKET hSocket) {
 	printf("전송 완료: 서버 확인 바람");
 	system("pause");
 }
+
+void testSHA() {
+	FILE *testFile = fopen("testFile.txt", "r");
+	unsigned char hashed[32];
+	getFileHash(testFile, hashed);
+
+	printf("HASH : ");
+	for (int i = 0; i < 32; i++)
+		printf("%2X ", hashed[i]);
+	system("pause");
+}
