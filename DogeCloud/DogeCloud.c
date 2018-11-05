@@ -34,7 +34,6 @@ int main() {
 	WSADATA wsaData;
 	SOCKET hSocket;
 	SOCKADDR_IN servAddr;
-	int strLen;
 
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) //소켓 라이브러리를 초기화하고 있다
 		printf("WSAStartup() error!\n");

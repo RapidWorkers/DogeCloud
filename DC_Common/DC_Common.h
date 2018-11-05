@@ -2,6 +2,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <WinSock2.h>
+#include <Ws2tcpip.h>
+#include <Windows.h>
+#pragma comment(lib, "ws2_32.lib")
 
 //load packet structures
 #include "DataManagePacket.h"
@@ -29,6 +34,10 @@ extern "C" {
 	DLLIMP void printProgramInfo();
 	DLLIMP unsigned int GenerateCSPRNG();
 	DLLIMP void GenerateSessionKey(char sessionKey[32]);
+
+	//Network Related Function
+	DLLIMP bool sendRaw(SOCKET socket, char* buffer, int sendByte, int flags);
+	DLLIMP bool recvRaw(SOCKET socket, char* buffer, int sendByte, int flags);
 
 #ifdef __cplusplus
 }

@@ -28,6 +28,9 @@
     <Filter Include="Packets">
       <UniqueIdentifier>{2604e3c0-ca79-4024-b606-88b74bf183b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\CSPRNG">
+      <UniqueIdentifier>{840bc533-8a23-47df-b360-cf5d76d1a7d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\lib\SQLite\sqlite3.c">
@@ -44,6 +47,12 @@
     </ClCompile>
     <ClCompile Include="DogeCommon.c">
       <Filter>Source Code</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkReadWrite.c">
+      <Filter>Source Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\CSPRNG\csprng.c">
+      <Filter>lib\CSPRNG</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="DataManagePacket.h">
       <Filter>Packets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\CSPRNG\duthomhas\csprng.h">
+      <Filter>lib\CSPRNG</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

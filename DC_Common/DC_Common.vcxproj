@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -20,13 +20,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\lib\crypto-algorithms\sha256.c" />
+    <ClCompile Include="..\lib\CSPRNG\csprng.c" />
     <ClCompile Include="..\lib\SQLite\sqlite3.c" />
     <ClCompile Include="FileCrypto.c" />
     <ClCompile Include="DogeCommon.c" />
+    <ClCompile Include="NetworkReadWrite.c" />
     <ClCompile Include="UserDataReader.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\crypto-algorithms\sha256.h" />
+    <ClInclude Include="..\lib\CSPRNG\duthomhas\csprng.h" />
     <ClInclude Include="..\lib\dllLEA\include\config.h" />
     <ClInclude Include="..\lib\dllLEA\include\lea.h" />
     <ClInclude Include="..\lib\SQLite\sqlite3.h" />
@@ -41,7 +44,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{12A95FF3-8445-4D41-B296-C883B2109F5A}</ProjectGuid>
     <RootNamespace>DCCommon</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -93,7 +96,7 @@
     <LibraryPath>$(SolutionDir)lib\dllLEA\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)lib\SQLite;$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)lib\SQLite;$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(SolutionDir)lib\CSPRNG;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\dllLEA\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
