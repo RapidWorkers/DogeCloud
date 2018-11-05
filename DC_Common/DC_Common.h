@@ -14,6 +14,7 @@
 #include "UserCommPacket.h"
 #include "FileServerCommPacket.h"
 
+
 #define DLL _declspec(dllexport)
 #define DLLIMP _declspec(dllimport)
 
@@ -32,12 +33,11 @@ extern "C" {
 	DLLIMP void testLEA();
 	DLLIMP void printDebugMsg(int targetErrorLevel, int currentErrorLevel, char* buffer);
 	DLLIMP void printProgramInfo();
-	DLLIMP unsigned int GenerateCSPRNG();
 	DLLIMP void GenerateSessionKey(char sessionKey[32]);
 
 	//Network Related Function
 	DLLIMP bool sendRaw(SOCKET socket, char* buffer, int sendByte, int flags);
-	DLLIMP bool recvRaw(SOCKET socket, char* buffer, int sendByte, int flags);
+	DLLIMP bool recvRaw(SOCKET socket, char* buffer, int recvByte, int flags);
 
 #ifdef __cplusplus
 }

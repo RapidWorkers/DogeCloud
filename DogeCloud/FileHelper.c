@@ -9,7 +9,7 @@ void fileDownDemo(SOCKET hSocket) {
 	long tmp_opCode = htonl(251);
 	memcpy(opCode, &tmp_opCode, 4);
 	printf("응답 대기중.. 잠시만 기다려 주십시오...");
-	send(hSocket, opCode, 4, 0);//send opcode for demo
+	sendRaw(hSocket, opCode, 4, 0);//send opcode for demo
 	FILE *downFile;
 
 	if ((downFile = fopen("Client_downloaddFromServer", "wb+")) == NULL) {
@@ -69,8 +69,8 @@ void fileUpDemo(SOCKET hSocket) {
 	fileSize = htonl(fileSize);
 	
 
-	send(hSocket, opCode, 4, 0);//send opcode for demo
-	send(hSocket, &fileSize, 4, 0);//send file size
+	sendRaw(hSocket, opCode, 4, 0);//send opcode for demo
+	sendRaw(hSocket, &fileSize, 4, 0);//send file size
 	fileSize = ntohl(fileSize);
 
 	unsigned char dataBuffer[2048]; //2KiB
@@ -82,7 +82,7 @@ void fileUpDemo(SOCKET hSocket) {
 		fread(dataBuffer, 2048, 1, randFile);
 		percentage = ((double)(2048 * i) / fileSize) * 100;
 		if ((i * 2048) % (2 * 1024 * 1024) == 0) printf("전송중: %d %%\n", percentage);
-		send(hSocket, dataBuffer, 2048, 0);
+		sendRaw(hSocket, dataBuffer, 2048, 0);
 	}
 	cnt = cnt;
 	fclose(randFile);

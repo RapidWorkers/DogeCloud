@@ -3,6 +3,7 @@
 //external library
 #include "sha256.h"
 #include "lea.h"
+#include "duthomhas\csprng.h"
 #pragma comment(lib, "dllLEA.lib")
 
 #ifdef __cplusplus //check if cpp compiler compile this code.
@@ -38,15 +39,18 @@ extern "C" {
 		return;
 	}
 
-	DLL unsigned int GenerateCSPRNG() { //WARN: SHOULD BE CHANGED BECAUES THIS IS EXTREMELY VULUNERABLE!!!
-		//WARN: THIS IS JUST A TEMPORARY IMPLEMENTED FUNCTION TO IMPLEMENT OTHER FUNCTION!!!
-		srand((unsigned int)time(NULL));
-		return rand();
+	DLL unsigned int GenerateCSPRNG(unsigned char *buffer, int numSize) {
+		CSPRNG rng = csprng_create();
+		if (!rng) return; //do nothing on error
+		csprng_get(rng, buffer, numSize);
+		rng = csprng_destroy(rng);
+		return;
 	}
 
 	DLL void GenerateSessionKey(char sessionKey[32]) {
-		unsigned int CSPRNG = GenerateCSPRNG();
-		SHA256_Text(&CSPRNG, sessionKey);
+		unsigned char buffer[128] = { 0, };
+		GenerateCSPRNG(buffer, 127);
+		SHA256_Text(buffer, sessionKey);
 	}
 
 	DLL void printProgramInfo() {

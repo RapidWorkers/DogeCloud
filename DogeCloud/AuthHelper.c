@@ -6,12 +6,12 @@ void login(SOCKET hSocket) {
 	LoginStart.Data.opCode = htonl(OP_CS_LOGINSTART);
 	LoginStart.Data.dataLen = htonl(sizeof(cs_LoginStart) - 8);
 	LoginStart.Data.clientVersion = htonl(20181020);
-	send(hSocket, LoginStart.buf, sizeof(cs_LoginStart), 0);
+	sendRaw(hSocket, LoginStart.buf, sizeof(cs_LoginStart), 0);
 
 	//get LoginStartResp to server
 	sc_LoginStartResp LoginStartResp;
-	strLen = recv(hSocket, LoginStartResp.buf, sizeof(LoginStartResp), 0); //recv 함수 호출을 통해서 서버로부터 전송되는 데이터를 수신하고 있다.
-	if (strLen == -1)
+	strLen = recvRaw(hSocket, LoginStartResp.buf, sizeof(LoginStartResp), 0); //recv 함수 호출을 통해서 서버로부터 전송되는 데이터를 수신하고 있다.
+	if (!strLen)
 		printf("read() error\n");
 	LoginStartResp.Data.opCode = ntohl(LoginStartResp.Data.opCode);
 	LoginStartResp.Data.dataLen = ntohl(LoginStartResp.Data.dataLen);
@@ -33,11 +33,11 @@ void login(SOCKET hSocket) {
 	memcpy(&(LoginAccountData.Data.Username), uname, 100);
 	memcpy(&(LoginAccountData.Data.Password), pwd, 100);
 
-	send(hSocket, LoginAccountData.buf, sizeof(LoginAccountData), 0);
+	sendRaw(hSocket, LoginAccountData.buf, sizeof(LoginAccountData), 0);
 
 	sc_LoginDoneResp LoginDoneResp;
-	strLen = recv(hSocket, LoginDoneResp.buf, sizeof(LoginDoneResp), 0); //recv 함수 호출을 통해서 서버로부터 전송되는 데이터를 수신하고 있다.
-	if (strLen == -1)
+	strLen = recvRaw(hSocket, LoginDoneResp.buf, sizeof(LoginDoneResp), 0); //recv 함수 호출을 통해서 서버로부터 전송되는 데이터를 수신하고 있다.
+	if (!strLen)
 		printf("read() error\n");
 
 	LoginDoneResp.Data.opCode = ntohl(LoginDoneResp.Data.opCode);
@@ -58,11 +58,11 @@ void logout(SOCKET hSocket) {
 	int strLen;
 	LogoutStart.Data.opCode = htonl(OP_CS_LOGOUTSTART);
 	LogoutStart.Data.dataLen = htonl(sizeof(cs_LogoutStart) - 8);
-	send(hSocket, LogoutStart.buf, sizeof(LogoutStart), 0);
+	sendRaw(hSocket, LogoutStart.buf, sizeof(LogoutStart), 0);
 
 	sc_LogoutDone LogoutDone;
-	strLen = recv(hSocket, LogoutDone.buf, sizeof(LogoutDone), 0); //recv 함수 호출을 통해서 서버로부터 전송되는 데이터를 수신하고 있다.
-	if (strLen == -1)
+	strLen = recvRaw(hSocket, LogoutDone.buf, sizeof(LogoutDone), 0); //recv 함수 호출을 통해서 서버로부터 전송되는 데이터를 수신하고 있다.
+	if (!strLen)
 		printf("read() error\n");
 
 	if (LogoutDone.Data.statusCode == 1) {

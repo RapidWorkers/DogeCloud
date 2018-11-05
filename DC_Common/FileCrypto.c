@@ -1,7 +1,6 @@
 #include "DC_Common.h"
 #include "sha256.h"
 #include "lea.h"
-#include "duthomhas\csprng.h"
 #pragma comment(lib, "dllLEA.lib")
 
 DLL void testLEA() {
@@ -14,14 +13,6 @@ DLL void testLEA() {
 	lea_ctr_enc(decOutput, encOutput, sizeof(testCase), "aaabbbcccdddeee", &newKey);
 	printf("%s\n", decOutput);
 }
-
-DLL void generateNonce(char* nonceBuffer, int nonceSize) {
-	CSPRNG rng = csprng_create();
-	if (!rng) return; //do nothing on error
-	csprng_get(rng, nonceBuffer, nonceSize);
-	rng = csprng_destroy(rng);
-	return;
-};
 
 DLL void encryptFileLEA(FILE *file) {
 //will be implemented
