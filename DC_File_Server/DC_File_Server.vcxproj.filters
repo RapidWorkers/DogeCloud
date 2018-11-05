@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.c">
+    <ClCompile Include="socketHandler.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="socketHandler.c">
+    <ClCompile Include="FileServer.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -26,5 +26,10 @@
     <None Include="FileServerConfig.ini">
       <Filter>리소스 파일</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FileServer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
