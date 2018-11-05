@@ -3,12 +3,12 @@
 void fileDownDemo(SOCKET hSocket) {
 	system("cls");
 	printProgramInfo();
-	printf("ÀÌ µ¥¸ğ´Â 200MBÀÇ ³­¼ö·Î ÀÌ·ç¾îÁø ÆÄÀÏÀ» ¼­¹ö¿¡¼­ ´Ù¿î·Îµå ¹Ş½À´Ï´Ù.\n");
+	printf("ì´ ë°ëª¨ëŠ” 200MBì˜ ë‚œìˆ˜ë¡œ ì´ë£¨ì–´ì§„ íŒŒì¼ì„ ì„œë²„ì—ì„œ ë‹¤ìš´ë¡œë“œ ë°›ìŠµë‹ˆë‹¤.\n");
 
 	unsigned char opCode[4];
 	long tmp_opCode = htonl(251);
 	memcpy(opCode, &tmp_opCode, 4);
-	printf("ÀÀ´ä ´ë±âÁß.. Àá½Ã¸¸ ±â´Ù·Á ÁÖ½Ê½Ã¿À...");
+	printf("ì‘ë‹µ ëŒ€ê¸°ì¤‘.. ì ì‹œë§Œ ê¸°ë‹¤ë ¤ ì£¼ì‹­ì‹œì˜¤...");
 	send(hSocket, opCode, 4, 0);//send opcode for demo
 	FILE *downFile;
 
@@ -31,26 +31,26 @@ void fileDownDemo(SOCKET hSocket) {
 		int remainData = 2048;
 
 		while (remainData > 0) {
-			int strLen = recv(hSocket, dataBuffer, remainData, 0);
+			int strLen = recv(hSocket, dataBuffer+(2048 - remainData), remainData, 0);
 			remainData -= strLen;
 		}
 
 		fwrite(dataBuffer, 2048, 1, downFile);
 		percentage = ((double)(2048 * i) / fileSize) * 100;
-		if ((i * 2048) % (2 * 1024 * 1024) == 0) printf("¹ŞÀ½: %d %%\n", percentage);
+		if ((i * 2048) % (2 * 1024 * 1024) == 0) printf("ë°›ìŒ: %d %%\n", percentage);
 	}
 
 	cnt = cnt;
 
 	fclose(downFile);
-	printf("¼ö½Å ¿Ï·á: ¼­¹ö È®ÀÎ ¹Ù¶÷");
+	printf("ìˆ˜ì‹  ì™„ë£Œ: ì„œë²„ í™•ì¸ ë°”ëŒ");
 	system("pause");
 }
 
 void fileUpDemo(SOCKET hSocket) {
 	system("cls");
 	printProgramInfo();
-	printf("ÀÌ µ¥¸ğ´Â 200MBÀÇ ÆÄÀÏÀ» »ı¼ºÇÏ¿© ¼­¹ö¿¡ ¾÷·Îµå¸¦ Å×½ºÆ® ÇÕ´Ï´Ù.\n");
+	printf("ì´ ë°ëª¨ëŠ” 200MBì˜ íŒŒì¼ì„ ìƒì„±í•˜ì—¬ ì„œë²„ì— ì—…ë¡œë“œë¥¼ í…ŒìŠ¤íŠ¸ í•©ë‹ˆë‹¤.\n");
 
 	FILE *randFile;
 
@@ -59,14 +59,14 @@ void fileUpDemo(SOCKET hSocket) {
 		exit(1);
 	}
 
-	printf("ÆÄÀÏ »ı¼ºÁß... Àá½Ã¸¸ ±â´Ù·Á ÁÖ½Ê½Ã¿À...\n");
+	printf("íŒŒì¼ ìƒì„±ì¤‘... ì ì‹œë§Œ ê¸°ë‹¤ë ¤ ì£¼ì‹­ì‹œì˜¤...\n");
 	unsigned long fileSize = 200 * 1024 * 1024; //200MiB
 	int temp_Data = GenerateCSPRNG();
 	for (int i = 0; i < fileSize / 4; i++) {
 		fwrite(&temp_Data, 4, 1, randFile);
 	}
 	fseek(randFile, 0, SEEK_SET);
-	printf("¼­¹ö Á¢¼ÓÁß... Àá½Ã¸¸ ±â´Ù·Á ÁÖ½Ê½Ã¿À...\n");
+	printf("ì„œë²„ ì ‘ì†ì¤‘... ì ì‹œë§Œ ê¸°ë‹¤ë ¤ ì£¼ì‹­ì‹œì˜¤...\n");
 	unsigned char opCode[4];
 	long tmp_opCode = htonl(250);
 	memcpy(opCode, &tmp_opCode, 4);
@@ -85,11 +85,11 @@ void fileUpDemo(SOCKET hSocket) {
 	for (int i = 0; i < fileSize / 2048; i++, cnt++) {
 		fread(dataBuffer, 2048, 1, randFile);
 		percentage = ((double)(2048 * i) / fileSize) * 100;
-		if ((i * 2048) % (2 * 1024 * 1024) == 0) printf("Àü¼ÛÁß: %d %%\n", percentage);
+		if ((i * 2048) % (2 * 1024 * 1024) == 0) printf("ì „ì†¡ì¤‘: %d %%\n", percentage);
 		send(hSocket, dataBuffer, 2048, 0);
 	}
 	cnt = cnt;
 	fclose(randFile);
-	printf("Àü¼Û ¿Ï·á: ¼­¹ö È®ÀÎ ¹Ù¶÷");
+	printf("ì „ì†¡ ì™„ë£Œ: ì„œë²„ í™•ì¸ ë°”ëŒ");
 	system("pause");
 }
