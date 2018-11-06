@@ -39,7 +39,7 @@ extern "C" {
 		return;
 	}
 
-	DLL unsigned int GenerateCSPRNG(unsigned char *buffer, int numSize) {
+	DLL void GenerateCSPRNG(unsigned char *buffer, int numSize) {
 		CSPRNG rng = csprng_create();
 		if (!rng) return; //do nothing on error
 		csprng_get(rng, buffer, numSize);

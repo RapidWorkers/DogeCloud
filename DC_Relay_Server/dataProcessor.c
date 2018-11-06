@@ -48,7 +48,8 @@ void procFileDownDemo(SOCKET hClientSock) {
 
 	printf("Creating Files.. Please Wait... (Server Still able to Accept new client!)\n");
 	unsigned long fileSize = 200 * 1024 * 1024; //200MiB
-	int temp_Data = GenerateCSPRNG();
+	int temp_Data;
+	GenerateCSPRNG(&temp_Data, 4);
 	for (int i = 0; i < fileSize / 4; i++) {
 		fwrite(&temp_Data, 4, 1, randFile);
 	}

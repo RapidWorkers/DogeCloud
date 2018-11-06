@@ -22,3 +22,4 @@ void logout(SOCKET hSocket);
 //fileHelper
 void fileUpDemo(SOCKET hSocket);
 void fileDownDemo(SOCKET hSocket);
+void testLEAonFILE();

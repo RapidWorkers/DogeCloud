@@ -16,6 +16,8 @@ void printMenu() {
 		printf_s("\n\t*********  메   뉴   *********");
 		printf_s("\n\t4. 파일 업로드 데모");
 		printf_s("\n\t5. 파일 다운로드 데모");
+		printf_s("\n\t6. SHA-256 데모");
+		printf_s("\n\t7. LEA 암 복호화 데모");
 		printf_s("\n\t3. 종료");
 		printf_s("\n\t******************************");
 		printf_s("\n\t메뉴 선택 : ");
@@ -81,6 +83,9 @@ int main() {
 			break;
 		case 6:
 			testSHA();
+			break;
+		case 7:
+			testLEAonFILE();
 			break;
 		default:
 			puts("올바르지 않은 입력입니다.");

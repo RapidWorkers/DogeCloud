@@ -47,8 +47,37 @@ DLL void encryptFileLEA(FILE *infile, FILE *outfile, char* encKey, char* nonceIV
 	}
 }
 
-DLL void decryptFileLEA(FILE *file) {
-//will be implemented
+DLL void decryptFileLEA(FILE *infile, FILE *outfile, char* encKey, char* nonceIV) {
+	if (infile == NULL || outfile == NULL) return;
+	fseek(infile, 0, SEEK_END);
+	unsigned int left = ftell(infile);
+	fseek(infile, 0, SEEK_SET);//return to start pos
+
+	//copy iv to new var -> it'll be modified after encryption
+	char ctr_counter[16];
+	memcpy_s(ctr_counter, 16, nonceIV, 16);
+
+	//init lea
+	LEA_KEY leaKey;
+	lea_set_key(&leaKey, encKey, 32);
+
+	//init read and encryption buffer
+	char org_buffer[2048];
+	char dec_buffer[2048];
+	int toRead;
+
+	while (left) {
+		if (left < 2048)
+			toRead = left;
+		else
+			toRead = 2048;
+
+		fread(org_buffer, toRead, 1, infile); //read original data
+		lea_ctr_dec(dec_buffer, org_buffer, toRead, ctr_counter, &leaKey);//encrypt it
+		fwrite(dec_buffer, toRead, 1, outfile);//write to output
+
+		left -= toRead;
+	}
 }
 
 DLL void getFileHash(FILE *file, char* result) {

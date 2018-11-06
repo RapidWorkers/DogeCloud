@@ -34,6 +34,7 @@ extern "C" {
 	DLLIMP void printDebugMsg(int targetErrorLevel, int currentErrorLevel, char* buffer);
 	DLLIMP void printProgramInfo();
 	DLLIMP void GenerateSessionKey(char sessionKey[32]);
+	DLLIMP void GenerateCSPRNG(unsigned char *buffer, int numSize);
 
 	//Network Related Function
 	DLLIMP bool sendRaw(SOCKET socket, char* buffer, int sendByte, int flags);

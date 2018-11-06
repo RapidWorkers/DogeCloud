@@ -57,7 +57,8 @@ void fileUpDemo(SOCKET hSocket) {
 
 	printf("파일 생성중... 잠시만 기다려 주십시오...\n");
 	unsigned long fileSize = 200 * 1024 * 1024; //200MiB
-	int temp_Data = GenerateCSPRNG();
+	int temp_Data;
+	GenerateCSPRNG(&temp_Data, 4);
 	for (int i = 0; i < fileSize / 4; i++) {
 		fwrite(&temp_Data, 4, 1, randFile);
 	}
@@ -91,12 +92,45 @@ void fileUpDemo(SOCKET hSocket) {
 }
 
 void testSHA() {
-	FILE *testFile = fopen("testFile.txt", "r");
+	FILE *testFile = fopen("testFile.txt", "rb+");
 	unsigned char hashed[32];
 	getFileHash(testFile, hashed);
 
-	printf("HASH : ");
+	printf("HASH: ");
 	for (int i = 0; i < 32; i++)
 		printf("%2X ", hashed[i]);
 	system("pause");
+}
+
+void testLEAonFILE() {
+	FILE *testFile = fopen("testFile.txt", "rb+");
+	FILE *encFile = fopen("encryptedFile.txt", "wb+");
+	FILE *decFile = fopen("decryptedFile.txt", "wb+");
+
+	unsigned char hashed[32];
+	getFileHash(testFile, hashed);
+	printf("HASH: ");
+	for (int i = 0; i < 32; i++)
+		printf("%2X ", hashed[i]);
+	printf("\n");
+
+	char* nonce[16];
+	GenerateCSPRNG(nonce, 16); //generate 16byte iv
+	encryptFileLEA(testFile, encFile, "123456789abcdef123456789abcdefg", nonce);
+	printf("암호화 완료");
+
+	getFileHash(encFile, hashed);
+	printf("HASH: ");
+	for (int i = 0; i < 32; i++)
+		printf("%2X ", hashed[i]);
+	printf("\n");
+
+	decryptFileLEA(encFile, decFile, "123456789abcdef123456789abcdefg", nonce);
+	printf("복호화 완료");
+	getFileHash(decFile, hashed);
+	printf("HASH: ");
+	for (int i = 0; i < 32; i++)
+		printf("%2X ", hashed[i]);
+	printf("\n");
+
 }
