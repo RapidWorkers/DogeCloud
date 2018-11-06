@@ -133,4 +133,6 @@ void testLEAonFILE() {
 		printf("%2X ", hashed[i]);
 	printf("\n");
 
+	system("pause");
+
 }
