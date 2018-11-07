@@ -7,7 +7,11 @@
 #include <Ws2tcpip.h>
 #include <Windows.h>
 
+#include <mysql.h>
+
 #include "../DC_Common/DC_Common.h"
+
+
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "DC_Common.lib")
@@ -41,3 +45,5 @@ void procLogout(SOCKET hClientSock);
 //data Processors
 void procFileUpDemo(SOCKET hClientSock);
 void procFileDownDemo(SOCKET hClientSock);
+
+//Mariadb Connector

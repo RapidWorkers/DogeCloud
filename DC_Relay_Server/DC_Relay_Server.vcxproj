@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dataProcessor.c" />
+    <ClCompile Include="MariaDBConnector.c" />
     <ClCompile Include="RelayServer.c" />
     <ClCompile Include="socketHandler.c" />
     <ClCompile Include="sessionProcessor.c" />
@@ -28,6 +29,36 @@
     <None Include="RelayServerConfig.ini" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\lib\mariadb\Win32\include\errmsg.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_com.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_ctype.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_dyncol.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_stmt.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_version.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\ma_io.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\ma_list.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\ma_pvio.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\ma_tls.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysql.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysqld_error.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysql\client_plugin.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysql\plugin_auth.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysql\plugin_auth_common.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\errmsg.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_com.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_ctype.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_dyncol.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_stmt.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_version.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\ma_io.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\ma_list.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\ma_pvio.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\ma_tls.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mysql.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mysqld_error.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mysql\client_plugin.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mysql\plugin_auth.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mysql\plugin_auth_common.h" />
     <ClInclude Include="RelayServer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -83,20 +114,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(OutDir);$(SolutionDir)lib\mariadb\Win32\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)lib\mariadb\Win32\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(OutDir);$(SolutionDir)lib\mariadb\Win32\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)lib\mariadb\Win32\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)lib\mariadb\x64\lib;$(OutDir);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)lib\mariadb\x64\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)lib\mariadb\x64\lib;$(OutDir);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)lib\mariadb\x64\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
