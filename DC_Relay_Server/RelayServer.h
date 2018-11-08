@@ -26,7 +26,22 @@
 #define BIND_PORT 15754
 #define MAX_CON 100
 #define ERLEVEL 0
+
+#define MYSQL_ADDR "127.0.0.1"
+#define MYSQL_PORT 3306
+#define MYSQL_USER "root"
+#define MYSQL_PASS "dogecloud"
+#define MYSQL_DBASE "DogeCloud"
+
 #endif
+
+typedef struct {
+	char srvAddr[255];
+	unsigned long srvPort;
+	char user[255];
+	char pass[255];
+	char dbase[255];
+} MYSQL_SERVER;
 
 //extern var declare
 extern HANDLE hMutex;
@@ -47,3 +62,4 @@ void procFileUpDemo(SOCKET hClientSock);
 void procFileDownDemo(SOCKET hClientSock);
 
 //Mariadb Connector
+void sqlInit(MYSQL *sqlHandle, MYSQL_SERVER serverInfo);

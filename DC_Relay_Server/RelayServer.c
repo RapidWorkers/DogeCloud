@@ -24,6 +24,11 @@ int main()
 
 	printProgramInfo();
 
+	//MariaDB Handle and init connection
+	MYSQL_SERVER serverInfo = { MYSQL_ADDR, MYSQL_PORT, MYSQL_USER, MYSQL_PASS, MYSQL_DBASE };
+	MYSQL sqlHandle;
+	sqlInit(&sqlHandle, serverInfo);
+	
 	//init sockets
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)//WSA Startup
 		printDebugMsg(3, ERLEVEL,"Init Sock fail");

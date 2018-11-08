@@ -136,6 +136,10 @@
       <SDLCheck>false</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <PreBuildEvent>
+      <Command>echo Copying MariaDB Dependencies
+copy /Y "$(SolutionDir)lib\mariadb\Win32\lib\libmariadb.dll" "$(OutDir)libmariadb.dll"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -147,6 +151,10 @@
     <Link>
       <SubSystem>NotSet</SubSystem>
     </Link>
+    <PreBuildEvent>
+      <Command>echo Copying MariaDB Dependencies
+copy /Y "$(SolutionDir)lib\mariadb\x64\lib\libmariadb.dll" "$(OutDir)libmariadb.dll"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -161,6 +169,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PreBuildEvent>
+      <Command>echo Copying MariaDB Dependencies
+copy /Y "$(SolutionDir)lib\mariadb\Win32\lib\libmariadb.dll" "$(OutDir)libmariadb.dll"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -175,6 +187,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PreBuildEvent>
+      <Command>echo Copying MariaDB Dependencies
+copy /Y "$(SolutionDir)lib\mariadb\x64\lib\libmariadb.dll" "$(OutDir)libmariadb.dll"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
