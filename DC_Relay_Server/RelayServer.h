@@ -6,12 +6,9 @@
 #include <WinSock2.h>
 #include <Ws2tcpip.h>
 #include <Windows.h>
-
 #include <mysql.h>
 
 #include "../DC_Common/DC_Common.h"
-
-
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "DC_Common.lib")
@@ -25,7 +22,7 @@
 #define BIND_ADDR "127.0.0.1"
 #define BIND_PORT 15754
 #define MAX_CON 100
-#define ERLEVEL 0
+#define DC_ERRORLEVEL 0
 
 #define MYSQL_ADDR "127.0.0.1"
 #define MYSQL_PORT 3306
@@ -43,6 +40,11 @@ typedef struct {
 	char dbase[255];
 } MYSQL_SERVER;
 
+typedef struct {
+	SOCKET *hSocket;
+	char clientIP[16];
+} DC_CLIENT_INFO;
+
 //extern var declare
 extern HANDLE hMutex;
 extern SOCKET hClientSocks[MAX_CON];
@@ -50,7 +52,7 @@ extern int clientCount;
 
 //defining prototypes
 unsigned int WINAPI clientHandler(void* arg);
-void packetHandler(SOCKET hClientSock, unsigned long opCode);
+void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCode);
 
 //Session Proccesors
 void procLoginStart(SOCKET hClientSock);

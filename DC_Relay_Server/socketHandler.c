@@ -1,7 +1,9 @@
 #include "RelayServer.h"
 
-unsigned int WINAPI clientHandler(void* socket) {
-	SOCKET hClientSock = *((SOCKET*)socket);
+unsigned int WINAPI clientHandler(void* clientInfo) {
+	SOCKET hClientSock = *(((DC_CLIENT_INFO*)clientInfo)->hSocket);
+	char clientIP[16];
+	memcpy_s(clientIP, 16, ((DC_CLIENT_INFO*)clientInfo)->clientIP, 16);
 	
 	//create session related
 	unsigned char sessionKey[32];
@@ -15,10 +17,10 @@ unsigned int WINAPI clientHandler(void* socket) {
 		unsigned long opCode;
 		memcpy(&opCode, opCodeBuffer, 4);
 		opCode = ntohl(opCode);
-		packetHandler(hClientSock, opCode);
+		packetHandler(hClientSock, clientIP, opCode);
 	}//loop while socket is alive
 
-	printDebugMsg(1, ERLEVEL, "Connection Closed");
+	printDebugMsg(1, DC_ERRORLEVEL, "Connection Closed");
 	WaitForSingleObject(hMutex, INFINITE);
 	for (int i = 0; i < clientCount; i++) {
 		if (hClientSock == hClientSocks[i]) {
@@ -34,35 +36,38 @@ unsigned int WINAPI clientHandler(void* socket) {
 	return 0;
 }
 
-void packetHandler(SOCKET hClientSock, unsigned long opCode) {
+void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCode) {
 	if (hClientSock == INVALID_SOCKET) return;
-	printf("Got OpCode: %d", opCode);
+
+	printDebugMsg(DC_DEBUG, DC_ERRORLEVEL, "Got OpCode: %d", opCode);
 	switch (opCode) {
 	case OP_CS_LOGINSTART:
-		printDebugMsg(1, ERLEVEL, "LoginStart OpCode");
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "LoginStart: %s", clientIP);
 		procLoginStart(hClientSock);
 		break;
+
 	case OP_CS_LOGINACCOUNTDATA:
-		printDebugMsg(1, ERLEVEL, "LoginAccountData OpCode");
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "LoginAccountData OpCode", clientIP);
 		procLoginAccountData(hClientSock);
 		break;
 	case OP_CS_LOGOUTSTART:
-		printDebugMsg(1, ERLEVEL, "LogoutStart OpCode");
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "LogoutStart OpCode", clientIP);
 		procLogout(hClientSock);
 		break;
 
 	case 250: //FILE UPLOAD DEMO
-		printDebugMsg(1, ERLEVEL, "File Upload Demo Mode");
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Upload Demo Mode", clientIP);
 		procFileUpDemo(hClientSock);
 		break;
+
 	case 251: //FILE DOWNLOAD DEMO
-		printDebugMsg(1, ERLEVEL, "File Download Demo Mode");
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Download Demo Mode", clientIP);
 		procFileDownDemo(hClientSock);
 		break;
 
 	default:
-		printDebugMsg(3, ERLEVEL, "Unknown Packet");
-		//printDebugMsg(3, ERLEVEL, &opCode);
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Unknown Packet", clientIP);
+		//printDebugMsg(3, DC_ERRORLEVEL, &opCode);
 		break;
 	}
 }

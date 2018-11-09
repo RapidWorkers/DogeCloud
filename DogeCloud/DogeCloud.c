@@ -115,6 +115,7 @@ int main() {
 				break;
 			default: //유효하지 않은 입력
 				printDebugMsg(DC_WARN, DC_ERRORLEVEL, "올바르지 않은 입력입니다.");
+				Sleep(1000);
 				break;
 			}
 		}
@@ -143,7 +144,8 @@ int main() {
 				exit(0);
 				break;
 			default:
-				puts("올바르지 않은 입력입니다.");
+				printDebugMsg(DC_WARN, DC_ERRORLEVEL, "올바르지 않은 입력입니다.");
+				Sleep(1000);
 				break;
 			}
 		}

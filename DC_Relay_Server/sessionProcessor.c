@@ -69,7 +69,7 @@ void procLoginAccountData(SOCKET hClientSock) {
 		}
 
 		if (flag) {//ID and PWD Match
-			printDebugMsg(1, ERLEVEL, "ACCOUNT MATCH");
+			printDebugMsg(DC_INFO, DC_ERRORLEVEL, "ACCOUNT MATCH");
 			GenerateSessionKey(LoginDoneResp.Data.sessionKey);
 			printf("Generated Session Key: ");
 			for (int i = 0; i < 32; i++)
@@ -78,17 +78,17 @@ void procLoginAccountData(SOCKET hClientSock) {
 			LoginDoneResp.Data.statusCode = 1;
 		}
 		else {//not match
-			printDebugMsg(1, ERLEVEL, "ACCOUNT NOT MATCH");
+			printDebugMsg(DC_INFO, DC_ERRORLEVEL, "ACCOUNT NOT MATCH");
 			LoginDoneResp.Data.statusCode = 0;
 		}
 	}
 	else {
-		printDebugMsg(1, ERLEVEL, "ACCOUNT NOT EXIST");
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "ACCOUNT NOT EXIST");
 		LoginDoneResp.Data.statusCode = 0;
 	}
 
 	send(hClientSock, LoginDoneResp.buf, sizeof(LoginDoneResp), 0);
-	printDebugMsg(1, ERLEVEL, "Sent LoginDoneResp to Client");
+	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Sent LoginDoneResp to Client");
 }
 
 void procLogout(SOCKET hClientSock) {

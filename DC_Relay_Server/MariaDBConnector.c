@@ -9,12 +9,12 @@ void sqlInit(MYSQL *sqlHandle, MYSQL_SERVER serverInfo) {
 		serverInfo.pass, serverInfo.dbase, serverInfo.srvPort, NULL, 0);
 	
 	if (mysql_errno(sqlHandle)) {
-		printDebugMsg(3, ERLEVEL, "MariaDB Error!! Program Exit");
-		printf("MySQL Error: %s", mysql_error(sqlHandle));
+		printDebugMsg(3, DC_ERRORLEVEL, "MariaDB Error!! Program Exit");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_error(sqlHandle));
 		system("pause");
 		exit(1);//exit with error
 	}
 	else {
-		printDebugMsg(1, ERLEVEL, "Successfully Connected to MariaDB Server.");
+		printDebugMsg(1, DC_ERRORLEVEL, "Successfully Connected to MariaDB Server.");
 	}
 }
