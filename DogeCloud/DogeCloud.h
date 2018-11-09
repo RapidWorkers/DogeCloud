@@ -11,6 +11,8 @@
 #pragma comment(lib, "DC_Common.lib")
 #pragma comment(lib, "ws2_32.lib")
 
+#define DC_ERRORLEVEL 0
+
 //session related global var
 extern int loginFlag;
 extern char sessionKey[32];
@@ -23,3 +25,4 @@ void logout(SOCKET hSocket);
 void fileUpDemo(SOCKET hSocket);
 void fileDownDemo(SOCKET hSocket);
 void testLEAonFILE();
+void testSHA();
