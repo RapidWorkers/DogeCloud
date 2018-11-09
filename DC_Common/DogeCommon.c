@@ -1,3 +1,5 @@
+#define DC_BUILD_DLL
+
 #include "DC_Common.h"
 
 //external library
@@ -10,24 +12,33 @@
 extern "C" {
 #endif
 
-	DLL void printDebugMsg(int targetErrorLevel, int currentErrorLevel, char* buffer) {
-		if (currentErrorLevel > 3) currentErrorLevel = 3; //Always display error
-		if (targetErrorLevel < currentErrorLevel) return; //only display error that exceeds user setting
+	DLL void printDebugMsg(int targetErrorLevel, int currentErrorLevel, const char* format, ...) {
+		char buf[512] = { 0, };
+
+		if (currentErrorLevel > 3) currentErrorLevel = 3; //만약에 최대값을 넘어갔다면 3으로 설정
+		if (targetErrorLevel < currentErrorLevel) return; //유저가 지정한 레벨 이상의 것만 출력
 		switch (targetErrorLevel) {
 		case 0:
-			printf_s("[DEBUG]: ");
+			strcpy_s(buf, 512, "[DEBUG]: ");
 			break;
 		case 1:
-			printf_s("[INFO]: ");
+			strcpy_s(buf, 512, "[INFO]: ");
 			break;
 		case 2:
-			printf_s("[WARN]: ");
+			strcpy_s(buf, 512, "[WARN]: ");
 			break;
 		case 3:
-			printf_s("[ERROR]: ");
+			strcpy_s(buf, 512, "[ERROR]: ");
 			break;
 		}
-		printf_s("%s\n", buffer);//display error info
+
+		va_list ap;
+		va_start(ap, format);
+		vsprintf_s(buf + strlen(buf), 512 - strlen(buf), format, ap);
+		va_end(ap);
+
+		puts(buf);//에러 정보 표시
+
 		return;
 	}
 

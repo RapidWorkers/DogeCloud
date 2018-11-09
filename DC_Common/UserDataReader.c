@@ -1,3 +1,5 @@
+#define DC_BUILD_DLL
+
 #include "DC_Common.h"
 #include "sqlite3.h"
 

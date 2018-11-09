@@ -1,3 +1,5 @@
+#define DC_BUILD_DLL
+
 #include "DC_Common.h"
 #include "sha256.h"
 #include "lea.h"

@@ -1,3 +1,5 @@
+#define DC_BUILD_DLL
+
 #include "DC_Common.h"
 
 //to prevent unexpected packet loss
