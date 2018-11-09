@@ -1,9 +1,9 @@
 #include "RelayServer.h"
 
 unsigned int WINAPI clientHandler(void* clientInfo) {
-	SOCKET hClientSock = *(((DC_CLIENT_INFO*)clientInfo)->hSocket);
+	SOCKET hClientSock = *(((DC_SOCK_INFO*)clientInfo)->hSocket);
 	char clientIP[16];
-	memcpy_s(clientIP, 16, ((DC_CLIENT_INFO*)clientInfo)->clientIP, 16);
+	memcpy_s(clientIP, 16, ((DC_SOCK_INFO*)clientInfo)->clientIP, 16);
 	
 	//create session related
 	unsigned char sessionKey[32];

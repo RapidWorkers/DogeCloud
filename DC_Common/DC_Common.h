@@ -15,6 +15,11 @@
 #include "UserCommPacket.h"
 #include "FileServerCommPacket.h"
 
+typedef struct {
+	SOCKET *hSocket;
+	char clientIP[16];
+} DC_SOCK_INFO;
+
 
 #ifdef DC_BUILD_DLL
 #define DLL _declspec(dllexport)

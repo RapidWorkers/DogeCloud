@@ -7,6 +7,9 @@ HANDLE hMutex;
 SOCKET hClientSocks[MAX_CON];
 int clientCount;
 
+MYSQL_SERVER serverInfo = { MYSQL_ADDR, MYSQL_PORT, MYSQL_USER, MYSQL_PASS, MYSQL_DBASE };
+MYSQL sqlHandle;
+
 int main()
 {
 	//Winsock Structures init
@@ -24,9 +27,7 @@ int main()
 
 	printProgramInfo();
 
-	//MariaDB Handle and init connection
-	MYSQL_SERVER serverInfo = { MYSQL_ADDR, MYSQL_PORT, MYSQL_USER, MYSQL_PASS, MYSQL_DBASE };
-	MYSQL sqlHandle;
+	//init database connection
 	sqlInit(&sqlHandle, serverInfo);
 	
 	//init sockets
@@ -67,7 +68,7 @@ int main()
 
 		WaitForSingleObject(hMutex, INFINITE);
 		hClientSocks[clientCount++] = hClientSock;
-		DC_CLIENT_INFO clientInfo;
+		DC_SOCK_INFO clientInfo;
 		clientInfo.hSocket = &hClientSock;
 		inet_ntop(AF_INET, &clientAddr.sin_addr, clientInfo.clientIP, 16);
 		ReleaseMutex(hMutex);

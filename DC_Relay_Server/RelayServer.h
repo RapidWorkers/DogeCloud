@@ -40,15 +40,12 @@ typedef struct {
 	char dbase[255];
 } MYSQL_SERVER;
 
-typedef struct {
-	SOCKET *hSocket;
-	char clientIP[16];
-} DC_CLIENT_INFO;
-
 //extern var declare
 extern HANDLE hMutex;
 extern SOCKET hClientSocks[MAX_CON];
 extern int clientCount;
+extern MYSQL_SERVER serverInfo;
+extern MYSQL sqlHandle;
 
 //defining prototypes
 unsigned int WINAPI clientHandler(void* arg);

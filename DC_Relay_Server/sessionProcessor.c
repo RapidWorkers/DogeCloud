@@ -52,43 +52,103 @@ void procLoginAccountData(SOCKET hClientSock) {
 	LoginDoneResp.Data.opCode = htonl(OP_SC_LOGINDONERESP);
 	LoginDoneResp.Data.dataLen = htonl(sizeof(sc_LoginDoneResp) - 8);
 
-	//temporary set data for login
-	char hashedPassword[32];
-	char tempUsrName[] = "test";
-	char tempUsrPwdHashed[32];
-	SHA256_Text("1234", tempUsrPwdHashed);
+	//prepare password for login auth
+	unsigned char hashedPassword[32];
 	SHA256_Text(LoginAccountData.Data.Password, hashedPassword);
+	unsigned char hashedPasswordText[65] = { 0, };
+	for (int i = 0; i < 32; i++) {
+		printf("%02x", hashedPassword[i]);
+		sprintf_s(hashedPasswordText + (2 * i), 3, "%02x", hashedPassword[i]);
+	}
 
-	if (!strcmp(tempUsrName, LoginAccountData.Data.Username)) {
-		int flag = 1;
-		for (int i = 0; i < 32; i++) {
-			if (tempUsrPwdHashed[i] != hashedPassword[i]) {
-				flag = 0;
-				break;
-			}
-		}
+	//binding data for mysql prepared statement
+	MYSQL_STMT *stmt;
+	MYSQL_BIND bind[2];
+	int is_null[2] = { 0, 0 };
 
-		if (flag) {//ID and PWD Match
-			printDebugMsg(DC_INFO, DC_ERRORLEVEL, "ACCOUNT MATCH");
-			GenerateSessionKey(LoginDoneResp.Data.sessionKey);
-			printf("Generated Session Key: ");
-			for (int i = 0; i < 32; i++)
-				printf("%X ", LoginDoneResp.Data.sessionKey[i]);
-			printf("\n");
-			LoginDoneResp.Data.statusCode = 1;
-		}
-		else {//not match
-			printDebugMsg(DC_INFO, DC_ERRORLEVEL, "ACCOUNT NOT MATCH");
-			LoginDoneResp.Data.statusCode = 0;
-		}
+	if ((stmt = mysql_stmt_init(&sqlHandle)) == NULL) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(&stmt));
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Stopping Login Process");
+		return;
+	}
+
+	char *query = "SELECT count(id) FROM accounts WHERE username = ? and pwd = ?;";
+	
+	int usrNameLen = strlen(LoginAccountData.Data.Username);
+	int passwordLen = 64;
+
+	bind[0].buffer_type = MYSQL_TYPE_STRING;
+	bind[0].buffer = LoginAccountData.Data.Username;
+	bind[0].buffer_length = usrNameLen;
+	bind[0].is_null = is_null;
+	bind[0].length = &usrNameLen; //why this is needed?
+
+	bind[1].buffer_type = MYSQL_TYPE_STRING;
+	bind[1].buffer = hashedPasswordText;
+	bind[1].buffer_length = passwordLen;
+	bind[1].is_null = is_null+1;
+	bind[1].length = &passwordLen;
+
+	if (mysql_stmt_prepare(stmt, query, strlen(query))) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Fail!!!");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(&stmt));
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Stopping Login Process");
+		return;
+	}
+
+	if (mysql_stmt_bind_param(stmt, bind)) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Binding Fail!!!");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(&stmt));
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Stopping Login Process");
+		return;
+	}
+
+	if (mysql_stmt_execute(stmt)) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Execution fail!!!");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(&stmt));
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Stopping Login Process");
+		return;
+	}
+
+	int loginFlag = 0;
+
+	MYSQL_BIND bind_result;
+	bind_result.buffer_type = MYSQL_TYPE_LONG;
+	bind_result.buffer = &loginFlag;
+	bind_result.is_null = is_null;
+
+	if (mysql_stmt_bind_result(stmt, &bind_result)) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: Result binding Fail!!!");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(&stmt));
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Stopping Login Process");
+		return;
+	}
+
+	if (mysql_stmt_fetch(stmt)) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: Got no data from Database!!!");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(&stmt));
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Stopping Login Process");
+		return;
+	}
+
+	if (loginFlag == 1) {//ID and PWD Match
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "ACCOUNT MATCH");
+		GenerateSessionKey(LoginDoneResp.Data.sessionKey);
+		printf("Generated Session Key: ");
+		for (int i = 0; i < 32; i++)
+			printf("%X ", LoginDoneResp.Data.sessionKey[i]);
+		printf("\n");
+		LoginDoneResp.Data.statusCode = 1;
 	}
 	else {
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "ACCOUNT NOT EXIST");
 		LoginDoneResp.Data.statusCode = 0;
 	}
 
 	send(hClientSock, LoginDoneResp.buf, sizeof(LoginDoneResp), 0);
 	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Sent LoginDoneResp to Client");
+
+	mysql_stmt_close(stmt);
 }
 
 void procLogout(SOCKET hClientSock) {
