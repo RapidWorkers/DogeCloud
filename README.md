@@ -19,7 +19,7 @@ Kwangwoon Univ. School of Computer and Info. Eng. / Advanced C Programming Proje
 ## How to Run Program
 1) RelayServer 실행
 2) FileServer 실행 (현재는 FileServer 미구현으로 실행하지 않음)
-3) DogeCloud 실행 (아이디: test, 비밀번호: 1234)
+3) DogeCloud 실행
 
 ## Maintainers
 @RapidWorkers
