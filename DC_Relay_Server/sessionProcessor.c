@@ -57,88 +57,67 @@ void procLoginAccountData(SOCKET hClientSock) {
 	SHA256_Text(LoginAccountData.Data.Password, hashedPassword);
 	unsigned char hashedPasswordText[65] = { 0, };
 	for (int i = 0; i < 32; i++) {
-		printf("%02x", hashedPassword[i]);
 		sprintf_s(hashedPasswordText + (2 * i), 3, "%02x", hashedPassword[i]);
 	}
 
 	//binding data for mysql prepared statement
-	MYSQL_STMT *stmt;
+	MYSQL_STMT *stmt = NULL;
 	MYSQL_BIND bind[2];
-	int is_null[2] = { 0, 0 };
 
-	if ((stmt = mysql_stmt_init(&sqlHandle)) == NULL) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(&stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Stopping Login Process");
-		return;
-	}
-
-	char *query = "SELECT count(id) FROM accounts WHERE username = ? and pwd = ?;";
+	char *query = "SELECT count(id) FROM accounts WHERE name = ? and pwd = ?;";
 	
 	int usrNameLen = strlen(LoginAccountData.Data.Username);
 	int passwordLen = 64;
 
+	memset(bind, 0, sizeof(bind)); //init bind
+
 	bind[0].buffer_type = MYSQL_TYPE_STRING;
 	bind[0].buffer = LoginAccountData.Data.Username;
 	bind[0].buffer_length = usrNameLen;
-	bind[0].is_null = is_null;
-	bind[0].length = &usrNameLen; //why this is needed?
+	//bind[0].is_null = is_null;
+	//bind[0].length = &usrNameLen; //why this is needed?
 
 	bind[1].buffer_type = MYSQL_TYPE_STRING;
 	bind[1].buffer = hashedPasswordText;
 	bind[1].buffer_length = passwordLen;
-	bind[1].is_null = is_null+1;
-	bind[1].length = &passwordLen;
-
-	if (mysql_stmt_prepare(stmt, query, strlen(query))) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Fail!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(&stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Stopping Login Process");
-		return;
-	}
-
-	if (mysql_stmt_bind_param(stmt, bind)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Binding Fail!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(&stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Stopping Login Process");
-		return;
-	}
-
-	if (mysql_stmt_execute(stmt)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Execution fail!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(&stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Stopping Login Process");
-		return;
-	}
+	//bind[1].is_null = 0;
+	//bind[1].length = 0;
 
 	int loginFlag = 0;
 
 	MYSQL_BIND bind_result;
+	memset(&bind_result, 0, sizeof(bind_result)); //init bind
 	bind_result.buffer_type = MYSQL_TYPE_LONG;
 	bind_result.buffer = &loginFlag;
-	bind_result.is_null = is_null;
+	bind_result.buffer_length = 4;
 
-	if (mysql_stmt_bind_result(stmt, &bind_result)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: Result binding Fail!!!");
+	if ((stmt = mysql_stmt_init(&sqlHandle)) == NULL) {//stmt is local variable so this must be done before calling sqlPrepareAndExecute
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(&stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Stopping Login Process");
-		return;
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		system("pause");
+		exit(1);//exit with error
 	}
+
+	sqlPrepareAndExecute(&sqlHandle, stmt, query, bind, &bind_result);
 
 	if (mysql_stmt_fetch(stmt)) {
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: Got no data from Database!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(&stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Stopping Login Process");
-		return;
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		system("pause");
+		exit(1);//exit with error
 	}
 
 	if (loginFlag == 1) {//ID and PWD Match
 		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "ACCOUNT MATCH");
 		GenerateSessionKey(LoginDoneResp.Data.sessionKey);
-		printf("Generated Session Key: ");
+
+		char tmp[65] = { 0, };
 		for (int i = 0; i < 32; i++)
-			printf("%X ", LoginDoneResp.Data.sessionKey[i]);
-		printf("\n");
+			sprintf_s(tmp + (2 * i), 3, "%02x", LoginDoneResp.Data.sessionKey[i]);
+		printDebugMsg(DC_DEBUG, DC_ERRORLEVEL, "Generated Session Key: %s", tmp);
+		
 		LoginDoneResp.Data.statusCode = 1;
 	}
 	else {
@@ -162,7 +141,6 @@ void procLogout(SOCKET hClientSock) {
 	LogoutDone.Data.statusCode = 1;
 
 	send(hClientSock, LogoutDone.buf, sizeof(LogoutDone), 0);
-	closesocket(hClientSock);
 }
 
 void procRegister(SOCKET hClientSock) {

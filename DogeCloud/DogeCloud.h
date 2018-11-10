@@ -13,13 +13,17 @@
 
 #define DC_ERRORLEVEL 0
 
+#define clearStdinBuffer() while(getchar() != '\n')
+
 //session related global var
 extern int loginFlag;
+extern char currentUsername[100];
 extern char sessionKey[32];
 
 //AuthHelper
-void login(SOCKET hSocket);
-void logout(SOCKET hSocket);
+void userLogin(SOCKET hSocket);
+void userRegister(SOCKET hSocket);
+void userLogout(SOCKET hSocket);
 
 //fileHelper
 void fileUpDemo(SOCKET hSocket);

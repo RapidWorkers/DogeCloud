@@ -22,5 +22,5 @@ bool sendRaw(SOCKET socket, char* buffer, int sendByte, int flags) {
 		if (sendLen <= 0) return 0; //send nothing at socket error
 		left -= sendLen;
 	} while (left);
-	return 0;
+	return 1;
 }

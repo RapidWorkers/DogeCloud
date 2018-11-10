@@ -54,6 +54,9 @@
     <ClCompile Include="..\lib\CSPRNG\csprng.c">
       <Filter>lib\CSPRNG</Filter>
     </ClCompile>
+    <ClCompile Include="SettingsReader.c">
+      <Filter>Source Code</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\SQLite\sqlite3.h">

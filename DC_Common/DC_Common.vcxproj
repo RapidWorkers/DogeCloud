@@ -25,6 +25,7 @@
     <ClCompile Include="FileCrypto.c" />
     <ClCompile Include="DogeCommon.c" />
     <ClCompile Include="NetworkReadWrite.c" />
+    <ClCompile Include="SettingsReader.c" />
     <ClCompile Include="UserDataReader.c" />
   </ItemGroup>
   <ItemGroup>

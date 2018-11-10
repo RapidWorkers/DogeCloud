@@ -62,3 +62,4 @@ void procFileDownDemo(SOCKET hClientSock);
 
 //Mariadb Connector
 void sqlInit(MYSQL *sqlHandle, MYSQL_SERVER serverInfo);
+void sqlPrepareAndExecute(MYSQL *sqlHandle, MYSQL_STMT *stmt, const char *query, MYSQL_BIND *query_bind, MYSQL_BIND *result_bind);

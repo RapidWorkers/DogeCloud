@@ -8,12 +8,14 @@ void printMenu() {
 	case 0://유저가 로그인 하지 않은 상태
 		printf_s("\n\t*********  메   뉴   *********");
 		printf_s("\n\t1. 로그인");
+		printf_s("\n\t2. 회원 가입");
 		printf_s("\n\t2. 종료");
 		printf_s("\n\t3. 프로그램 정보 및 라이센스");
 		printf_s("\n\t******************************");
 		printf_s("\n\t메뉴 선택 : ");
 		break;
 	case 1://유저가 로그인 했을 경우
+		printf_s("\n현재 로그인 사용자: %s", currentUsername);
 		printf_s("\n\t*********  메   뉴   *********");
 
 		//printf_s("\n\t1. 메모 관리");
@@ -43,6 +45,7 @@ void printMenu() {
 //session related var
 int loginFlag = 0;
 char sessionKey[32] = { 0, };
+char currentUsername[100] = { 0, };
 
 int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelayServAddr) {
 	printProgramInfo();
@@ -73,7 +76,7 @@ int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelaySe
 	}
 	else {
 		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "성공적으로 중계서버에 연결되었습니다.\n");
-		Sleep(1500);
+		Sleep(500);
 		return 1;
 	}
 }
@@ -102,15 +105,17 @@ int main() {
 		if (loginFlag == 0) {
 			switch (select) {
 			case 1: //로그인
-				login(hRelayServSocket);
+				userLogin(hRelayServSocket);
 				break;
-			case 2: //종료
+			case 2: //회원 가입
+				userRegister(hRelayServSocket);
+				break;
+			case 3: //종료
 				closesocket(hRelayServSocket); //소켓 라이브러리 해제
-				printf("Closed!\n");
 				WSACleanup();
 				exit(0);
 				break;
-			case 3: //프로그램 라이센스 표시
+			case 4: //프로그램 라이센스 표시
 				//printLicense();
 				break;
 			default: //유효하지 않은 입력
@@ -134,7 +139,7 @@ int main() {
 				testLEAonFILE();
 				break;
 			case 5: //로그아웃
-				logout(hRelayServSocket);
+				userLogout(hRelayServSocket);
 				break;
 			case 6: //종료 => 임시용
 				closesocket(hRelayServSocket); //소켓 라이브러리 해제
