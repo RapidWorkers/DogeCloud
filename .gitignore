@@ -6,6 +6,9 @@
 *.user
 *.sln.docstates
 DogeCloud.VC.db
+RelayServerConfig.ini
+FileServerConfig.ini
+DogeConfig.ini
 
 # Build results
 [Dd]ebug/
