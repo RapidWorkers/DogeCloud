@@ -24,6 +24,9 @@
     <ClCompile Include="FileHelper.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="configReader.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DogeCloud.h">

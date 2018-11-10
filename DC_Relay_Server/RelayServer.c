@@ -7,7 +7,7 @@ HANDLE hMutex;
 SOCKET hClientSocks[MAX_CON];
 int clientCount;
 
-MYSQL_SERVER serverInfo = { MYSQL_ADDR, MYSQL_PORT, MYSQL_USER, MYSQL_PASS, MYSQL_DBASE };
+MYSQL_SERVER serverInfo;
 MYSQL sqlHandle;
 
 int main()
@@ -28,14 +28,24 @@ int main()
 	printProgramInfo();
 
 	//init database connection
+	readMySQLConfig(&serverInfo);
 	sqlInit(&sqlHandle, serverInfo);
 	
 	//init sockets
-	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)//WSA Startup
-		printDebugMsg(3, DC_ERRORLEVEL,"Init Sock fail");
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {//WSA Startup
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "WSAStartup Fail");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		system("pause");
+		exit(1);
+	}
+
 	hServSock = socket(PF_INET, SOCK_STREAM, 0);//init server socket
-	if (hServSock == INVALID_SOCKET)
-		printDebugMsg(3, DC_ERRORLEVEL, "Invalid Sock");
+	if (hServSock == INVALID_SOCKET) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Invalid Server Socket");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		system("pause");
+		exit(1);
+	}
 
 	memset(&servAddr, 0, sizeof(servAddr));
 	servAddr.sin_family = AF_INET;
@@ -46,6 +56,7 @@ int main()
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Bind Fail");
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
 		system("pause");
+		exit(1);
 	}
 		
 
@@ -53,9 +64,11 @@ int main()
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Listen Fail");
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
 		system("pause");
+		exit(1);
 	}
 
 	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Server Started");
+	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Server Listening at %s:%d", "NOT IMPLEMENTED", 0);
 
 	while (1) {
 		int szClntAddr = sizeof(clientAddr);

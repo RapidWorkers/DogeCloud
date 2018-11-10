@@ -29,6 +29,9 @@ void procLoginStart(SOCKET hClientSock) {
 }
 
 void procLoginAccountData(SOCKET hClientSock) {
+
+	//TODO: check if Authorized user
+
 	//Get LoginAccountData from client
 	unsigned char rcvLen[4];
 	int strLen = recv(hClientSock, rcvLen, 4, 0);
@@ -93,7 +96,7 @@ void procLoginAccountData(SOCKET hClientSock) {
 
 	if ((stmt = mysql_stmt_init(&sqlHandle)) == NULL) {//stmt is local variable so this must be done before calling sqlPrepareAndExecute
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(&stmt));
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
 		system("pause");
 		exit(1);//exit with error
@@ -110,7 +113,6 @@ void procLoginAccountData(SOCKET hClientSock) {
 	}
 
 	if (loginFlag == 1) {//ID and PWD Match
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "ACCOUNT MATCH");
 		GenerateSessionKey(LoginDoneResp.Data.sessionKey);
 
 		char tmp[65] = { 0, };
@@ -144,5 +146,27 @@ void procLogout(SOCKET hClientSock) {
 }
 
 void procRegister(SOCKET hClientSock) {
-	//will be implemented
+	return;
+
+	//implementing :)
+	cs_RegisterAccountData RegisterAccountData;
+	sc_RegisterDone RegisterDone;
+
+	recv(hClientSock, RegisterAccountData.buf + 4, sizeof(RegisterAccountData) - 4, 0);
+
+	char* unameDupChkQuery = "";
+	char* insertQuery = "";
+
+
+	//CHECK DUPLICATE
+
+	//DO REGISTER
+
+	//FLUSH ANY BUFFER
+
+	//SEND RESULT
+
+	//RETURN
+	return;
+
 }

@@ -17,6 +17,7 @@ extern "C" {
 
 		if (currentErrorLevel > 3) currentErrorLevel = 3; //만약에 최대값을 넘어갔다면 3으로 설정
 		if (targetErrorLevel < currentErrorLevel) return; //유저가 지정한 레벨 이상의 것만 출력
+
 		switch (targetErrorLevel) {
 		case 0:
 			strcpy_s(buf, 512, "[DEBUG]: ");
@@ -38,11 +39,11 @@ extern "C" {
 		va_end(ap);
 
 		puts(buf);//에러 정보 표시
-
 		return;
 	}
 
 	DLL void SHA256_Text(const char* text, char* buf) {
+		if (text == NULL || buf == NULL) return;
 		SHA256_CTX hSHA256;
 		sha256_init(&hSHA256);
 		sha256_update(&hSHA256, text, strlen(text));
@@ -51,6 +52,7 @@ extern "C" {
 	}
 
 	DLL void GenerateCSPRNG(unsigned char *buffer, int numSize) {
+		if (buffer == NULL) return;
 		CSPRNG rng = csprng_create();
 		if (!rng) return; //do nothing on error
 		csprng_get(rng, buffer, numSize);
@@ -59,6 +61,7 @@ extern "C" {
 	}
 
 	DLL void GenerateSessionKey(char sessionKey[32]) {
+		if (sessionKey == NULL) return;
 		unsigned char buffer[128] = { 0, };
 		GenerateCSPRNG(buffer, 127);
 		SHA256_Text(buffer, sessionKey);

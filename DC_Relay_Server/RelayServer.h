@@ -23,13 +23,6 @@
 #define BIND_PORT 15754
 #define MAX_CON 100
 #define DC_ERRORLEVEL 0
-
-#define MYSQL_ADDR "127.0.0.1"
-#define MYSQL_PORT 3306
-#define MYSQL_USER "root"
-#define MYSQL_PASS "dogecloud"
-#define MYSQL_DBASE "DogeCloud"
-
 #endif
 
 typedef struct {
@@ -63,3 +56,7 @@ void procFileDownDemo(SOCKET hClientSock);
 //Mariadb Connector
 void sqlInit(MYSQL *sqlHandle, MYSQL_SERVER serverInfo);
 void sqlPrepareAndExecute(MYSQL *sqlHandle, MYSQL_STMT *stmt, const char *query, MYSQL_BIND *query_bind, MYSQL_BIND *result_bind);
+
+//Configuration Reader
+void checkRelayConfig();
+void readMySQLConfig(MYSQL_SERVER *serverInfo);

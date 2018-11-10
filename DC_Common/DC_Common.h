@@ -42,10 +42,13 @@ typedef struct {
 extern "C" {
 #endif
 	//prototype for dll exported function, which used in other program to load function
-	DLL void SHA256_Text(const char* text, char* buf);
-	DLL void testLEA();
+
+	//print something Function
 	DLL void printDebugMsg(int targetErrorLevel, int currentErrorLevel, const char* format, ...);
 	DLL void printProgramInfo();
+
+	//Cryptography Function
+	DLL void SHA256_Text(const char* text, char* buf);
 	DLL void GenerateSessionKey(char sessionKey[32]);
 	DLL void GenerateCSPRNG(unsigned char *buffer, int numSize);
 

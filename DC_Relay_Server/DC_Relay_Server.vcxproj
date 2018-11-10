@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="configReader.c" />
     <ClCompile Include="dataProcessor.c" />
     <ClCompile Include="MariaDBConnector.c" />
     <ClCompile Include="RelayServer.c" />

@@ -30,3 +30,6 @@ void fileUpDemo(SOCKET hSocket);
 void fileDownDemo(SOCKET hSocket);
 void testLEAonFILE();
 void testSHA();
+
+//configReader
+void checkRelayConfig();

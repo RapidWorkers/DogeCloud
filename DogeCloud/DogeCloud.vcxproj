@@ -139,6 +139,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AuthHelper.c" />
+    <ClCompile Include="configReader.c" />
     <ClCompile Include="DogeCloud.c" />
     <ClCompile Include="FileHelper.c" />
   </ItemGroup>

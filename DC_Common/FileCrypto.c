@@ -5,17 +5,6 @@
 #include "lea.h"
 #pragma comment(lib, "dllLEA.lib")
 
-DLL void testLEA() {
-	unsigned char testCase[] = "Hello World!";
-	unsigned char decOutput[100];
-	unsigned char encOutput[100];
-	LEA_KEY newKey;
-	lea_set_key(&newKey, "aaabbbcccdddeeef", 16);
-	lea_ctr_enc(encOutput, testCase, sizeof(testCase), "aaabbbcccdddeee", &newKey);//IV will be Saved at end of file, 32bytes
-	lea_ctr_enc(decOutput, encOutput, sizeof(testCase), "aaabbbcccdddeee", &newKey);
-	printf("%s\n", decOutput);
-}
-
 DLL void encryptFileLEA(FILE *infile, FILE *outfile, char* encKey, char* nonceIV) {// IV MUST BE PROVIDED & SHOULD BE 16 Byte, KEY Size: 32
 	if (infile == NULL || outfile == NULL) return;
 	fseek(infile, 0, SEEK_END);

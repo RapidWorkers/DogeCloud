@@ -9,8 +9,8 @@ void printMenu() {
 		printf_s("\n\t*********  메   뉴   *********");
 		printf_s("\n\t1. 로그인");
 		printf_s("\n\t2. 회원 가입");
-		printf_s("\n\t2. 종료");
-		printf_s("\n\t3. 프로그램 정보 및 라이센스");
+		printf_s("\n\t3. 종료");
+		printf_s("\n\t4. 프로그램 정보 및 라이센스");
 		printf_s("\n\t******************************");
 		printf_s("\n\t메뉴 선택 : ");
 		break;
@@ -18,18 +18,18 @@ void printMenu() {
 		printf_s("\n현재 로그인 사용자: %s", currentUsername);
 		printf_s("\n\t*********  메   뉴   *********");
 
-		//printf_s("\n\t1. 메모 관리");
-		//printf_s("\n\t2. 연락처 관리");
-		//printf_s("\n\t3. 파일 관리");
-		//printf_s("\n\t4. 로그아웃");
-		//printf_s("\n\t5. 종료");
+		printf_s("\n\t1. 메모 관리");
+		printf_s("\n\t2. 연락처 관리");
+		printf_s("\n\t3. 파일 관리");
+		printf_s("\n\t4. 로그아웃");
+		printf_s("\n\t5. 종료");
 
-		printf_s("\n\t1. 파일업로드 데모");
-		printf_s("\n\t2. 파일다운로드 데모");
-		printf_s("\n\t3. SHA 테스트");
-		printf_s("\n\t4. LEA 암복호화 테스트");
-		printf_s("\n\t5. 로그아웃");
-		printf_s("\n\t6. 종료");
+		//printf_s("\n\t1. 파일업로드 데모");
+		//printf_s("\n\t2. 파일다운로드 데모");
+		//printf_s("\n\t3. SHA 테스트");
+		//printf_s("\n\t4. LEA 암복호화 테스트");
+		//printf_s("\n\t5. 로그아웃");
+		//printf_s("\n\t6. 종료");
 		printf_s("\n\t******************************");
 		printf_s("\n\t메뉴 선택 : ");
 		break;
@@ -127,22 +127,19 @@ int main() {
 		else if (loginFlag == 1) {
 			switch (select) {
 			case 1: //메모 관리
-				fileUpDemo(hRelayServSocket);
+				//manageMemo(hRelayServSocket);
 				break;
 			case 2: //연락처 관리
-				fileDownDemo(hRelayServSocket);
+				//manageContacts(hRelayServSocket);
 				break;
 			case 3: //파일 관리
-				testSHA();
+				//manageFile(hRelayServSocket);
 				break;
 			case 4: //로그아웃
-				testLEAonFILE();
-				break;
-			case 5: //로그아웃
 				userLogout(hRelayServSocket);
 				break;
-			case 6: //종료 => 임시용
-				closesocket(hRelayServSocket); //소켓 라이브러리 해제
+			case 5: //종료
+				closesocket(hRelayServSocket); //소켓 해제
 				printf("Closed!\n");
 				WSACleanup();
 				system("pause");

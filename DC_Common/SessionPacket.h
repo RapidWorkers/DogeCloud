@@ -68,7 +68,43 @@ extern "C" {
 		} Data;
 		char buf[9];
 	}sc_LogoutDone;
+
+	typedef union {
+		struct {
+			unsigned long opCode;
+			unsigned long dataLen;
+			unsigned char statusCode;//0 = fail, 1 = success
+		} Data;
+		char buf[9];
+	}cs_RegisterStart;
+
+	typedef union {
+		struct {
+			unsigned long opCode;
+			unsigned long dataLen;
+			unsigned char statusCode;
+		} Data;
+		char buf[9];
+	}sc_RegisterStartResp;
+
+	typedef union {
+		struct {
+			unsigned long opCode;
+			unsigned long dataLen;
+			unsigned char statusCode;//0 = fail, 1 = success
+		} Data;
+		char buf[9];
+	}cs_RegisterAccountData;
 	
+	typedef union {
+		struct {
+			unsigned long opCode;
+			unsigned long dataLen;
+			unsigned char statusCode;//0 = fail, 1 = success
+			unsigned char sessionKey[32];//use random sha256 hash, if login has failled, fill this with 0
+		} Data;
+		char buf[41];
+	}sc_RegisterDone;
 
 #pragma pack(pop) //revert back to default
 #ifdef __cplusplus
