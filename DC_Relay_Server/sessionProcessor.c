@@ -64,7 +64,7 @@ void procLoginAccountData(SOCKET hClientSock) {
 	MYSQL_STMT *stmt = NULL;
 	MYSQL_BIND bind[2];
 
-	char *query = "SELECT count(id) FROM accounts WHERE name = ? and pwd = ?;";
+	char *query = "SELECT count(id) FROM accounts WHERE username = ? and pwd = ?;";
 	
 	int usrNameLen = strlen(LoginAccountData.Data.Username);
 	int passwordLen = 64;
