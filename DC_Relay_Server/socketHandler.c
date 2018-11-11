@@ -45,11 +45,6 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "LoginStart: %s", clientIP);
 		procLoginStart(hClientSock);
 		break;
-
-	case OP_CS_LOGINACCOUNTDATA:
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "LoginAccountData OpCode", clientIP);
-		procLoginAccountData(hClientSock);
-		break;
 	case OP_CS_LOGOUTSTART:
 		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "LogoutStart OpCode", clientIP);
 		procLogout(hClientSock);
@@ -57,11 +52,6 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 	case OP_CS_REGISTERSTART:
 		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "RegisterStart OpCode", clientIP);
 		procRegisterStart(hClientSock);
-		break;
-
-	case OP_CS_REGISTERACCOUNTDATA:
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "RegisterAccountData OpCode", clientIP);
-		procRegister(hClientSock);
 		break;
 
 	case 250: //FILE UPLOAD DEMO

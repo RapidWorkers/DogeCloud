@@ -46,10 +46,10 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 
 //Session Proccesors
 void procLoginStart(SOCKET hClientSock);
-void procLoginAccountData(SOCKET hClientSock);
+void doLogin(SOCKET hClientSock);
 void procLogout(SOCKET hClientSock);
 void procRegisterStart(SOCKET hClientSock);
-void procRegister(SOCKET hClientSock);
+void doRegister(SOCKET hClientSock);
 
 //data Processors
 void procFileUpDemo(SOCKET hClientSock);

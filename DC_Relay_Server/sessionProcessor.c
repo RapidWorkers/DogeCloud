@@ -26,28 +26,25 @@ void procLoginStart(SOCKET hClientSock) {
 	LoginStartResp.Data.dataLen = htonl(sizeof(sc_LoginStartResp) - 8);
 	LoginStartResp.Data.statusCode = 1;
 	send(hClientSock, LoginStartResp.buf, sizeof(LoginStartResp), 0);
+
+	doLogin(hClientSock);
+	return;
 }
 
-void procLoginAccountData(SOCKET hClientSock) {
-
-	//TODO: check if Authorized user
-
-	//Get LoginAccountData from client
-	unsigned char rcvLen[4];
-	int strLen = recv(hClientSock, rcvLen, 4, 0);
-
-	unsigned long rcvLenLong;
-	memcpy(&rcvLenLong, rcvLen, 4);
-	rcvLenLong = ntohl(rcvLenLong);
-
-	if (!strLen || sizeof(cs_LoginAccountData) - 8 != rcvLenLong)//if size mismatch..
-		return;//drop
-
+void doLogin(SOCKET hClientSock) {
 	//get LoginAccountData from client
 	cs_LoginAccountData LoginAccountData;
-	LoginAccountData.Data.opCode = OP_CS_LOGINACCOUNTDATA;
-	LoginAccountData.Data.dataLen = sizeof(cs_LoginAccountData) - 8;
-	strLen = recv(hClientSock, LoginAccountData.buf + 8, sizeof(LoginAccountData) - 8, 0);
+
+	//LoginAccountData.Data.opCode = OP_CS_LOGINACCOUNTDATA;
+	//LoginAccountData.Data.dataLen = sizeof(cs_LoginAccountData) - 8;
+
+	if (!recvRaw(hClientSock, LoginAccountData.buf, sizeof(LoginAccountData), 0)) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
+		return;
+	}
+
+	LoginAccountData.Data.opCode = ntohl(LoginAccountData.Data.opCode);
+	LoginAccountData.Data.dataLen = ntohl(LoginAccountData.Data.dataLen);
 
 	//construct LoginDoneResp
 	sc_LoginDoneResp LoginDoneResp;
@@ -139,7 +136,11 @@ void procLogout(SOCKET hClientSock) {
 	LogoutDone.Data.dataLen = htonl(1);
 	LogoutDone.Data.statusCode = 1;
 
-	send(hClientSock, LogoutDone.buf, sizeof(LogoutDone), 0);
+	if (!sendRaw(hClientSock, LogoutDone.buf, sizeof(LogoutDone), 0)) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
+		return;
+	}
+
 }
 
 void procRegisterStart(SOCKET hClientSock) {
@@ -154,6 +155,7 @@ void procRegisterStart(SOCKET hClientSock) {
 
 	if (!recvRaw(hClientSock, RegisterStart.buf + 4, sizeof(RegisterStart) - 4, 0)) {
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
+		return;
 	}
 
 	//TODO: DROP IF OPCODE NOT MATCH
@@ -164,17 +166,22 @@ void procRegisterStart(SOCKET hClientSock) {
 
 	if (!sendRaw(hClientSock, RegisterStartResp.buf, sizeof(RegisterStartResp), 0)) {
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
+		return;
 	}
+
+	doRegister(hClientSock);
 
 	return;
 }
 
-void procRegister(SOCKET hClientSock) {
-	//implementing :)
+void doRegister(SOCKET hClientSock) {
 	cs_RegisterAccountData RegisterAccountData;
 	sc_RegisterDone RegisterDone;
 
-	recv(hClientSock, RegisterAccountData.buf + 4, sizeof(RegisterAccountData) - 4, 0);
+	if (!recvRaw(hClientSock, RegisterAccountData.buf, sizeof(RegisterAccountData), 0)) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
+		return;
+	}
 
 	char* unameDupChkQuery = "SELECT count(id) FROM accounts WHERE username = ?;";
 	char* insertQuery = "INSERT into accounts VALUES(NULL, ?, ?, ?);";
@@ -224,6 +231,7 @@ void procRegister(SOCKET hClientSock) {
 
 		if (!sendRaw(hClientSock, RegisterDone.buf, sizeof(RegisterDone), 0)) {
 			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
+			return;
 		}
 		mysql_stmt_free_result(stmt);
 		return;
@@ -275,10 +283,10 @@ void procRegister(SOCKET hClientSock) {
 
 	if (!sendRaw(hClientSock, RegisterDone.buf, sizeof(RegisterDone), 0)) {
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
+		return;
 	}
 
 	mysql_stmt_free_result(stmt);
 
-	//RETURN
 	return;
 }
