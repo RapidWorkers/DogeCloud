@@ -45,6 +45,15 @@
     <ClCompile Include="configReader.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="contactsManager.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="memoManager.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="fileManager.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="RelayServerConfig.ini">
