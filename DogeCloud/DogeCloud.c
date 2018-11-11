@@ -139,6 +139,7 @@ int main() {
 				userLogout(hRelayServSocket);
 				break;
 			case 5: //종료
+				userLogout(hRelayServSocket);
 				closesocket(hRelayServSocket); //소켓 해제
 				printf("Closed!\n");
 				WSACleanup();
@@ -151,8 +152,6 @@ int main() {
 				break;
 			}
 		}
-
-		if (loginFlag == -1) break; //로그아웃 상태일 경우 반복문 탈출
 	}
 
 	closesocket(hRelayServSocket); //소켓 라이브러리 해제
