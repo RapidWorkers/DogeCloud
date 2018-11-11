@@ -5,8 +5,15 @@
 #define OP_SC_LOGINSTARTRESP 140
 #define OP_CS_LOGINACCOUNTDATA 141
 #define OP_SC_LOGINDONERESP 142
+
 #define OP_CS_LOGOUTSTART 143
 #define OP_SC_LOGOUTDONE 144
+
+#define OP_CS_REGISTERSTART 168
+#define OP_SC_REGISTERSTARTRESP 169
+#define OP_CS_REGISTERACCOUNTDATA 170
+#define OP_SC_REGISTERDONE 171
+
 
 #ifdef __cplusplus //determine if using cpp compiler
 extern "C" {
@@ -73,9 +80,9 @@ extern "C" {
 		struct {
 			unsigned long opCode;
 			unsigned long dataLen;
-			unsigned char statusCode;//0 = fail, 1 = success
+			unsigned long clientVersion;//0 = fail, 1 = success
 		} Data;
-		char buf[9];
+		char buf[12];
 	}cs_RegisterStart;
 
 	typedef union {
@@ -91,16 +98,18 @@ extern "C" {
 		struct {
 			unsigned long opCode;
 			unsigned long dataLen;
-			unsigned char statusCode;//0 = fail, 1 = success
+			char email[100];
+			char Username[100];
+			char Password[100];//raw password
 		} Data;
-		char buf[9];
+		char buf[308];
 	}cs_RegisterAccountData;
 	
 	typedef union {
 		struct {
 			unsigned long opCode;
 			unsigned long dataLen;
-			unsigned char statusCode;//0 = fail, 1 = success
+			unsigned char statusCode;//0 = fail, 1 = dup id, 2 = success
 			unsigned char sessionKey[32];//use random sha256 hash, if login has failled, fill this with 0
 		} Data;
 		char buf[41];

@@ -9,7 +9,7 @@ void procLoginStart(SOCKET hClientSock) {
 	memcpy(&rcvLenLong, rcvLen, 4);
 	rcvLenLong = ntohl(rcvLenLong);
 
-	if (!strLen || sizeof(cs_LoginStart)-8 != rcvLenLong)//if size mismatch..
+	if (!strLen || sizeof(cs_LoginStart) - 8 != rcvLenLong)//if size mismatch..
 		return;//drop
 
 	//Get LoginStart from client
@@ -47,7 +47,7 @@ void procLoginAccountData(SOCKET hClientSock) {
 	cs_LoginAccountData LoginAccountData;
 	LoginAccountData.Data.opCode = OP_CS_LOGINACCOUNTDATA;
 	LoginAccountData.Data.dataLen = sizeof(cs_LoginAccountData) - 8;
-	strLen = recv(hClientSock, LoginAccountData.buf+8, sizeof(LoginAccountData)-8, 0);
+	strLen = recv(hClientSock, LoginAccountData.buf + 8, sizeof(LoginAccountData) - 8, 0);
 
 	//construct LoginDoneResp
 	sc_LoginDoneResp LoginDoneResp;
@@ -68,21 +68,18 @@ void procLoginAccountData(SOCKET hClientSock) {
 	MYSQL_BIND bind[2];
 
 	char *query = "SELECT count(id) FROM accounts WHERE username = ? and pwd = ?;";
-	
-	int usrNameLen = strlen(LoginAccountData.Data.Username);
-	int passwordLen = 64;
 
 	memset(bind, 0, sizeof(bind)); //init bind
 
 	bind[0].buffer_type = MYSQL_TYPE_STRING;
 	bind[0].buffer = LoginAccountData.Data.Username;
-	bind[0].buffer_length = usrNameLen;
+	bind[0].buffer_length = strlen(LoginAccountData.Data.Username);
 	//bind[0].is_null = is_null;
 	//bind[0].length = &usrNameLen; //why this is needed?
 
 	bind[1].buffer_type = MYSQL_TYPE_STRING;
 	bind[1].buffer = hashedPasswordText;
-	bind[1].buffer_length = passwordLen;
+	bind[1].buffer_length = 64;
 	//bind[1].is_null = 0;
 	//bind[1].length = 0;
 
@@ -119,7 +116,7 @@ void procLoginAccountData(SOCKET hClientSock) {
 		for (int i = 0; i < 32; i++)
 			sprintf_s(tmp + (2 * i), 3, "%02x", LoginDoneResp.Data.sessionKey[i]);
 		printDebugMsg(DC_DEBUG, DC_ERRORLEVEL, "Generated Session Key: %s", tmp);
-		
+
 		LoginDoneResp.Data.statusCode = 1;
 	}
 	else {
@@ -145,28 +142,143 @@ void procLogout(SOCKET hClientSock) {
 	send(hClientSock, LogoutDone.buf, sizeof(LogoutDone), 0);
 }
 
-void procRegister(SOCKET hClientSock) {
-	return;
+void procRegisterStart(SOCKET hClientSock) {
+	//allocating and init memory for packets
+	cs_RegisterStart RegisterStart;
+	sc_RegisterStartResp RegisterStartResp;
+	memset(&RegisterStart, 0, sizeof(RegisterStart));
+	memset(&RegisterStartResp, 0, sizeof(RegisterStartResp));
 
+	RegisterStart.Data.opCode = OP_CS_LOGINACCOUNTDATA;
+	RegisterStart.Data.dataLen = sizeof(cs_LoginAccountData) - 8;
+
+	if (!recvRaw(hClientSock, RegisterStart.buf + 4, sizeof(RegisterStart) - 4, 0)) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
+	}
+
+	//TODO: DROP IF OPCODE NOT MATCH
+
+	RegisterStartResp.Data.opCode = htonl(OP_SC_REGISTERSTARTRESP);
+	RegisterStartResp.Data.dataLen = htonl(sizeof(RegisterStartResp) - 8);
+	RegisterStartResp.Data.statusCode = 1;
+
+	if (!sendRaw(hClientSock, RegisterStartResp.buf, sizeof(RegisterStartResp), 0)) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
+	}
+
+	return;
+}
+
+void procRegister(SOCKET hClientSock) {
 	//implementing :)
 	cs_RegisterAccountData RegisterAccountData;
 	sc_RegisterDone RegisterDone;
 
 	recv(hClientSock, RegisterAccountData.buf + 4, sizeof(RegisterAccountData) - 4, 0);
 
-	char* unameDupChkQuery = "";
-	char* insertQuery = "";
+	char* unameDupChkQuery = "SELECT count(id) FROM accounts WHERE username = ?;";
+	char* insertQuery = "INSERT into accounts VALUES(NULL, ?, ?, ?);";
 
+	MYSQL_STMT *stmt = NULL;
+	MYSQL_BIND query1_bind[1];
+	MYSQL_BIND query2_bind[3];
+	memset(query1_bind, 0, sizeof(query1_bind)); //init bind
+	memset(query2_bind, 0, sizeof(query2_bind));
 
-	//CHECK DUPLICATE
+	query1_bind[0].buffer_type = MYSQL_TYPE_STRING;
+	query1_bind[0].buffer = RegisterAccountData.Data.Username;
+	query1_bind[0].buffer_length = strlen(RegisterAccountData.Data.Username);
+	//bind[0].is_null = is_null;
+	//bind[0].length = &usrNameLen; //why this is needed?
+
+	int duplicateFlag = 0;
+
+	MYSQL_BIND bind1_result;
+	memset(&bind1_result, 0, sizeof(bind1_result)); //init bind
+	bind1_result.buffer_type = MYSQL_TYPE_LONG;
+	bind1_result.buffer = &duplicateFlag;
+	bind1_result.buffer_length = 4;
+
+	if ((stmt = mysql_stmt_init(&sqlHandle)) == NULL) {//stmt is local variable so this must be done before calling sqlPrepareAndExecute
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		system("pause");
+		exit(1);//exit with error
+	}
+
+	sqlPrepareAndExecute(&sqlHandle, stmt, unameDupChkQuery, query1_bind, &bind1_result);
+
+	if (mysql_stmt_fetch(stmt)) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: Got no data from Database!!!");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		system("pause");
+		exit(1);//exit with error
+	}
+
+	if (duplicateFlag) {
+		RegisterDone.Data.opCode = htonl(OP_SC_REGISTERDONE);
+		RegisterDone.Data.dataLen = htonl(sizeof(RegisterDone) - 8);
+		RegisterDone.Data.statusCode = 1;
+
+		if (!sendRaw(hClientSock, RegisterDone.buf, sizeof(RegisterDone), 0)) {
+			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
+		}
+		mysql_stmt_free_result(stmt);
+		return;
+	}
+
+	mysql_stmt_free_result(stmt);//ready for next query
+
+	//hash password for register
+	unsigned char hashedPassword[32];
+	SHA256_Text(RegisterAccountData.Data.Password, hashedPassword);
+	unsigned char hashedPasswordText[65] = { 0, };
+	for (int i = 0; i < 32; i++) {
+		sprintf_s(hashedPasswordText + (2 * i), 3, "%02x", hashedPassword[i]);
+	}
+
+	query2_bind[0].buffer_type = MYSQL_TYPE_STRING;
+	query2_bind[0].buffer = RegisterAccountData.Data.Username;
+	query2_bind[0].buffer_length = strlen(RegisterAccountData.Data.Username);
+
+	query2_bind[1].buffer_type = MYSQL_TYPE_STRING;
+	query2_bind[1].buffer = hashedPasswordText;
+	query2_bind[1].buffer_length = 64;
+	
+	query2_bind[2].buffer_type = MYSQL_TYPE_STRING;
+	query2_bind[2].buffer = RegisterAccountData.Data.email;
+	query2_bind[2].buffer_length = strlen(RegisterAccountData.Data.email);
 
 	//DO REGISTER
 
-	//FLUSH ANY BUFFER
+	if ((stmt = mysql_stmt_init(&sqlHandle)) == NULL) {//stmt is local variable so this must be done before calling sqlPrepareAndExecute
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		system("pause");
+		exit(1);//exit with error
+	}
+
+	sqlPrepareAndExecute(&sqlHandle, stmt, insertQuery, query2_bind, NULL);
 
 	//SEND RESULT
+	RegisterDone.Data.opCode = htonl(OP_SC_REGISTERDONE);
+	RegisterDone.Data.dataLen = htonl(sizeof(RegisterDone) - 8);
+	RegisterDone.Data.statusCode = 2;
+	GenerateSessionKey(RegisterDone.Data.sessionKey);
+	char tmp[65] = { 0, };
+	for (int i = 0; i < 32; i++)
+		sprintf_s(tmp + (2 * i), 3, "%02x", RegisterDone.Data.sessionKey[i]);
+	printDebugMsg(DC_DEBUG, DC_ERRORLEVEL, "Generated Session Key: %s", tmp);
+
+	if (!sendRaw(hClientSock, RegisterDone.buf, sizeof(RegisterDone), 0)) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
+	}
+
+	mysql_stmt_free_result(stmt);
 
 	//RETURN
 	return;
-
 }

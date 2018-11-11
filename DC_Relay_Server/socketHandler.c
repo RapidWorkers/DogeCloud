@@ -54,6 +54,15 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "LogoutStart OpCode", clientIP);
 		procLogout(hClientSock);
 		break;
+	case OP_CS_REGISTERSTART:
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "RegisterStart OpCode", clientIP);
+		procRegisterStart(hClientSock);
+		break;
+
+	case OP_CS_REGISTERACCOUNTDATA:
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "RegisterAccountData OpCode", clientIP);
+		procRegister(hClientSock);
+		break;
 
 	case 250: //FILE UPLOAD DEMO
 		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Upload Demo Mode", clientIP);
@@ -66,7 +75,7 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 		break;
 
 	default:
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Unknown Packet", clientIP);
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Unknown Packet: %s", clientIP);
 		//printDebugMsg(3, DC_ERRORLEVEL, &opCode);
 		break;
 	}
