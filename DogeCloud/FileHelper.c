@@ -115,7 +115,7 @@ void testLEAonFILE() {
 	printf("\n");
 
 	char* nonce[16];
-	GenerateCSPRNG(nonce, 16); //generate 16byte iv
+	GenerateCSPRNG((unsigned char*)nonce, 16); //generate 16byte iv
 	encryptFileLEA(testFile, encFile, "123456789abcdef123456789abcdefg", nonce);
 	printf("암호화 완료");
 

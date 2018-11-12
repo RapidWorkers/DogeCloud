@@ -46,6 +46,7 @@ extern "C" {
 	//print something Function
 	DLL void printDebugMsg(int targetErrorLevel, int currentErrorLevel, const char* format, ...);
 	DLL void printProgramInfo();
+	DLL void printLicense();
 
 	//Cryptography Function
 	DLL void SHA256_Text(const char* text, char* buf);

@@ -95,7 +95,29 @@ extern "C" {
 		printf_s("\tby S.H Kim and K.J Choi at kw.ac.kr\n");
 		printf_s("\tVersion: %d.%d (%s)\n", MAJOR_VERSION, MINOR_VERSION, VER_STATUS);
 		printf_s("=======================================\n");
-}
+	}
+
+	DLL void printLicense() {
+		printf_s("이 프로그램에 포함된 라이브러리 및 소스 코드에 대한 라이센스는 \nhttps://github.com/RapidWorkers/DogeCloud 에서 확인하십시오.");
+		printf_s("\
+			Copyright (C) 2018 S.H.Kim (soohyunkim@kw.ac.kr)\
+			Copyright(C) 2018 K.J Choi(chlrhkdwls99@naver.com)\
+			\
+			This program is free software; you can redistribute it and/or\
+			modify it under the terms of the GNU General Public License\
+			as published by the Free Software Foundation; either version 2\
+			of the License, or (at your option) any later version.\
+			\
+			This program is distributed in the hope that it will be useful,\
+			but WITHOUT ANY WARRANTY; without even the implied warranty of\
+			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the\
+			GNU General Public License for more details.\
+			\
+			You should have received a copy of the GNU General Public License\
+			along with this program; if not, write to the Free Software\
+			Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110 - 1301, USA.");
+	}
+
 #ifdef __cplusplus
 }
 #endif

@@ -30,6 +30,8 @@ void fileUpDemo(SOCKET hSocket);
 void fileDownDemo(SOCKET hSocket);
 void testLEAonFILE();
 void testSHA();
+void manageFile(SOCKET hSocket);
 
 //configReader
-void checkRelayConfig();
+void checkDogeConfig();
+void readRelayServerPath(SOCKADDR_IN *RelayServAddr);

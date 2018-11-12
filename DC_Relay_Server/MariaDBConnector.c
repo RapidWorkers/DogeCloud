@@ -21,7 +21,7 @@ void sqlInit(MYSQL *sqlHandle, MYSQL_SERVER serverInfo) {
 
 void sqlPrepareAndExecute(MYSQL *sqlHandle, MYSQL_STMT *stmt, const char *query,  MYSQL_BIND *query_bind , MYSQL_BIND *result_bind){
 
-	if (mysql_stmt_prepare(stmt, query, strlen(query))) {
+	if (mysql_stmt_prepare(stmt, query, (unsigned long)strlen(query))) {
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Fail!!!");
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");

@@ -70,7 +70,7 @@ void doLogin(SOCKET hClientSock) {
 
 	bind[0].buffer_type = MYSQL_TYPE_STRING;
 	bind[0].buffer = LoginAccountData.Data.Username;
-	bind[0].buffer_length = strlen(LoginAccountData.Data.Username);
+	bind[0].buffer_length = (unsigned long)strlen(LoginAccountData.Data.Username);
 	//bind[0].is_null = is_null;
 	//bind[0].length = &usrNameLen; //why this is needed?
 
@@ -194,7 +194,7 @@ void doRegister(SOCKET hClientSock) {
 
 	query1_bind[0].buffer_type = MYSQL_TYPE_STRING;
 	query1_bind[0].buffer = RegisterAccountData.Data.Username;
-	query1_bind[0].buffer_length = strlen(RegisterAccountData.Data.Username);
+	query1_bind[0].buffer_length = (unsigned long)strlen(RegisterAccountData.Data.Username);
 	//bind[0].is_null = is_null;
 	//bind[0].length = &usrNameLen; //why this is needed?
 
@@ -249,7 +249,7 @@ void doRegister(SOCKET hClientSock) {
 
 	query2_bind[0].buffer_type = MYSQL_TYPE_STRING;
 	query2_bind[0].buffer = RegisterAccountData.Data.Username;
-	query2_bind[0].buffer_length = strlen(RegisterAccountData.Data.Username);
+	query2_bind[0].buffer_length = (unsigned long)strlen(RegisterAccountData.Data.Username);
 
 	query2_bind[1].buffer_type = MYSQL_TYPE_STRING;
 	query2_bind[1].buffer = hashedPasswordText;
@@ -257,7 +257,7 @@ void doRegister(SOCKET hClientSock) {
 	
 	query2_bind[2].buffer_type = MYSQL_TYPE_STRING;
 	query2_bind[2].buffer = RegisterAccountData.Data.email;
-	query2_bind[2].buffer_length = strlen(RegisterAccountData.Data.email);
+	query2_bind[2].buffer_length = (unsigned long)strlen(RegisterAccountData.Data.email);
 
 	//DO REGISTER
 

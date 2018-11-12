@@ -61,24 +61,18 @@ int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelaySe
 		return 0;
 	}
 
-	//TODO: 설정파일에서 서버 정보 불러오도록 수정
-	memset(RelayServAddr, 0, sizeof(*RelayServAddr));
-	RelayServAddr->sin_family = AF_INET;
-	inet_pton(AF_INET, "127.0.0.1", &RelayServAddr->sin_addr.s_addr);
-	RelayServAddr->sin_port = htons(15754);
+	readRelayServerPath(RelayServAddr);
 
 	int err = (connect(*hRelayServSocket, (SOCKADDR*)RelayServAddr, sizeof(*RelayServAddr)) == SOCKET_ERROR);
 	if (err) //생성된 소켓으로 서버에 연결
 	{
-		printf("connect() error!\n");
-		printf("code : %d", WSAGetLastError());
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "중계서버와의 연결이 실패했습니다: %d", WSAGetLastError());
 		return 0;
 	}
-	else {
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "성공적으로 중계서버에 연결되었습니다.\n");
-		Sleep(500);
-		return 1;
-	}
+
+	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "성공적으로 중계서버에 연결되었습니다.\n");
+	Sleep(500);
+	return 1;
 }
 
 int main() {
@@ -116,7 +110,9 @@ int main() {
 				exit(0);
 				break;
 			case 4: //프로그램 라이센스 표시
-				//printLicense();
+				printProgramInfo();
+				printLicense();
+				system("pause");
 				break;
 			default: //유효하지 않은 입력
 				printDebugMsg(DC_WARN, DC_ERRORLEVEL, "올바르지 않은 입력입니다.");
@@ -127,13 +123,13 @@ int main() {
 		else if (loginFlag == 1) {
 			switch (select) {
 			case 1: //메모 관리
-				//manageMemo(hRelayServSocket);
+				manageMemo(hRelayServSocket);
 				break;
 			case 2: //연락처 관리
-				//manageContacts(hRelayServSocket);
+				manageContacts(hRelayServSocket);
 				break;
 			case 3: //파일 관리
-				//manageFile(hRelayServSocket);
+				manageFile(hRelayServSocket);
 				break;
 			case 4: //로그아웃
 				userLogout(hRelayServSocket);

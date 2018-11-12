@@ -52,7 +52,7 @@ int main()
 	servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	servAddr.sin_port = htons(BIND_PORT);
 
-	if (bind(hServSock, &servAddr, sizeof(servAddr))) {
+	if (bind(hServSock, (SOCKADDR*)&servAddr, sizeof(servAddr))) {
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Bind Fail");
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
 		system("pause");
