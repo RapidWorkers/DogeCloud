@@ -24,3 +24,7 @@ bool sendRaw(SOCKET socket, char* buffer, int sendByte, int flags) {
 	} while (left);
 	return 1;
 }
+
+//bool checkStatus(SOCKET socket) {
+//
+//}

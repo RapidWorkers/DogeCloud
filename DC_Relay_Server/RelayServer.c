@@ -6,7 +6,12 @@ HANDLE hMutex;
 //create Client Sock array
 SOCKET hClientSocks[MAX_CON];
 char sessionKey[MAX_CON][32];
+char currentStatus[MAX_CON];
 int clientCount;
+
+SOCKET hFileSrvSock;
+SOCKADDR_IN fileSrvAddr;
+int fileServerConnectFlag;
 
 MYSQL_SERVER serverInfo;
 MYSQL sqlHandle;
@@ -15,8 +20,8 @@ int main()
 {
 	//Winsock Structures init
 	WSADATA wsaData;
-	SOCKET hServSock, hClientSock, hFileServSock;
-	SOCKADDR_IN servAddr, clientAddr, fileSrvAddr;
+	SOCKET hServSock, hClientSock;
+	SOCKADDR_IN servAddr, clientAddr;
 
 	//Multithread init
 	HANDLE hThread = NULL;
@@ -31,7 +36,7 @@ int main()
 	//init database connection
 	readMySQLConfig(&serverInfo);
 	sqlInit(&sqlHandle, serverInfo);
-	
+
 	//init sockets
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {//WSA Startup
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "WSAStartup Fail");
@@ -59,7 +64,22 @@ int main()
 		system("pause");
 		exit(1);
 	}
-		
+
+	readFileServerPath(&fileSrvAddr);
+	for (int i = 0; i < 5; i++) {
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Trying to Connect File Server %d / 5", i+1);
+		initFSConnection(&hFileSrvSock, &fileSrvAddr);
+		if (fileServerConnectFlag) break;
+		Sleep(1000);
+	}
+
+	if (!fileServerConnectFlag) {//if file server connecting is failled
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: File Server Not Online!!");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		system("pause");
+		exit(1);
+	}
+
 
 	if (listen(hServSock, 5) == SOCKET_ERROR) {
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Listen Fail");

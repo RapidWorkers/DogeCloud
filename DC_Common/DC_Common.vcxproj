@@ -34,6 +34,7 @@
     <ClInclude Include="..\lib\dllLEA\include\lea.h" />
     <ClInclude Include="..\lib\SQLite\sqlite3.h" />
     <ClInclude Include="..\lib\SQLite\sqlite3ext.h" />
+    <ClInclude Include="CommonPacket.h" />
     <ClInclude Include="DataManagePacket.h" />
     <ClInclude Include="FileServerCommPacket.h" />
     <ClInclude Include="UserCommPacket.h" />

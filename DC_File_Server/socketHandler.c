@@ -36,9 +36,11 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 
 	printDebugMsg(DC_DEBUG, DC_ERRORLEVEL, "Got OpCode: %d", opCode);
 	switch (opCode) {
+	case OP_SF_REGISTERFILESERVER:
+		procRegisterFileServer(hClientSock);
+		break;
 	default:
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Unknown Packet: %s", clientIP);
-		//printDebugMsg(3, DC_ERRORLEVEL, &opCode);
 		break;
 	}
 }

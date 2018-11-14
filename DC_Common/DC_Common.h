@@ -14,6 +14,7 @@
 #include "SessionPacket.h"
 #include "UserCommPacket.h"
 #include "FileServerCommPacket.h"
+#include "CommonPacket.h"
 
 typedef struct {
 	SOCKET *hSocket;

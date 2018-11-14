@@ -4,7 +4,7 @@ void checkFileConfig() {
 	FILE *fp;
 
 	if (fopen_s(&fp, "./FileServerConfig.ini", "r")) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: RelayServerConfig.ini File Error");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: FileServerConfig.ini File Error");
 		system("pause");
 		exit(1);//exit with error
 	}

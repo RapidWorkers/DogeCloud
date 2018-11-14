@@ -1,8 +1,9 @@
 #pragma once
 
 //Packet opCode Definition
-#define OP_FS_REGISTERFILESERVER 147
-#define OP_SF_REGISTERFILESERVERRESP 148
+#define OP_SF_REGISTERFILESERVER 147
+#define OP_FS_REGISTERFILESERVERRESP 148
+
 #define OP_SF_AUTHUSER 149
 #define OP_FS_AUTHUSERRESP 150
 
@@ -10,7 +11,7 @@
 #define OP_FC_LOGINFILERESP 201
 
 #define OP_CF_FILEJOBREQ 202
-#define OP_ALL_FILEINFO 203
+#define OP_CFFC_FILEINFO 203
 #define OP_FC_FILEJOBRESULT 204
 
 #define OP_CF_MOVEDIR 205
@@ -20,7 +21,6 @@
 #define OP_FC_LISTFILERESP 208
 #define OP_CF_LISTPAGEMOVE 209
 #define OP_FC_LISTPAGEMOVERESP 210
-
 
 #define OP_CS_FILESRVCONNREQ 211
 #define OP_SC_FILESRVCONNRESP 212
@@ -34,11 +34,9 @@ extern "C" {
 		struct {
 			unsigned long opCode;
 			unsigned long dataLen;
-			unsigned char srvAddr[16];
-			unsigned long srvPort;
 		} Data;
 		char buf[8];
-	} fs_RegisterFileServer;
+	} sf_RegisterFileServer;
 
 	typedef union {
 		struct {
@@ -47,7 +45,7 @@ extern "C" {
 			unsigned char statusCode; //0 = fail, 1 = success
 		} Data;
 		char buf[9];
-	} sf_RegisterFileServerResp;
+	} fs_RegisterFileServerResp;
 
 	typedef union {//use union to send packets network easily
 		struct {
@@ -184,5 +182,5 @@ extern "C" {
 
 #pragma pack(pop)
 #ifdef __cplusplus
-}
+};
 #endif

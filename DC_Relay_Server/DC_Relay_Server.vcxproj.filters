@@ -51,6 +51,12 @@
     <ClCompile Include="memoManager.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="fileServerRegister.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="userToFSBridge.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RelayServer.h">

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="configReader.c" />
     <ClCompile Include="FileServer.c" />
+    <ClCompile Include="fileServerRegisterManager.c" />
     <ClCompile Include="MariaDBConnector.c" />
     <ClCompile Include="socketHandler.c" />
   </ItemGroup>

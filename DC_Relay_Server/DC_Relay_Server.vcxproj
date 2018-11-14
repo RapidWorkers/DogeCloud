@@ -22,11 +22,13 @@
     <ClCompile Include="configReader.c" />
     <ClCompile Include="contactsManager.c" />
     <ClCompile Include="dataProcessor.c" />
+    <ClCompile Include="fileServerRegister.c" />
     <ClCompile Include="MariaDBConnector.c" />
     <ClCompile Include="memoManager.c" />
     <ClCompile Include="RelayServer.c" />
     <ClCompile Include="socketHandler.c" />
     <ClCompile Include="sessionProcessor.c" />
+    <ClCompile Include="userToFSBridge.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\mariadb\Win32\include\errmsg.h" />

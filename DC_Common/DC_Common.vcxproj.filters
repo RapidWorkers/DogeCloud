@@ -89,5 +89,8 @@
     <ClInclude Include="..\lib\CSPRNG\duthomhas\csprng.h">
       <Filter>lib\CSPRNG</Filter>
     </ClInclude>
+    <ClInclude Include="CommonPacket.h">
+      <Filter>Packets</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

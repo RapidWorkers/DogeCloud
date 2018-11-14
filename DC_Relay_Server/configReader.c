@@ -39,6 +39,6 @@ void readFileServerPath(SOCKADDR_IN *FileServAddr) {
 	inet_pton(AF_INET, tmpAddr, &FileServAddr->sin_addr.s_addr);
 
 	//init port
-	FileServAddr->sin_port = htons(GetPrivateProfileInt("FileServer", "port", 15384, "./RelayServerConfig.ini"));
+	FileServAddr->sin_port = htons(GetPrivateProfileInt("FileServer", "port", 15332, "./RelayServerConfig.ini"));
 	return;
 }

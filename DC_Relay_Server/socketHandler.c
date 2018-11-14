@@ -56,10 +56,8 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 		break;
 
 	case OP_CS_FILESRVCONNREQ:
-		break;
-
-	//fileserver connection
-	case OP_FS_REGISTERFILESERVER:
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "FileServerConnReq: %s", clientIP);
+		procFileServerConnReq(hClientSock);
 		break;
 
 	//case 250: //FILE UPLOAD DEMO

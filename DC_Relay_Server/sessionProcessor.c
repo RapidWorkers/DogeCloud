@@ -1,22 +1,11 @@
 #include "RelayServer.h"
 
 void procLoginStart(SOCKET hClientSock) {
-
-	unsigned char rcvLen[4];
-	int strLen = recv(hClientSock, rcvLen, 4, 0);
-
-	unsigned long rcvLenLong;
-	memcpy(&rcvLenLong, rcvLen, 4);
-	rcvLenLong = ntohl(rcvLenLong);
-
-	if (!strLen || sizeof(cs_LoginStart) - 8 != rcvLenLong)//if size mismatch..
-		return;//drop
-
 	//Get LoginStart from client
 	cs_LoginStart LoginStart;
 	LoginStart.Data.opCode = OP_CS_LOGINSTART;
 	LoginStart.Data.dataLen = sizeof(cs_LoginStart) - 8;
-	recv(hClientSock, LoginStart.buf + 8, sizeof(cs_LoginStart) - 8, 0);
+	recvData(hClientSock, LoginStart.buf + 4, sizeof(cs_LoginStart) - 4, 0);
 
 	//TODO: LOGIN STATUS CHANGE TO 1
 
@@ -25,30 +14,26 @@ void procLoginStart(SOCKET hClientSock) {
 	LoginStartResp.Data.opCode = htonl(OP_SC_LOGINSTARTRESP);
 	LoginStartResp.Data.dataLen = htonl(sizeof(sc_LoginStartResp) - 8);
 	LoginStartResp.Data.statusCode = 1;
-	send(hClientSock, LoginStartResp.buf, sizeof(LoginStartResp), 0);
 
+	sendData(hClientSock, LoginStartResp.buf, sizeof(LoginStartResp), 0);
 	doLogin(hClientSock);
 	return;
 }
 
 void doLogin(SOCKET hClientSock) {
-	//get LoginAccountData from client
+	
 	cs_LoginAccountData LoginAccountData;
+	sc_LoginDoneResp LoginDoneResp;
+	memset(&LoginAccountData, 0, sizeof(cs_LoginAccountData));
+	memset(&LoginDoneResp, 0, sizeof(sc_LoginDoneResp));
 
-	//LoginAccountData.Data.opCode = OP_CS_LOGINACCOUNTDATA;
-	//LoginAccountData.Data.dataLen = sizeof(cs_LoginAccountData) - 8;
-
-	if (!recvRaw(hClientSock, LoginAccountData.buf, sizeof(LoginAccountData), 0)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
-		return;
-	}
+	//get LoginAccountData from client
+	recvData(hClientSock, LoginAccountData.buf, sizeof(LoginAccountData), 0);
 
 	LoginAccountData.Data.opCode = ntohl(LoginAccountData.Data.opCode);
 	LoginAccountData.Data.dataLen = ntohl(LoginAccountData.Data.dataLen);
 
 	//construct LoginDoneResp
-	sc_LoginDoneResp LoginDoneResp;
-	memset(&LoginDoneResp, 0, sizeof(sc_LoginDoneResp));
 	LoginDoneResp.Data.opCode = htonl(OP_SC_LOGINDONERESP);
 	LoginDoneResp.Data.dataLen = htonl(sizeof(sc_LoginDoneResp) - 8);
 
@@ -71,14 +56,10 @@ void doLogin(SOCKET hClientSock) {
 	bind[0].buffer_type = MYSQL_TYPE_STRING;
 	bind[0].buffer = LoginAccountData.Data.Username;
 	bind[0].buffer_length = (unsigned long)strlen(LoginAccountData.Data.Username);
-	//bind[0].is_null = is_null;
-	//bind[0].length = &usrNameLen; //why this is needed?
 
 	bind[1].buffer_type = MYSQL_TYPE_STRING;
 	bind[1].buffer = hashedPasswordText;
 	bind[1].buffer_length = 64;
-	//bind[1].is_null = 0;
-	//bind[1].length = 0;
 
 	int loginFlag = 0;
 
@@ -115,7 +96,12 @@ void doLogin(SOCKET hClientSock) {
 		printDebugMsg(DC_DEBUG, DC_ERRORLEVEL, "Generated Session Key: %s", tmp);
 
 		WaitForSingleObject(hMutex, INFINITE);//to protect global var access
-		memcpy(sessionKey[clientCount], LoginDoneResp.Data.sessionKey, 32); //copy generated sessionKey
+		for (int i = 0; i < clientCount; i++) {
+			if (hClientSock == hClientSocks[i]) {
+				memcpy(sessionKey[i], LoginDoneResp.Data.sessionKey, 32); //copy generated sessionKey
+				break;
+			}
+		}
 		ReleaseMutex(hMutex);
 
 		LoginDoneResp.Data.statusCode = 1;
@@ -124,7 +110,7 @@ void doLogin(SOCKET hClientSock) {
 		LoginDoneResp.Data.statusCode = 0;
 	}
 
-	send(hClientSock, LoginDoneResp.buf, sizeof(LoginDoneResp), 0);
+	sendData(hClientSock, LoginDoneResp.buf, sizeof(LoginDoneResp), 0);
 	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Sent LoginDoneResp to Client");
 
 	mysql_stmt_close(stmt);
@@ -134,7 +120,7 @@ void procLogout(SOCKET hClientSock) {
 	cs_LogoutStart LogoutStart;
 	sc_LogoutDone LogoutDone;
 
-	recv(hClientSock, LogoutStart.buf + 4, sizeof(LogoutStart) - 4, 0);
+	recvData(hClientSock, LogoutStart.buf + 4, sizeof(LogoutStart) - 4, 0);
 
 	LogoutDone.Data.opCode = htonl(OP_SC_LOGOUTDONE);
 	LogoutDone.Data.dataLen = htonl(1);
@@ -142,10 +128,7 @@ void procLogout(SOCKET hClientSock) {
 
 	//closed session is automatically handled by socketHandler so we don't have to release any globar var here
 
-	if (!sendRaw(hClientSock, LogoutDone.buf, sizeof(LogoutDone), 0)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
-		return;
-	}
+	sendData(hClientSock, LogoutDone.buf, sizeof(LogoutDone), 0);
 
 }
 
@@ -159,10 +142,7 @@ void procRegisterStart(SOCKET hClientSock) {
 	RegisterStart.Data.opCode = OP_CS_LOGINACCOUNTDATA;
 	RegisterStart.Data.dataLen = sizeof(cs_LoginAccountData) - 8;
 
-	if (!recvRaw(hClientSock, RegisterStart.buf + 4, sizeof(RegisterStart) - 4, 0)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
-		return;
-	}
+	recvData(hClientSock, RegisterStart.buf + 4, sizeof(RegisterStart) - 4, 0)
 
 	//TODO: DROP IF OPCODE NOT MATCH
 
@@ -170,10 +150,7 @@ void procRegisterStart(SOCKET hClientSock) {
 	RegisterStartResp.Data.dataLen = htonl(sizeof(RegisterStartResp) - 8);
 	RegisterStartResp.Data.statusCode = 1;
 
-	if (!sendRaw(hClientSock, RegisterStartResp.buf, sizeof(RegisterStartResp), 0)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
-		return;
-	}
+	sendData(hClientSock, RegisterStartResp.buf, sizeof(RegisterStartResp), 0);
 
 	doRegister(hClientSock);
 
@@ -184,10 +161,7 @@ void doRegister(SOCKET hClientSock) {
 	cs_RegisterAccountData RegisterAccountData;
 	sc_RegisterDone RegisterDone;
 
-	if (!recvRaw(hClientSock, RegisterAccountData.buf, sizeof(RegisterAccountData), 0)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
-		return;
-	}
+	recvData(hClientSock, RegisterAccountData.buf, sizeof(RegisterAccountData), 0);
 
 	char* unameDupChkQuery = "SELECT count(id) FROM accounts WHERE username = ?;";
 	char* insertQuery = "INSERT into accounts VALUES(NULL, ?, ?, ?);";
@@ -291,12 +265,8 @@ void doRegister(SOCKET hClientSock) {
 	memcpy(sessionKey[clientCount], RegisterDone.Data.sessionKey, 32); //copy generated sessionKey
 	ReleaseMutex(hMutex);
 
-	if (!sendRaw(hClientSock, RegisterDone.buf, sizeof(RegisterDone), 0)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
-		return;
-	}
+	sendData(hClientSock, RegisterDone.buf, sizeof(RegisterDone), 0);
 
 	mysql_stmt_free_result(stmt);
-
 	return;
 }

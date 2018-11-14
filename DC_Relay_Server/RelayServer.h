@@ -20,7 +20,7 @@
 #define BUF_SIZE 2048
 #define QUEUE_SIZE 10
 #define BIND_ADDR "127.0.0.1"
-#define BIND_PORT 15754
+#define BIND_PORT 15384
 #define MAX_CON 100
 #define DC_ERRORLEVEL 0
 #endif
@@ -32,6 +32,20 @@ typedef struct {
 	char pass[255];
 	char dbase[255];
 } MYSQL_SERVER;
+
+
+//defining macro function for handling error on send and receive packet
+#define sendData(hClientSock, packetBuffer, packetSize, flag) \
+if (!sendRaw(hClientSock, packetBuffer, packetSize, flag)) {\
+	printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());\
+	return;\
+}
+
+#define recvData(hClientSock, packetBuffer, packetSize, flag) \
+if (!recvRaw(hClientSock, packetBuffer, packetSize, flag)) {\
+	printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());\
+	return;\
+}
 
 //extern var declare
 extern HANDLE hMutex;
@@ -46,8 +60,13 @@ extern int clientCount;
 extern MYSQL_SERVER serverInfo;
 extern MYSQL sqlHandle;
 
-//function prototypes
-unsigned int WINAPI clientHandler(void* arg);
+//fileServer Connected check
+extern SOCKADDR_IN fileSrvAddr;
+extern SOCKET hFileSrvSock;
+extern int fileServerConnectFlag;
+
+//socket Handler
+unsigned int WINAPI clientHandler(void* clientInfo);
 void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCode);
 
 //Session Proccesors
@@ -68,3 +87,7 @@ void sqlPrepareAndExecute(MYSQL *sqlHandle, MYSQL_STMT *stmt, const char *query,
 //Configuration Reader
 void checkRelayConfig();
 void readMySQLConfig(MYSQL_SERVER *serverInfo);
+void readFileServerPath(SOCKADDR_IN *FileServAddr);
+
+//fileServer Register
+void initFSConnection(SOCKET *hFileSrvSock, SOCKADDR_IN *FileServAddr);
