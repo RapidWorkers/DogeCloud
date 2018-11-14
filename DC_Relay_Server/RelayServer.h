@@ -35,15 +35,16 @@ typedef struct {
 
 //extern var declare
 extern HANDLE hMutex;
+
+//for socket and session
 extern SOCKET hClientSocks[MAX_CON];
 extern char sessionKey[MAX_CON][32];
 extern char currentStatus[MAX_CON];
 extern int clientCount;
+
+//for mysql
 extern MYSQL_SERVER serverInfo;
 extern MYSQL sqlHandle;
-extern unsigned char fileServerAddr[16];
-extern unsigned long fileServerPort;
-extern unsigned char fileServerRegisterFlag;
 
 //function prototypes
 unsigned int WINAPI clientHandler(void* arg);
@@ -67,7 +68,3 @@ void sqlPrepareAndExecute(MYSQL *sqlHandle, MYSQL_STMT *stmt, const char *query,
 //Configuration Reader
 void checkRelayConfig();
 void readMySQLConfig(MYSQL_SERVER *serverInfo);
-
-//fileServerManager
-void procRegisterFileServer(SOCKET hClientSock);
-void procFileServerConnReq(SOCKET hClientSock);

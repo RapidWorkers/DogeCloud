@@ -22,7 +22,6 @@
     <ClCompile Include="configReader.c" />
     <ClCompile Include="FileServer.c" />
     <ClCompile Include="MariaDBConnector.c" />
-    <ClCompile Include="RelayServerConnector.c" />
     <ClCompile Include="socketHandler.c" />
   </ItemGroup>
   <ItemGroup>

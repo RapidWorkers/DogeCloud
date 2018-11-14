@@ -5,11 +5,10 @@ unsigned int WINAPI clientHandler(void* clientInfo) {
 	char clientIP[16];
 	memcpy_s(clientIP, 16, ((DC_SOCK_INFO*)clientInfo)->clientIP, 16);
 
-	int strLen = 0;
 	unsigned char opCodeBuffer[4];
 	memset(opCodeBuffer, 0, 4);
 	
-	while(strLen = recv(hClientSock, opCodeBuffer, 4, 0) > 0){
+	while(recvRaw(hClientSock, opCodeBuffer, 4, 0)){
 		unsigned long opCode;
 		memcpy(&opCode, opCodeBuffer, 4);
 		opCode = ntohl(opCode);
@@ -57,25 +56,21 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 		break;
 
 	case OP_CS_FILESRVCONNREQ:
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Server Connect Request: %s", clientIP);
-		procFileServerConnReq(hClientSock);
 		break;
 
 	//fileserver connection
 	case OP_FS_REGISTERFILESERVER:
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Server Register Request: %s", clientIP);
-		procRegisterFileServer(hClientSock);
 		break;
 
-	case 250: //FILE UPLOAD DEMO
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Upload Demo Mode", clientIP);
-		procFileUpDemo(hClientSock);
-		break;
+	//case 250: //FILE UPLOAD DEMO
+	//	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Upload Demo Mode", clientIP);
+	//	procFileUpDemo(hClientSock);
+	//	break;
 
-	case 251: //FILE DOWNLOAD DEMO
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Download Demo Mode", clientIP);
-		procFileDownDemo(hClientSock);
-		break;
+	//case 251: //FILE DOWNLOAD DEMO
+	//	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Download Demo Mode", clientIP);
+	//	procFileDownDemo(hClientSock);
+	//	break;
 
 	default:
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Unknown Packet: %s", clientIP);

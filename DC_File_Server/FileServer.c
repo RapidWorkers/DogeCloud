@@ -5,9 +5,9 @@ HANDLE hMutex;
 
 //create Client Sock array
 SOCKET hClientSocks[MAX_CON];
-char sessionKey[MAX_CON][32];
 char authKey[MAX_CON][32];
 int clientCount;
+int authCount;
 
 MYSQL_SERVER serverInfo;
 MYSQL sqlHandle;

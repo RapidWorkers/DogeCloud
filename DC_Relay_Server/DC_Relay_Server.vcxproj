@@ -22,7 +22,6 @@
     <ClCompile Include="configReader.c" />
     <ClCompile Include="contactsManager.c" />
     <ClCompile Include="dataProcessor.c" />
-    <ClCompile Include="fileServerManager.c" />
     <ClCompile Include="MariaDBConnector.c" />
     <ClCompile Include="memoManager.c" />
     <ClCompile Include="RelayServer.c" />

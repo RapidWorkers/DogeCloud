@@ -30,7 +30,7 @@ void manageFile(SOCKET hSocket) {
 		system("pause");
 		return;
 	}
-	
 
+	openFileServer(FileSrvConResp.Data.fileSrvAddr, FileSrvConResp.Data.fileSrvPort);
 	return;
 }

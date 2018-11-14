@@ -36,8 +36,9 @@ typedef struct {
 //extern var declare
 extern HANDLE hMutex;
 extern SOCKET hClientSocks[MAX_CON];
-extern char sessionKey[MAX_CON][32];
+extern char authKey[MAX_CON][32];
 extern int clientCount;
+extern int authCount;
 extern MYSQL_SERVER serverInfo;
 extern MYSQL sqlHandle;
 

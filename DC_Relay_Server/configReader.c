@@ -24,3 +24,21 @@ void readMySQLConfig(MYSQL_SERVER *serverInfo) {
 
 	return;
 }
+
+void readFileServerPath(SOCKADDR_IN *FileServAddr) {
+	checkRelayConfig();
+	if (FileServAddr == NULL) return;
+
+	//init with zero
+	memset(FileServAddr, 0, sizeof(*FileServAddr));
+
+	//init addr
+	char tmpAddr[16] = { 0, };
+	FileServAddr->sin_family = AF_INET;
+	GetPrivateProfileString("FileServer", "ip", "127.0.0.1", tmpAddr, 15, "./RelayServerConfig.ini");
+	inet_pton(AF_INET, tmpAddr, &FileServAddr->sin_addr.s_addr);
+
+	//init port
+	FileServAddr->sin_port = htons(GetPrivateProfileInt("FileServer", "port", 15384, "./RelayServerConfig.ini"));
+	return;
+}

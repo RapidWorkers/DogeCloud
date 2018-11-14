@@ -5,11 +5,10 @@ unsigned int WINAPI clientHandler(void* clientInfo) {
 	char clientIP[16];
 	memcpy_s(clientIP, 16, ((DC_SOCK_INFO*)clientInfo)->clientIP, 16);
 
-	int strLen = 0;
 	unsigned char opCodeBuffer[4];
 	memset(opCodeBuffer, 0, 4);
 
-	while (strLen = recv(hClientSock, opCodeBuffer, 4, 0) > 0) {
+	while (recvRaw(hClientSock, opCodeBuffer, 4, 0)) {
 		unsigned long opCode;
 		memcpy(&opCode, opCodeBuffer, 4);
 		opCode = ntohl(opCode);

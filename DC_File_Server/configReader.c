@@ -1,6 +1,6 @@
 #include "FileServer.h"
 
-void checkRelayConfig() {
+void checkFileConfig() {
 	FILE *fp;
 
 	if (fopen_s(&fp, "./FileServerConfig.ini", "r")) {
@@ -13,7 +13,7 @@ void checkRelayConfig() {
 }
 
 void readMySQLConfig(MYSQL_SERVER *serverInfo) {
-	checkRelayConfig();
+	checkFileConfig();
 
 	if (serverInfo == NULL) return;
 	GetPrivateProfileString("DatabaseConfig", "mariadb_addr", "localhost", serverInfo->srvAddr, 255, "./FileServerConfig.ini");

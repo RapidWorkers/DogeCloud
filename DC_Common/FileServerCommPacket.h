@@ -53,10 +53,9 @@ extern "C" {
 		struct {
 			unsigned long opCode;//operation code -> to classify packet
 			unsigned long dataLen;
-			unsigned char UserSessionKey[32];
 			unsigned char UserFileServerAuthKey[32];//random sha256 hash
 		} Data;
-		char buf[72];
+		char buf[40];
 	} sf_AuthUser;
 
 	typedef union {
@@ -72,10 +71,9 @@ extern "C" {
 		struct {
 			unsigned long opCode;//operation code -> to classify packet
 			unsigned long dataLen;
-			unsigned char UserSessionKey[32];
 			unsigned char UserFileServerAuthKey[32];//random sha256 hash
 	} Data;
-		char buf[72];
+		char buf[40];
 	} cf_LoginFile;
 
 	typedef union {
@@ -179,8 +177,9 @@ extern "C" {
 			unsigned char statusCode; //0 = fail, 1 = success
 			unsigned char fileSrvAddr[16];
 			unsigned long fileSrvPort;
+			unsigned char authKey[32];
 		}Data;
-		char buf[29];
+		char buf[61];
 	} sc_FileSrvConResp;
 
 #pragma pack(pop)

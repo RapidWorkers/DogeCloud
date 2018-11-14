@@ -11,17 +11,12 @@ int clientCount;
 MYSQL_SERVER serverInfo;
 MYSQL sqlHandle;
 
-//fileServer Information
-unsigned char fileServerAddr[16];
-unsigned long fileServerPort;
-unsigned char fileServerRegisterFlag;
-
 int main()
 {
 	//Winsock Structures init
 	WSADATA wsaData;
-	SOCKET hServSock, hClientSock;
-	SOCKADDR_IN servAddr, clientAddr;
+	SOCKET hServSock, hClientSock, hFileServSock;
+	SOCKADDR_IN servAddr, clientAddr, fileSrvAddr;
 
 	//Multithread init
 	HANDLE hThread = NULL;
