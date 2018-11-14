@@ -5,10 +5,16 @@ HANDLE hMutex;
 
 //create Client Sock array
 SOCKET hClientSocks[MAX_CON];
+char sessionKey[MAX_CON][32];
 int clientCount;
 
 MYSQL_SERVER serverInfo;
 MYSQL sqlHandle;
+
+//fileServer Information
+unsigned char fileServerAddr[16];
+unsigned long fileServerPort;
+unsigned char fileServerRegisterFlag;
 
 int main()
 {

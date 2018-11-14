@@ -15,6 +15,22 @@
 
 #define clearStdinBuffer() while(getchar() != '\n')
 
+#define sendData(hClientSock, packetBuffer, packetSize, flag) \
+if (!sendRaw(hClientSock, packetBuffer, packetSize, flag)) {\
+	printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "중계서버와의 연결에 문제가 발생했습니다: %d", WSAGetLastError());\
+	printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");\
+	system("pause");\
+	exit(1);\
+}
+
+#define recvData(hClientSock, packetBuffer, packetSize, flag) \
+if (!recvRaw(hClientSock, packetBuffer, packetSize, flag)) {\
+	printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "중계서버와의 연결에 문제가 발생했습니다: %d", WSAGetLastError());\
+	printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");\
+	system("pause");\
+	exit(1);\
+}
+
 //session related global var
 extern int loginFlag;
 extern char currentUsername[100];

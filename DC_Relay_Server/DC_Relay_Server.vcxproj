@@ -22,15 +22,12 @@
     <ClCompile Include="configReader.c" />
     <ClCompile Include="contactsManager.c" />
     <ClCompile Include="dataProcessor.c" />
-    <ClCompile Include="fileManager.c" />
+    <ClCompile Include="fileServerManager.c" />
     <ClCompile Include="MariaDBConnector.c" />
     <ClCompile Include="memoManager.c" />
     <ClCompile Include="RelayServer.c" />
     <ClCompile Include="socketHandler.c" />
     <ClCompile Include="sessionProcessor.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="RelayServerConfig.ini" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\mariadb\Win32\include\errmsg.h" />

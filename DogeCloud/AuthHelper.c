@@ -41,8 +41,6 @@ void userLogin(SOCKET hSocket) {
 
 	//construct LoginAccountData
 	char uname[100] = { 0, }, pwd[100] = { 0, };
-	system("cls");
-	printProgramInfo();
 
 	//get username and password from user
 	puts("100자를 초과하는 입력은 자동으로 잘립니다.");

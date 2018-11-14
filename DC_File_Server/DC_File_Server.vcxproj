@@ -19,11 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="configReader.c" />
     <ClCompile Include="FileServer.c" />
+    <ClCompile Include="MariaDBConnector.c" />
+    <ClCompile Include="RelayServerConnector.c" />
     <ClCompile Include="socketHandler.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FileServerConfig.ini" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileServer.h" />
@@ -80,7 +80,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(OutDir);$(SolutionDir)lib\mariadb\x64\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)lib\mariadb\x64\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(SolutionDir)lib\mariadb\Win32\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)lib\mariadb\Win32\lib;$(OutDir);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(SolutionDir)lib\mariadb\Win32\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)lib\mariadb\Win32\lib;$(OutDir);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)lib\mariadb\x64\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OutDir);$(SolutionDir)lib\mariadb\x64\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

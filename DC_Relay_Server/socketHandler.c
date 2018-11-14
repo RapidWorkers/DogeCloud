@@ -4,10 +4,6 @@ unsigned int WINAPI clientHandler(void* clientInfo) {
 	SOCKET hClientSock = *(((DC_SOCK_INFO*)clientInfo)->hSocket);
 	char clientIP[16];
 	memcpy_s(clientIP, 16, ((DC_SOCK_INFO*)clientInfo)->clientIP, 16);
-	
-	//create session related
-	unsigned char sessionKey[32];
-	unsigned char loginStatus;
 
 	int strLen = 0;
 	unsigned char opCodeBuffer[4];
@@ -21,11 +17,15 @@ unsigned int WINAPI clientHandler(void* clientInfo) {
 	}//loop while socket is alive
 
 	printDebugMsg(1, DC_ERRORLEVEL, "Connection Closed");
+
+	//delete data of disconnected client
 	WaitForSingleObject(hMutex, INFINITE);
 	for (int i = 0; i < clientCount; i++) {
 		if (hClientSock == hClientSocks[i]) {
-			while (i++ < clientCount - 1)
+			while (i++ < clientCount - 1) {
 				hClientSocks[i] = hClientSocks[i + 1];
+				memcpy(sessionKey[i], sessionKey[i + 1], 32);
+			}
 			break;
 		}
 	}
@@ -45,13 +45,26 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "LoginStart: %s", clientIP);
 		procLoginStart(hClientSock);
 		break;
+
 	case OP_CS_LOGOUTSTART:
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "LogoutStart OpCode", clientIP);
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "LogoutStart: %s", clientIP);
 		procLogout(hClientSock);
 		break;
+
 	case OP_CS_REGISTERSTART:
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "RegisterStart OpCode", clientIP);
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "RegisterStart: %s", clientIP);
 		procRegisterStart(hClientSock);
+		break;
+
+	case OP_CS_FILESRVCONNREQ:
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Server Connect Request: %s", clientIP);
+		procFileServerConnReq(hClientSock);
+		break;
+
+	//fileserver connection
+	case OP_FS_REGISTERFILESERVER:
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Server Register Request: %s", clientIP);
+		procRegisterFileServer(hClientSock);
 		break;
 
 	case 250: //FILE UPLOAD DEMO

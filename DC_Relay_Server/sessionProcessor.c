@@ -114,6 +114,10 @@ void doLogin(SOCKET hClientSock) {
 			sprintf_s(tmp + (2 * i), 3, "%02x", LoginDoneResp.Data.sessionKey[i]);
 		printDebugMsg(DC_DEBUG, DC_ERRORLEVEL, "Generated Session Key: %s", tmp);
 
+		WaitForSingleObject(hMutex, INFINITE);//to protect global var access
+		memcpy(sessionKey[clientCount], LoginDoneResp.Data.sessionKey, 32); //copy generated sessionKey
+		ReleaseMutex(hMutex);
+
 		LoginDoneResp.Data.statusCode = 1;
 	}
 	else {
@@ -135,6 +139,8 @@ void procLogout(SOCKET hClientSock) {
 	LogoutDone.Data.opCode = htonl(OP_SC_LOGOUTDONE);
 	LogoutDone.Data.dataLen = htonl(1);
 	LogoutDone.Data.statusCode = 1;
+
+	//closed session is automatically handled by socketHandler so we don't have to release any globar var here
 
 	if (!sendRaw(hClientSock, LogoutDone.buf, sizeof(LogoutDone), 0)) {
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());
@@ -280,6 +286,10 @@ void doRegister(SOCKET hClientSock) {
 	for (int i = 0; i < 32; i++)
 		sprintf_s(tmp + (2 * i), 3, "%02x", RegisterDone.Data.sessionKey[i]);
 	printDebugMsg(DC_DEBUG, DC_ERRORLEVEL, "Generated Session Key: %s", tmp);
+
+	WaitForSingleObject(hMutex, INFINITE);//to protect global var access
+	memcpy(sessionKey[clientCount], RegisterDone.Data.sessionKey, 32); //copy generated sessionKey
+	ReleaseMutex(hMutex);
 
 	if (!sendRaw(hClientSock, RegisterDone.buf, sizeof(RegisterDone), 0)) {
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());

@@ -6,6 +6,7 @@
 #include <WinSock2.h>
 #include <Ws2tcpip.h>
 #include <Windows.h>
+#include <mysql.h>
 
 #include "../DC_Common/DC_Common.h"
 
@@ -19,25 +20,35 @@
 #define BUF_SIZE 2048
 #define QUEUE_SIZE 10
 #define BIND_ADDR "127.0.0.1"
-#define BIND_PORT 18987
+#define BIND_PORT 18787
 #define MAX_CON 100
-#define ERLEVEL 0
+#define DC_ERRORLEVEL 0
 #endif
+
+typedef struct {
+	char srvAddr[255];
+	unsigned long srvPort;
+	char user[255];
+	char pass[255];
+	char dbase[255];
+} MYSQL_SERVER;
 
 //extern var declare
 extern HANDLE hMutex;
 extern SOCKET hClientSocks[MAX_CON];
+extern char sessionKey[MAX_CON][32];
 extern int clientCount;
+extern MYSQL_SERVER serverInfo;
+extern MYSQL sqlHandle;
 
-//defining prototypes
+//function prototypes
 unsigned int WINAPI clientHandler(void* arg);
-void packetHandler(SOCKET hClientSock, unsigned long opCode);
+void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCode);
 
-//Session Proccesors
-void procLoginStart(SOCKET hClientSock);
-void procLoginAccountData(SOCKET hClientSock);
-void procLogout(SOCKET hClientSock);
+//Mariadb Connector
+void sqlInit(MYSQL *sqlHandle, MYSQL_SERVER serverInfo);
+void sqlPrepareAndExecute(MYSQL *sqlHandle, MYSQL_STMT *stmt, const char *query, MYSQL_BIND *query_bind, MYSQL_BIND *result_bind);
 
-//data Processors
-void procFileUpDemo(SOCKET hClientSock);
-void procFileDownDemo(SOCKET hClientSock);
+//Configuration Reader
+void checkRelayConfig();
+void readMySQLConfig(MYSQL_SERVER *serverInfo);

@@ -96,6 +96,9 @@ int main() {
 		int select;
 		scanf_s("%d", &select);
 
+		system("cls");
+		printProgramInfo();
+
 		if (loginFlag == 0) {
 			switch (select) {
 			case 1: //·Î±×ÀÎ

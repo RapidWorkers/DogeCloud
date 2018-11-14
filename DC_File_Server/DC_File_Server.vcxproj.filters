@@ -21,11 +21,15 @@
     <ClCompile Include="FileServer.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FileServerConfig.ini">
-      <Filter>리소스 파일</Filter>
-    </None>
+    <ClCompile Include="configReader.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MariaDBConnector.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="RelayServerConnector.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileServer.h">
