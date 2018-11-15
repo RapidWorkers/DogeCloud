@@ -91,3 +91,7 @@ void readFileServerPath(SOCKADDR_IN *FileServAddr);
 
 //fileServer Register
 void initFSConnection(SOCKET *hFileSrvSock, SOCKADDR_IN *FileServAddr);
+
+//user to FileServer bridge
+void procFileServerConnReq(SOCKET hClientSock);
+void authFSUser(char* authKey, int *resultFlag);

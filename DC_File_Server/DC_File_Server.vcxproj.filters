@@ -30,6 +30,9 @@
     <ClCompile Include="fileServerRegisterManager.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="userAuthManager.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileServer.h">

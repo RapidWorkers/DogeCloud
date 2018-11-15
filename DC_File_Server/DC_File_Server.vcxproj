@@ -24,6 +24,7 @@
     <ClCompile Include="fileServerRegisterManager.c" />
     <ClCompile Include="MariaDBConnector.c" />
     <ClCompile Include="socketHandler.c" />
+    <ClCompile Include="userAuthManager.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileServer.h" />

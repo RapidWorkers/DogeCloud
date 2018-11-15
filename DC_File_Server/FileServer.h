@@ -50,8 +50,10 @@ if (!recvRaw(hClientSock, packetBuffer, packetSize, flag)) {\
 extern HANDLE hMutex;
 extern SOCKET hClientSocks[MAX_CON];
 extern char authKey[MAX_CON][32];
+extern char authWait[MAX_CON][32];
+extern unsigned int authWaitTime[MAX_CON];
 extern int clientCount;
-extern int authCount;
+extern int authWaitCount;
 
 extern MYSQL_SERVER serverInfo;
 extern MYSQL sqlHandle;
@@ -70,3 +72,6 @@ void readMySQLConfig(MYSQL_SERVER *serverInfo);
 
 //fileServerRegister Manager
 void procRegisterFileServer(SOCKET hClientSock);
+
+//user AuthManager
+void procAddUserAuthWaitList(SOCKET hClientSock);

@@ -39,6 +39,9 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 	case OP_SF_REGISTERFILESERVER:
 		procRegisterFileServer(hClientSock);
 		break;
+	case OP_SF_AUTHUSER:
+		procAddUserAuthWaitList(hClientSock);
+		break;
 	default:
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Unknown Packet: %s", clientIP);
 		break;

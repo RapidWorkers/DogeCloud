@@ -6,8 +6,10 @@ HANDLE hMutex;
 //create Client Sock array
 SOCKET hClientSocks[MAX_CON];
 char authKey[MAX_CON][32];
+char authWait[MAX_CON][32];
+unsigned int authWaitTime[MAX_CON];
 int clientCount;
-int authCount;
+int authWaitCount;
 
 MYSQL_SERVER serverInfo;
 MYSQL sqlHandle;

@@ -51,3 +51,6 @@ void manageFile(SOCKET hSocket);
 //configReader
 void checkDogeConfig();
 void readRelayServerPath(SOCKADDR_IN *RelayServAddr);
+
+//fileServerConnector
+void openFileServer(char *fileServerAddr, unsigned long fileServerPort);
