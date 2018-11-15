@@ -54,3 +54,4 @@ void readRelayServerPath(SOCKADDR_IN *RelayServAddr);
 
 //fileServerConnector
 void openFileServer(char *fileServerAddr, unsigned long fileServerPort);
+void doFileManage(SOCKET hFileSrvSock);

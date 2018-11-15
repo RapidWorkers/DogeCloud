@@ -42,6 +42,10 @@ extern "C" {
 		return;
 	}
 
+	DLL void doProgress(int step, int total)
+	{
+	}
+
 	DLL void SHA256_Text(const char* text, char* buf) {
 		if (text == NULL || buf == NULL) return;
 		SHA256_CTX hSHA256;
