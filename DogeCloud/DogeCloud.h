@@ -41,12 +41,6 @@ void userLogin(SOCKET hSocket);
 void userRegister(SOCKET hSocket);
 void userLogout(SOCKET hSocket);
 
-//fileHelper
-void fileUpDemo(SOCKET hSocket);
-void fileDownDemo(SOCKET hSocket);
-void testLEAonFILE();
-void testSHA();
-
 //userDataHelper
 void manageFile(SOCKET hSocket);
 void manageContacts(SOCKET hSocket);

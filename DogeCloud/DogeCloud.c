@@ -17,19 +17,11 @@ void printMenu() {
 	case 1://유저가 로그인 했을 경우
 		printf_s("\n현재 로그인 사용자: %s", currentUsername);
 		printf_s("\n\t*********  메   뉴   *********");
-
 		printf_s("\n\t1. 메모 관리");
 		printf_s("\n\t2. 연락처 관리");
 		printf_s("\n\t3. 파일 관리");
 		printf_s("\n\t4. 로그아웃");
 		printf_s("\n\t5. 종료");
-
-		//printf_s("\n\t1. 파일업로드 데모");
-		//printf_s("\n\t2. 파일다운로드 데모");
-		//printf_s("\n\t3. SHA 테스트");
-		//printf_s("\n\t4. LEA 암복호화 테스트");
-		//printf_s("\n\t5. 로그아웃");
-		//printf_s("\n\t6. 종료");
 		printf_s("\n\t******************************");
 		printf_s("\n\t메뉴 선택 : ");
 		break;

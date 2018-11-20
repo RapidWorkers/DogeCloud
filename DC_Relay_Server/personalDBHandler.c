@@ -79,7 +79,7 @@ void procDownloadPersonalDBFile(SOCKET hClientSock) {
 			toRead = 4096U;
 
 		fread_s(dataBuffer, 4096, toRead, 1, infoFile);
-		sendRaw(hClientSock, dataBuffer, toRead, 0);
+		sendData(hClientSock, dataBuffer, toRead, 0);
 		left -= toRead;
 	}
 
@@ -97,5 +97,83 @@ void procDownloadPersonalDBFile(SOCKET hClientSock) {
 }
 
 void procUploadPersonalDBFile(SOCKET hClientSock) {
+	cs_PersonalDBEditDone PersonalDBEditDone;
+	sc_PersonalDBEditDoneResp PersonalDBEditDoneResp;
+	memset(&PersonalDBEditDone, 0, sizeof(cs_PersonalDBEditDone));
+	memset(&PersonalDBEditDoneResp, 0, sizeof(sc_PersonalDBEditDoneResp));
 
+	unsigned char fileHash[32];
+	FILE *infoFile;
+	char fileName[255] = { 0, };
+	char tmpFileName[65] = { 0, };
+	unsigned char tmpRandomNum[16] = { 0, };
+	unsigned char tmpHash[32] = { 0, };
+
+	recvData(hClientSock, PersonalDBEditDone.buf + 4, sizeof(cs_PersonalDBEditDone) - 4, 0);
+
+	PersonalDBEditDone.Data.opCode = ntohl(PersonalDBEditDone.Data.opCode);
+	PersonalDBEditDone.Data.dataLen = ntohl(PersonalDBEditDone.Data.dataLen);
+
+	//임시로 사용할 파일이름 생성
+	GenerateCSPRNG(tmpRandomNum, 15);
+	SHA256_Text(tmpRandomNum, tmpHash);
+	for (int i = 0; i < 32; i++)
+		sprintf_s(tmpFileName + (2 * i), 3, "%02x", tmpHash[i]);
+
+	if (fopen_s(&infoFile, tmpFileName, "wb+")) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: CANNOT Create TEMP FILE!!!");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		system("pause");
+		exit(1);
+	}
+
+	//다운로드 모드 진입
+	unsigned int fileSize = 0;
+
+	//파일 사이즈 수신
+	recvData(hClientSock, &fileSize, 4, 0);
+	fileSize = ntohl(fileSize);
+	unsigned int left = fileSize;
+	unsigned int toRead;
+
+	unsigned char dataBuffer[4096]; //4KiB
+	while (1) {
+		if (left < 4096U)
+			toRead = left;
+		else
+			toRead = 4096U;
+
+		recvData(hClientSock, dataBuffer, toRead, 0);
+		fwrite(dataBuffer, toRead, 1, infoFile);
+		left -= toRead;
+		if (!left) break;//완료시 탈출
+	}
+
+	//업로드 모드 끝
+	PersonalDBEditDoneResp.Data.opCode = ntohl(PersonalDBEditDoneResp.Data.opCode);
+	PersonalDBEditDoneResp.Data.dataLen = ntohl(PersonalDBEditDoneResp.Data.dataLen);
+
+	fseek(infoFile, 0, SEEK_SET);//처음으로 이동
+	getFileHash(infoFile, fileHash);
+	fclose(infoFile);//파일 닫음
+
+	if (!memcmp(fileHash, PersonalDBEditDone.Data.hash, 32)) {
+		PersonalDBEditDoneResp.Data.statusCode = 1;//해시 일치
+		WaitForSingleObject(hMutex, INFINITE);//to protect global var access
+		for (int i = 0; i < clientCount; i++) {
+			if (hClientSock == hClientSocks[i]) {
+				sprintf_s(fileName, 255, "./infodb/%d.db", sessionList[i].userUID);
+				break;
+			}
+		}
+		ReleaseMutex(hMutex);
+		rename(tmpFileName, fileName);
+	}
+	else {
+		PersonalDBEditDoneResp.Data.statusCode = 0;//해시 불일치
+		remove(tmpFileName);
+	}
+
+	sendData(hClientSock, PersonalDBEditDoneResp.buf, sizeof(sc_PersonalDBEditDoneResp), 0);//결과 전송
+	return;
 }
