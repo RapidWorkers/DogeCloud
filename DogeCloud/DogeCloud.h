@@ -51,8 +51,10 @@ void downloadPersonalDBFile(SOCKET hSocket);
 void uploadPersonalDBFile(SOCKET hSocket, char* originalHash);
 void addContacts();
 void modifyContacts();
+void deleteContacts();
 void addMemo();
 void modifyMemo();
+void deleteMemo();
 
 //configReader
 void checkDogeConfig();

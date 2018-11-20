@@ -164,6 +164,10 @@ void modifyContacts() {
 
 }
 
+void deleteContacts() {
+
+}
+
 void addMemo() {
 	char tmpFileName[65] = { 0, };
 	unsigned char tmpRandomNum[16] = { 0, };
@@ -219,5 +223,9 @@ void addMemo() {
 }
 
 void modifyMemo() {
+
+}
+
+void deleteMemo() {
 
 }

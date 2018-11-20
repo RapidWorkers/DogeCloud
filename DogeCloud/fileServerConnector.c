@@ -67,8 +67,6 @@ void openFileServer(char *fileServerAddr, unsigned long fileServerPort, unsigned
 		exit(1);
 		return;
 	}
-
-	system("pause");
 	return;
 }
 
@@ -111,8 +109,7 @@ void doFileManage(SOCKET hFileSrvSock) {
 			moveFileListPage(hFileSrvSock, 1, &errorFlag);
 			break;
 		case 6:
-			closesocket(hFileSrvSock);
-			return;
+			return;//이 함수 종료시 계속되는 코드에서 소켓 종료됨
 			break;
 		default: //유효하지 않은 입력
 			printDebugMsg(DC_WARN, DC_ERRORLEVEL, "올바르지 않은 입력입니다.");
@@ -123,7 +120,6 @@ void doFileManage(SOCKET hFileSrvSock) {
 		if (errorFlag) {
 			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일서버 통신 오류");
 			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일서버 연결을 종료합니다.");
-			closesocket(hFileSrvSock);
 			system("pause");
 			return;
 		}
