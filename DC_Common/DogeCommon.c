@@ -42,8 +42,25 @@ extern "C" {
 		return;
 	}
 
-	DLL void doProgress(int step, int total)
-	{
+	DLL void updateProgress(int current, int total)
+	{	
+		int length = 30;//프로그레스 바 길이
+		double tickrate = (double)100 / length;//몇 %당 하나씩 늘릴건지
+		double percent;
+
+		printf_s("\r%d / %d [", current, total);
+		percent = (double)current / total * 100;
+
+		int count = percent / tickrate;
+
+		for (int i = 0; i < length; i++) {
+			if (count > i)
+				printf_s("=");
+			else
+				printf_s(" ");
+		}
+		printf_s("]");
+		return;
 	}
 
 	DLL void SHA256_Text(const char* text, char* buf) {

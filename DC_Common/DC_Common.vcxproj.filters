@@ -33,16 +33,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\lib\SQLite\sqlite3.c">
-      <Filter>lib\SQLite</Filter>
-    </ClCompile>
     <ClCompile Include="..\lib\crypto-algorithms\sha256.c">
       <Filter>lib\crypto-algorithms</Filter>
     </ClCompile>
     <ClCompile Include="FileCrypto.c">
-      <Filter>Source Code</Filter>
-    </ClCompile>
-    <ClCompile Include="UserDataReader.c">
       <Filter>Source Code</Filter>
     </ClCompile>
     <ClCompile Include="DogeCommon.c">
@@ -56,12 +50,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\lib\SQLite\sqlite3.h">
-      <Filter>lib\SQLite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\lib\SQLite\sqlite3ext.h">
-      <Filter>lib\SQLite</Filter>
-    </ClInclude>
     <ClInclude Include="..\lib\dllLEA\include\config.h">
       <Filter>lib\dllLEA</Filter>
     </ClInclude>

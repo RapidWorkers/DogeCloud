@@ -46,7 +46,12 @@ void fileUpDemo(SOCKET hSocket);
 void fileDownDemo(SOCKET hSocket);
 void testLEAonFILE();
 void testSHA();
+
+//userDataHelper
+void downloadInfoFile(SOCKET hSocket);
 void manageFile(SOCKET hSocket);
+void manageContacts(SOCKET hSocket);
+void manageMemo(SOCKET hSocket);
 
 //configReader
 void checkDogeConfig();

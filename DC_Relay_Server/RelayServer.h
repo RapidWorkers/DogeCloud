@@ -79,6 +79,7 @@ void doLogin(SOCKET hClientSock);
 void procLogout(SOCKET hClientSock);
 void procRegisterStart(SOCKET hClientSock);
 void doRegister(SOCKET hClientSock);
+void procDownloadUserInfo(SOCKET hClientSock);
 
 //data Processors
 void procFileUpDemo(SOCKET hClientSock);

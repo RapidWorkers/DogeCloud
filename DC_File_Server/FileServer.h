@@ -7,6 +7,7 @@
 #include <Ws2tcpip.h>
 #include <Windows.h>
 #include <mysql.h>
+#include <time.h>
 
 #include "../DC_Common/DC_Common.h"
 

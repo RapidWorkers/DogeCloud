@@ -138,6 +138,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\lib\SQLite\shell.c" />
+    <ClCompile Include="..\lib\SQLite\sqlite3.c" />
     <ClCompile Include="AuthHelper.c" />
     <ClCompile Include="configReader.c" />
     <ClCompile Include="DogeCloud.c" />
@@ -146,6 +148,8 @@
     <ClCompile Include="userDataHelper.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\lib\SQLite\sqlite3.h" />
+    <ClInclude Include="..\lib\SQLite\sqlite3ext.h" />
     <ClInclude Include="DogeCloud.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

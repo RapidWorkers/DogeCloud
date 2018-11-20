@@ -25,6 +25,9 @@
     <Filter Include="lib\MariaDB\x64">
       <UniqueIdentifier>{05888c6e-ac08-4129-8ed7-cebd8525e219}</UniqueIdentifier>
     </Filter>
+    <Filter Include="lib\SQLite">
+      <UniqueIdentifier>{a9dfaec7-9f1a-4f46-b44e-d8ab0add490d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="socketHandler.c">
@@ -56,6 +59,12 @@
     </ClCompile>
     <ClCompile Include="userToFSBridge.c">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\SQLite\shell.c">
+      <Filter>lib\SQLite</Filter>
+    </ClCompile>
+    <ClCompile Include="..\lib\SQLite\sqlite3.c">
+      <Filter>lib\SQLite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +160,12 @@
     </ClInclude>
     <ClInclude Include="..\lib\mariadb\x64\include\mysqld_error.h">
       <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\SQLite\sqlite3.h">
+      <Filter>lib\SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\SQLite\sqlite3ext.h">
+      <Filter>lib\SQLite</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -36,6 +36,16 @@ int main()
 	readMySQLConfig(&serverInfo);
 	sqlInit(&sqlHandle, serverInfo);
 
+	//연락처, 메모 db 저장용 폴더 생성
+	if (!CreateDirectory("./infodb", NULL)) {
+		if (GetLastError() != ERROR_ALREADY_EXISTS) {//이미 폴더가 존재할 때의 경우를 제외한 모든 에러는 프로그램 정지
+			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Create Directory Fail");
+			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+			system("pause");
+			exit(1);
+		}
+	};
+
 	//init sockets
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {//WSA Startup
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "WSAStartup Fail");

@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\lib\SQLite\shell.c" />
+    <ClCompile Include="..\lib\SQLite\sqlite3.c" />
     <ClCompile Include="configReader.c" />
     <ClCompile Include="contactsManager.c" />
     <ClCompile Include="dataProcessor.c" />
@@ -61,6 +63,8 @@
     <ClInclude Include="..\lib\mariadb\x64\include\mysql\client_plugin.h" />
     <ClInclude Include="..\lib\mariadb\x64\include\mysql\plugin_auth.h" />
     <ClInclude Include="..\lib\mariadb\x64\include\mysql\plugin_auth_common.h" />
+    <ClInclude Include="..\lib\SQLite\sqlite3.h" />
+    <ClInclude Include="..\lib\SQLite\sqlite3ext.h" />
     <ClInclude Include="RelayServer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -117,19 +121,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LibraryPath>$(OutDir);$(SolutionDir)lib\mariadb\Win32\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)lib\mariadb\Win32\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)lib\mariadb\Win32\include;$(SolutionDir)lib\SQLite;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LibraryPath>$(OutDir);$(SolutionDir)lib\mariadb\Win32\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)lib\mariadb\Win32\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)lib\mariadb\Win32\include;$(SolutionDir)lib\SQLite;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(SolutionDir)lib\mariadb\x64\lib;$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)lib\mariadb\x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)lib\mariadb\x64\include;$(SolutionDir)lib\SQLite;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(SolutionDir)lib\mariadb\x64\lib;$(OutDir);$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)lib\mariadb\x64\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)lib\mariadb\x64\include;$(SolutionDir)lib\SQLite;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

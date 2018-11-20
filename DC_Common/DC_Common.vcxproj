@@ -21,19 +21,15 @@
   <ItemGroup>
     <ClCompile Include="..\lib\crypto-algorithms\sha256.c" />
     <ClCompile Include="..\lib\CSPRNG\csprng.c" />
-    <ClCompile Include="..\lib\SQLite\sqlite3.c" />
     <ClCompile Include="FileCrypto.c" />
     <ClCompile Include="DogeCommon.c" />
     <ClCompile Include="NetworkReadWrite.c" />
-    <ClCompile Include="UserDataReader.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\lib\crypto-algorithms\sha256.h" />
     <ClInclude Include="..\lib\CSPRNG\duthomhas\csprng.h" />
     <ClInclude Include="..\lib\dllLEA\include\config.h" />
     <ClInclude Include="..\lib\dllLEA\include\lea.h" />
-    <ClInclude Include="..\lib\SQLite\sqlite3.h" />
-    <ClInclude Include="..\lib\SQLite\sqlite3ext.h" />
     <ClInclude Include="CommonPacket.h" />
     <ClInclude Include="DataManagePacket.h" />
     <ClInclude Include="FileServerCommPacket.h" />
@@ -93,19 +89,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)lib\SQLite;$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\dllLEA\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)lib\SQLite;$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(SolutionDir)lib\CSPRNG;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(SolutionDir)lib\CSPRNG;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\dllLEA\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)lib\SQLite;$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\dllLEA\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)lib\SQLite;$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\dllLEA\x64;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
