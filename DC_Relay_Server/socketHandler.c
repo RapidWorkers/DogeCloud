@@ -62,6 +62,9 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 	case OP_CS_DOWNLOADUSERINFOREQ:
 		procDownloadPersonalDBFile(hClientSock);
 		break;
+	case OP_CS_PERSONALDBEDITDONE:
+		procUploadPersonalDBFile(hClientSock);
+		break;
 	//case 250: //FILE UPLOAD DEMO
 	//	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Upload Demo Mode", clientIP);
 	//	procFileUpDemo(hClientSock);

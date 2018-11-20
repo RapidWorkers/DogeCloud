@@ -102,3 +102,4 @@ void authFSUser(unsigned char* authKey, unsigned long userUID, int *resultFlag);
 
 //personalDBHandler
 void procDownloadPersonalDBFile(SOCKET hClientSock);
+void procUploadPersonalDBFile(SOCKET hClientSock);
