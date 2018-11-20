@@ -167,11 +167,11 @@ void procUploadPersonalDBFile(SOCKET hClientSock) {
 			}
 		}
 		ReleaseMutex(hMutex);
-		rename(tmpFileName, fileName);
+		rename(tmpFileName, fileName);//임시파일을 db 폴더로 이동시킴
 	}
 	else {
 		PersonalDBEditDoneResp.Data.statusCode = 0;//해시 불일치
-		remove(tmpFileName);
+		remove(tmpFileName);//전송 실패 파일은 삭제
 	}
 
 	sendData(hClientSock, PersonalDBEditDoneResp.buf, sizeof(sc_PersonalDBEditDoneResp), 0);//결과 전송

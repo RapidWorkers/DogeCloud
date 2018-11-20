@@ -144,7 +144,6 @@
     <ClCompile Include="configReader.c" />
     <ClCompile Include="personalDBHelper.c" />
     <ClCompile Include="DogeCloud.c" />
-    <ClCompile Include="FileHelper.c" />
     <ClCompile Include="fileServerConnector.c" />
     <ClCompile Include="userDataHelper.c" />
   </ItemGroup>

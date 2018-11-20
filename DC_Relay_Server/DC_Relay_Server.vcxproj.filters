@@ -60,6 +60,9 @@
     <ClCompile Include="..\lib\SQLite\sqlite3.c">
       <Filter>lib\SQLite</Filter>
     </ClCompile>
+    <ClCompile Include="personalDBHandler.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RelayServer.h">

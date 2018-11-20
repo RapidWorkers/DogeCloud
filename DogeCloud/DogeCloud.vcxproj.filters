@@ -27,9 +27,6 @@
     <ClCompile Include="AuthHelper.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="FileHelper.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="configReader.c">
       <Filter>소스 파일</Filter>
     </ClCompile>

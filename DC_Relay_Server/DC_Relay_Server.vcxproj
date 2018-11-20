@@ -25,6 +25,7 @@
     <ClCompile Include="dataProcessor.c" />
     <ClCompile Include="fileServerRegister.c" />
     <ClCompile Include="MariaDBConnector.c" />
+    <ClCompile Include="personalDBHandler.c" />
     <ClCompile Include="RelayServer.c" />
     <ClCompile Include="socketHandler.c" />
     <ClCompile Include="sessionProcessor.c" />
