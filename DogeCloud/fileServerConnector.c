@@ -207,14 +207,14 @@ void showFileList(SOCKET hFileSrvSock, int *errorFlag) {//show filelist
 	}
 
 	printf_s("\n\t******************************");
-	printf_s("\n\t\t현재 디렉토리 : %s", ListFileResp.Data.currentDir, 255);
+	printf_s("\n\t\t현재 디렉토리 : %s", ListFileResp.Data.currentDir);
 	if (!ListFileResp.Data.fileCount) {//파일이 없을 경우
 		printf_s("\n\t 빈 디렉토리 입니다.");
 	}
 	else {//비어있지 않으면
 		printf_s("\n\t순번 \t파일명 \t파일 타입");
 		for (int i = 0; i < ListFileResp.Data.fileCount; i++) {
-			printf_s("\n\t%d. %s ", i+1, ListFileResp.Data.fileName[i], 255);
+			printf_s("\n\t%d. %s ", i+1, ListFileResp.Data.fileName[i]);
 			if (ListFileResp.Data.fileType[i] == 0)
 				printf_s("파일");
 			else if (ListFileResp.Data.fileType[i] == 1)
