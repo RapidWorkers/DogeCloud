@@ -96,5 +96,7 @@ DLL void getFileHash(FILE *file, char* result) {
 		left -= toRead;
 	}
 	sha256_final(&hSHA256, result);
+
+	fseek(file, 0, SEEK_SET);//return to start pos
 	return;
 }

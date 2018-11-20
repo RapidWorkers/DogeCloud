@@ -59,7 +59,7 @@ extern "C" {
 			else
 				printf_s(" ");
 		}
-		printf_s("]");
+		printf_s("] %.1lf %%", percent);
 		return;
 	}
 

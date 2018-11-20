@@ -95,6 +95,7 @@ int main() {
 		printMenu();
 		int select;
 		scanf_s("%d", &select);
+		clearStdinBuffer();
 
 		system("cls");
 		printProgramInfo();

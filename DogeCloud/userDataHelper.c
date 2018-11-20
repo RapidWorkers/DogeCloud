@@ -1,79 +1,137 @@
 #include "DogeCloud.h"
 
-void downloadInfoFile(SOCKET hSocket) {
-	cs_DownloadInfoReq DownloadInfoReq;
-	sc_DownloadInfoResp DownloadInfoResp;
-	memset(&DownloadInfoReq, 0, sizeof(cs_DownloadInfoReq));
-	memset(&DownloadInfoResp, 0, sizeof(sc_DownloadInfoResp));
-
-	DownloadInfoReq.Data.opCode = htonl(OP_CS_DOWNLOADUSERINFOREQ);
-	DownloadInfoReq.Data.dataLen = htonl(sizeof(cs_FileSrvConReq) - 8);
-
-	sendData(hSocket, DownloadInfoReq.buf, sizeof(cs_DownloadInfoReq), 0);
-	//다운로드 모드 시작
-	FILE *downFile;
-	unsigned int toRead;
-
-	if ((downFile = fopen("myinfoClient.db", "wb+")) == NULL) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일을 쓰기용으로 열 수 없습니다");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
-		system("pause");
-		exit(1);
-	}
-
-	unsigned long fileSize;
-	recvRaw(hSocket, &fileSize, 4, 0);
-	fileSize = ntohl(fileSize);
-	unsigned long left = fileSize;
-
-	printf("\n 유저 정보 다운로드 시작...\n");
-
-	unsigned char dataBuffer[4096]; //4KiB
-
-	while (1) {
-		if (left < 4096U)
-			toRead = left;
-		else
-			toRead = 4096U;
-
-		if (!recvRaw(hSocket, dataBuffer, toRead, 0)) {
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "전송 실패");
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
-			system("pause");
-			exit(1);
-		}
-		fwrite(dataBuffer, toRead, 1, downFile);
-		left -= toRead;
-		updateProgress(fileSize - left, fileSize);
-		if (!left) break;//완료시 탈출
-	}
-
-
-	puts("\n수신 완료");
-	//다운로드 모드 종료
-	recvData(hSocket, DownloadInfoResp.buf, sizeof(sc_DownloadInfoResp), 0);
-	DownloadInfoResp.Data.opCode = ntohl(DownloadInfoResp.Data.opCode);
-	DownloadInfoResp.Data.dataLen = ntohl(DownloadInfoResp.Data.dataLen);
-
-	unsigned char fileHash[32];
-	getFileHash(downFile, fileHash);
-
-	if (!memcmp(fileHash, DownloadInfoResp.Data.hash, 32)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터 불일치");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
-		system("pause");
-		exit(1);
-	}
-
-	fclose(downFile);
-	return;
-}
-
 void manageContacts(SOCKET hSocket) {
+	system("cls");
+
+	char originalHash[32];
+	FILE *fp;
+
+	if (fopen_s(&fp, "./myinfoClient.db", "r")) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		system("pause");
+		exit(1);
+	}
+
+	getFileHash(fp, originalHash);//나중에 변경 확인을 위해 먼저 파일 해쉬를 저장함
+
+	fclose(fp); 
+
+	int maxpage = 2;
+	int page = 1;//페이지 초기값
+	while (1) {
+		system("cls");
+		printf_s("\n******************************************************************************************");
+		printf_s("\n%4s %16s %30s %15s %15s %15s %15s", "순번", "이름", "이메일", "연락처1", "연락처2", "연락처3", "연락처4");
+		printf_s("\n%4d %16s %30s %15s %15s %15s %15s", 1, "홍길동일", "myemail@myemailtest.com", "010-0000-0000", "010-0000-0000", "010-0000-0000", "010-0000-0000");
+		printf_s("\t\t\t 페이지 %d / %d", page, maxpage);
+		printf_s("\n******************************************************************************************\n");
+		printf_s("\n\t*********  메   뉴   *********");
+		printf_s("\n\t1. 추가");
+		printf_s("\n\t2. 수정");
+		printf_s("\n\t3. 이전 페이지");
+		printf_s("\n\t4. 다음 페이지");
+		printf_s("\n\t5. 변경사항 서버에 저장 및 나가기");
+		printf_s("\n\t******************************");
+		printf_s("\n\t메뉴 선택 : ");
+
+		int select;
+		scanf_s("%d", &select);
+		clearStdinBuffer();
+
+		switch (select) {
+		case 1:
+			addContacts();
+			break;
+		case 2:
+			modifyContacts();
+			break;
+		case 3:
+			if (maxpage > page) page++;
+			break;
+		case 4:
+			if (page > 1) page--;
+			break;
+		case 5:
+			uploadPersonalDBFile(hSocket, originalHash);
+			return;
+			break;
+		default: //유효하지 않은 입력
+			printDebugMsg(DC_WARN, DC_ERRORLEVEL, "올바르지 않은 입력입니다.");
+			Sleep(1000);
+			break;
+		}
+	}
 	return;
 }
 
 void manageMemo(SOCKET hSocket) {
+	system("cls");
+
+	char originalHash[32];
+	FILE *fp;
+
+	if (fopen_s(&fp, "./myinfoClient.db", "r")) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		system("pause");
+		exit(1);
+	}
+
+	getFileHash(fp, originalHash);//나중에 변경 확인을 위해 먼저 파일 해쉬를 저장함
+
+	fclose(fp);
+
+	int maxpage = 2;
+	int page = 1;//페이지 초기값
+	while (1) {
+		system("cls");
+		printf_s("\n******************************************************************************************");
+		printf_s("\n%4s %60s", "순번", "내용 일부 (한글 기준 최대 30자)");
+		printf_s("\n%4d %60s", 1, "큰 여우가 작은 들을 넘어서 움직이고 있다. 그렇기에 나는 더  ");
+		printf_s("\n%4d %60s", 2, "테스트 ");
+		printf_s("\n\t\t\t 페이지 %d / %d", page, maxpage);
+		printf_s("\n******************************************************************************************\n");
+		printf_s("\n\t*********  메   뉴   *********");
+		printf_s("\n\t1. 추가");
+		printf_s("\n\t2. 보기 및 수정");
+		printf_s("\n\t3. 삭제");
+		printf_s("\n\t4. 이전 페이지");
+		printf_s("\n\t5. 다음 페이지");
+		printf_s("\n\t6. 변경사항 서버에 저장 및 나가기");
+		printf_s("\n\t******************************");
+		printf_s("\n\t메뉴 선택 : ");
+
+		int select;
+		scanf_s("%d", &select);
+		clearStdinBuffer();
+
+		switch (select) {
+		case 1:
+			addMemo();
+			break;
+		case 2:
+			modifyMemo();
+			break;
+		case 3:
+			deleteMemo();
+			break;
+		case 4:
+			if (maxpage > page) page++;
+			break;
+		case 5:
+			if (page > 1) page--;
+			break;
+		case 6:
+			uploadPersonalDBFile(hSocket, originalHash);
+			return;
+			break;
+		default: //유효하지 않은 입력
+			printDebugMsg(DC_WARN, DC_ERRORLEVEL, "올바르지 않은 입력입니다.");
+			Sleep(1000);
+			break;
+		}
+	}
 	return;
 }
 

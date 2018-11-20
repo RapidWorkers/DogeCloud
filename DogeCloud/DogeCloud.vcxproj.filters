@@ -45,6 +45,9 @@
     <ClCompile Include="..\lib\SQLite\sqlite3.c">
       <Filter>lib\SQLite</Filter>
     </ClCompile>
+    <ClCompile Include="personalDBHelper.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DogeCloud.h">

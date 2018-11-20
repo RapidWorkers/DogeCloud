@@ -48,10 +48,17 @@ void testLEAonFILE();
 void testSHA();
 
 //userDataHelper
-void downloadInfoFile(SOCKET hSocket);
 void manageFile(SOCKET hSocket);
 void manageContacts(SOCKET hSocket);
 void manageMemo(SOCKET hSocket);
+
+//personalDBHelper
+void downloadPersonalDBFile(SOCKET hSocket);
+void uploadPersonalDBFile(SOCKET hSocket, char* originalHash);
+void addContacts();
+void modifyContacts();
+void addMemo();
+void modifyMemo();
 
 //configReader
 void checkDogeConfig();

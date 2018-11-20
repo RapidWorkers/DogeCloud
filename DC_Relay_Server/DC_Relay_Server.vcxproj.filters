@@ -48,12 +48,6 @@
     <ClCompile Include="configReader.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="contactsManager.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="memoManager.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="fileServerRegister.c">
       <Filter>소스 파일</Filter>
     </ClCompile>

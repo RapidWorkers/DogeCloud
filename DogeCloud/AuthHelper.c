@@ -87,7 +87,7 @@ void userLogin(SOCKET hSocket) {
 		loginFlag = 1; //set flag to logged in
 		memcpy(sessionKey, LoginDoneResp.Data.sessionKey, 32); //copy sessionKey from Packet
 		memcpy(currentUsername, uname, 100); //copy username to currentUsername
-		downloadInfoFile(hSocket);
+		downloadPersonalDBFile(hSocket);
 	}
 	system("pause");
 }
@@ -228,7 +228,7 @@ void userRegister(SOCKET hSocket) {
 		loginFlag = 1; //set flag to logged in
 		memcpy(sessionKey, RegisterDone.Data.sessionKey, 32); //copy sessionKey from Packet
 		memcpy(currentUsername, uname, 100); //copy username to currentUsername
-		downloadInfoFile(hSocket);
+		downloadPersonalDBFile(hSocket);
 		break;
 	default:
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "중계서버에서 예상하지 못한 데이터를 전송받았습니다. statusCode: %d", RegisterDone.Data.statusCode);

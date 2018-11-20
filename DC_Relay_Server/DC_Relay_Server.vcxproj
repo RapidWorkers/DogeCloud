@@ -22,11 +22,9 @@
     <ClCompile Include="..\lib\SQLite\shell.c" />
     <ClCompile Include="..\lib\SQLite\sqlite3.c" />
     <ClCompile Include="configReader.c" />
-    <ClCompile Include="contactsManager.c" />
     <ClCompile Include="dataProcessor.c" />
     <ClCompile Include="fileServerRegister.c" />
     <ClCompile Include="MariaDBConnector.c" />
-    <ClCompile Include="memoManager.c" />
     <ClCompile Include="RelayServer.c" />
     <ClCompile Include="socketHandler.c" />
     <ClCompile Include="sessionProcessor.c" />

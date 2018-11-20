@@ -313,12 +313,12 @@ void doRegister(SOCKET hClientSock) {
 }
 
 void procDownloadUserInfo(SOCKET hClientSock) {
-	cs_DownloadInfoReq DownloadInfoReq;
-	sc_DownloadInfoResp DownloadInfoResp;
-	memset(&DownloadInfoReq, 0, sizeof(cs_DownloadInfoReq));
-	memset(&DownloadInfoResp, 0, sizeof(sc_DownloadInfoResp));
+	cs_DownloadPersonalDBReq DownloadInfoReq;
+	sc_DownloadPersonalDBResp DownloadInfoResp;
+	memset(&DownloadInfoReq, 0, sizeof(cs_DownloadPersonalDBReq));
+	memset(&DownloadInfoResp, 0, sizeof(sc_DownloadPersonalDBResp));
 
-	recvData(hClientSock, DownloadInfoReq.buf+4, sizeof(cs_DownloadInfoReq)-4, 0);
+	recvData(hClientSock, DownloadInfoReq.buf+4, sizeof(cs_DownloadPersonalDBReq)-4, 0);
 
 	DownloadInfoReq.Data.opCode = OP_CS_DOWNLOADUSERINFOREQ;
 	DownloadInfoReq.Data.dataLen = ntohl(DownloadInfoReq.Data.dataLen);
@@ -402,7 +402,7 @@ void procDownloadUserInfo(SOCKET hClientSock) {
 	getFileHash(infoFile, fileHash);
 	memcpy(DownloadInfoResp.Data.hash, fileHash, 32);
 
-	sendData(hClientSock, DownloadInfoReq.buf, sizeof(sc_DownloadInfoResp), 0);
+	sendData(hClientSock, DownloadInfoReq.buf, sizeof(sc_DownloadPersonalDBResp), 0);
 
 	fclose(infoFile);
 }
