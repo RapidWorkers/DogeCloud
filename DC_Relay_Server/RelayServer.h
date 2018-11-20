@@ -79,7 +79,6 @@ void doLogin(SOCKET hClientSock);
 void procLogout(SOCKET hClientSock);
 void procRegisterStart(SOCKET hClientSock);
 void doRegister(SOCKET hClientSock);
-void procDownloadUserInfo(SOCKET hClientSock);
 
 //data Processors
 void procFileUpDemo(SOCKET hClientSock);
@@ -100,3 +99,6 @@ void initFSConnection(SOCKET *hFileSrvSock, SOCKADDR_IN *FileServAddr);
 //user to FileServer bridge
 void procFileServerConnReq(SOCKET hClientSock);
 void authFSUser(unsigned char* authKey, unsigned long userUID, int *resultFlag);
+
+//personalDBHandler
+void procDownloadPersonalDBFile(SOCKET hClientSock);

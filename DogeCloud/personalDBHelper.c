@@ -145,6 +145,7 @@ void uploadPersonalDBFile(SOCKET hSocket, char* originalHash) {
 		if (!flag && count == 3) {//3번 다 실패한 경우
 			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "중계서버에 파일을 저장할 수 없었습니다.");
 			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "myinfoClient.db 파일을 수동으로 백업해 주십시오.");
+			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "그 후 관리자에게 이메일로 전송해 주시면 수동으로 적용됩니다.");
 			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
 			system("pause");
 			exit(1);

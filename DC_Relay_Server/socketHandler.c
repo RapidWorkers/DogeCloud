@@ -60,7 +60,7 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 		procFileServerConnReq(hClientSock);
 		break;
 	case OP_CS_DOWNLOADUSERINFOREQ:
-		procDownloadUserInfo(hClientSock);
+		procDownloadPersonalDBFile(hClientSock);
 		break;
 	//case 250: //FILE UPLOAD DEMO
 	//	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Upload Demo Mode", clientIP);
