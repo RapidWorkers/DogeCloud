@@ -5,9 +5,8 @@ HANDLE hMutex;
 
 //create Client Sock array
 SOCKET hClientSocks[MAX_CON];
-char authKey[MAX_CON][32];
-char authWait[MAX_CON][32];
-unsigned int authWaitTime[MAX_CON];
+DC_FILE_SESSION sessionList[MAX_CON];
+DC_AUTHWAIT_LIST authWaitList[MAX_CON];
 int clientCount;
 int authWaitCount;
 
@@ -24,6 +23,8 @@ int main()
 	//Multithread init
 	HANDLE hThread = NULL;
 	unsigned int threadID;
+
+	HANDLE hGCThread = NULL;
 
 	//Create Mutex;
 	hMutex = CreateMutex(NULL, FALSE, NULL);
@@ -73,6 +74,16 @@ int main()
 
 	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Server Started");
 	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Server Listening at %s:%d", "NOT IMPLEMENTED", 0);
+
+	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Starting Garbage Collector");
+	hGCThread = (HANDLE)_beginthreadex(NULL, 0, waitingListGC, NULL, 0, NULL);
+	if (hGCThread == NULL) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "GC Start Fail");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		system("pause");
+		exit(1);
+	}
+	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Done Starting Garbage Collector");
 
 	while (1) {
 		int szClntAddr = sizeof(clientAddr);

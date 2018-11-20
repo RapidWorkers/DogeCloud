@@ -31,6 +31,6 @@ void manageFile(SOCKET hSocket) {
 		return;
 	}
 
-	openFileServer(FileSrvConResp.Data.fileSrvAddr, FileSrvConResp.Data.fileSrvPort);
+	openFileServer(FileSrvConResp.Data.fileSrvAddr, FileSrvConResp.Data.fileSrvPort, FileSrvConResp.Data.authKey);
 	return;
 }

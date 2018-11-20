@@ -27,10 +27,21 @@ void procFileServerConnReq(SOCKET hClientSock) {
 	FileSrvConResp.Data.dataLen = htonl(sizeof(sc_FileSrvConResp) - 8);
 
 	unsigned char authKey[32];
+	unsigned long userUID;
 	GenerateSessionKey(authKey);
 
+	//전역변수에서 UID 가져옴
+	WaitForSingleObject(hMutex, INFINITE);
+	for (int i = 0; i < clientCount; i++) {
+		if (hClientSock == hClientSocks[i]) {
+			userUID = sessionList[i].userUID;
+			break;
+		}
+	}
+	ReleaseMutex(hMutex);
+
 	int authResult = 0;
-	authFSUser(authKey, &authResult);
+	authFSUser(authKey, userUID, &authResult);
 	if(authResult){
 		memcpy(FileSrvConResp.Data.authKey, authKey, 32);
 		inet_ntop(AF_INET, &fileSrvAddr.sin_addr, FileSrvConResp.Data.fileSrvAddr, 16);
@@ -46,15 +57,17 @@ void procFileServerConnReq(SOCKET hClientSock) {
 	return;
 }
 
-void authFSUser(char* authKey, int *resultFlag) {
+void authFSUser(unsigned char* authKey, unsigned long userUID, int *resultFlag) {
 	sf_AuthUser AuthUser;
 	fs_AuthUserResp AuthUserResp;
 	memset(&AuthUser, 0, sizeof(sf_AuthUser));
 	memset(&AuthUserResp, 0, sizeof(fs_AuthUserResp));
 
-	//construct packet
+	//패킷 데이터 설정
 	AuthUser.Data.opCode = htonl(OP_SF_AUTHUSER);
 	AuthUser.Data.dataLen = htonl(sizeof(AuthUser) - 8);
+	AuthUser.Data.userUID = htonl(userUID);
+	memcpy(AuthUser.Data.UserFileServerAuthKey, authKey, 32);
 
 	sendData(hFileSrvSock, AuthUser.buf, sizeof(sf_AuthUser), 0);
 

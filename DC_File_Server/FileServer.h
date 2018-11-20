@@ -33,6 +33,18 @@ typedef struct {
 	char dbase[255];
 } MYSQL_SERVER;
 
+typedef struct {
+	char authKey[32];
+	unsigned int authWaitTime;
+	unsigned long userUID;
+} DC_AUTHWAIT_LIST;
+
+typedef struct {
+	char authKey[32];
+	unsigned long userUID;
+	char directory[255];
+} DC_FILE_SESSION;
+
 //defining macro function for handling error on send and receive packet
 #define sendData(hClientSock, packetBuffer, packetSize, flag) \
 if (!sendRaw(hClientSock, packetBuffer, packetSize, flag)) {\
@@ -49,9 +61,8 @@ if (!recvRaw(hClientSock, packetBuffer, packetSize, flag)) {\
 //extern var declare
 extern HANDLE hMutex;
 extern SOCKET hClientSocks[MAX_CON];
-extern char authKey[MAX_CON][32];
-extern char authWait[MAX_CON][32];
-extern unsigned int authWaitTime[MAX_CON];
+extern DC_FILE_SESSION sessionList[MAX_CON];
+extern DC_AUTHWAIT_LIST authWaitList[MAX_CON];
 extern int clientCount;
 extern int authWaitCount;
 
@@ -75,3 +86,10 @@ void procRegisterFileServer(SOCKET hClientSock);
 
 //user AuthManager
 void procAddUserAuthWaitList(SOCKET hClientSock);
+void procFileLogin(SOCKET hClientSock);
+
+//garbage collector
+void waitingListGC();
+
+//userFileManager
+void procListFile(SOCKET hClientSock);

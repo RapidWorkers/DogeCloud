@@ -19,8 +19,10 @@ unsigned int WINAPI clientHandler(void* clientInfo) {
 	WaitForSingleObject(hMutex, INFINITE);
 	for (int i = 0; i < clientCount; i++) {
 		if (hClientSock == hClientSocks[i]) {
-			while (i++ < clientCount - 1)
+			while (i++ < clientCount - 1) {
 				hClientSocks[i] = hClientSocks[i + 1];
+				memcpy(&sessionList[i], &sessionList[i + 1], sizeof(DC_FILE_SESSION));
+			}
 			break;
 		}
 	}
@@ -41,6 +43,12 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 		break;
 	case OP_SF_AUTHUSER:
 		procAddUserAuthWaitList(hClientSock);
+		break;
+	case OP_CF_LOGINFILE:
+		procFileLogin(hClientSock);
+		break;
+	case OP_CF_LISTFILE:
+		procListFile(hClientSock);
 		break;
 	default:
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Unknown Packet: %s", clientIP);

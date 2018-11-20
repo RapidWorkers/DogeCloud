@@ -49,7 +49,7 @@ void doLogin(SOCKET hClientSock) {
 	MYSQL_STMT *stmt = NULL;
 	MYSQL_BIND bind[2];
 
-	char *query = "SELECT count(id) FROM accounts WHERE username = ? and pwd = ?;";
+	char *query = "SELECT count(id), id FROM accounts WHERE username = ? and pwd = ?;";
 
 	memset(bind, 0, sizeof(bind)); //init bind
 
@@ -62,12 +62,16 @@ void doLogin(SOCKET hClientSock) {
 	bind[1].buffer_length = 64;
 
 	int loginFlag = 0;
+	int userUID = 0;
 
-	MYSQL_BIND bind_result;
+	MYSQL_BIND bind_result[2];
 	memset(&bind_result, 0, sizeof(bind_result)); //init bind
-	bind_result.buffer_type = MYSQL_TYPE_LONG;
-	bind_result.buffer = &loginFlag;
-	bind_result.buffer_length = 4;
+	bind_result[0].buffer_type = MYSQL_TYPE_LONG;
+	bind_result[0].buffer = &loginFlag;
+	bind_result[0].buffer_length = 4;
+	bind_result[1].buffer_type = MYSQL_TYPE_LONG;
+	bind_result[1].buffer = &userUID;
+	bind_result[1].buffer_length = 4;
 
 	if ((stmt = mysql_stmt_init(&sqlHandle)) == NULL) {//stmt is local variable so this must be done before calling sqlPrepareAndExecute
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
@@ -98,7 +102,9 @@ void doLogin(SOCKET hClientSock) {
 		WaitForSingleObject(hMutex, INFINITE);//to protect global var access
 		for (int i = 0; i < clientCount; i++) {
 			if (hClientSock == hClientSocks[i]) {
-				memcpy(sessionKey[i], LoginDoneResp.Data.sessionKey, 32); //copy generated sessionKey
+				memcpy(sessionList[i].sessionKey, LoginDoneResp.Data.sessionKey, 32); //copy generated sessionKey
+				sessionList[i].userUID = userUID;
+				sessionList[i].currentStatus = 1;
 				break;
 			}
 		}
@@ -165,6 +171,7 @@ void doRegister(SOCKET hClientSock) {
 
 	char* unameDupChkQuery = "SELECT count(id) FROM accounts WHERE username = ?;";
 	char* insertQuery = "INSERT into accounts VALUES(NULL, ?, ?, ?);";
+	char* getUID = "SELECT id FROM accounts WHERE username = ?;";
 
 	MYSQL_STMT *stmt = NULL;
 	MYSQL_BIND query1_bind[1];
@@ -250,6 +257,32 @@ void doRegister(SOCKET hClientSock) {
 	}
 
 	sqlPrepareAndExecute(&sqlHandle, stmt, insertQuery, query2_bind, NULL);
+	mysql_stmt_free_result(stmt);//ready for next query
+
+	if ((stmt = mysql_stmt_init(&sqlHandle)) == NULL) {//stmt is local variable so this must be done before calling sqlPrepareAndExecute
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		system("pause");
+		exit(1);//exit with error
+	}
+
+	int userUID = 0;
+	MYSQL_BIND bind_result3;
+	memset(&bind_result3, 0, sizeof(bind_result3)); //init bind
+	bind_result3.buffer_type = MYSQL_TYPE_LONG;
+	bind_result3.buffer = &userUID;
+	bind_result3.buffer_length = 4;
+
+	sqlPrepareAndExecute(&sqlHandle, stmt, getUID, query1_bind, &bind_result3);
+
+	if (mysql_stmt_fetch(stmt)) {
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: Got no data from Database!!!");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		system("pause");
+		exit(1);//exit with error
+	}
 
 	//SEND RESULT
 	RegisterDone.Data.opCode = htonl(OP_SC_REGISTERDONE);
@@ -262,7 +295,14 @@ void doRegister(SOCKET hClientSock) {
 	printDebugMsg(DC_DEBUG, DC_ERRORLEVEL, "Generated Session Key: %s", tmp);
 
 	WaitForSingleObject(hMutex, INFINITE);//to protect global var access
-	memcpy(sessionKey[clientCount], RegisterDone.Data.sessionKey, 32); //copy generated sessionKey
+	for (int i = 0; i < clientCount; i++) {
+		if (hClientSock == hClientSocks[i]) {
+			memcpy(sessionList[i].sessionKey, RegisterDone.Data.sessionKey, 32); //copy generated sessionKey
+			sessionList[i].userUID = userUID;
+			sessionList[i].currentStatus = 1;
+			break;
+		}
+	}
 	ReleaseMutex(hMutex);
 
 	sendData(hClientSock, RegisterDone.buf, sizeof(RegisterDone), 0);

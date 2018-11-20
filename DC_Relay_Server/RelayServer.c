@@ -5,8 +5,7 @@ HANDLE hMutex;
 
 //create Client Sock array
 SOCKET hClientSocks[MAX_CON];
-char sessionKey[MAX_CON][32];
-char currentStatus[MAX_CON];
+DC_SESSION sessionList[MAX_CON];
 int clientCount;
 
 SOCKET hFileSrvSock;

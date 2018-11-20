@@ -23,7 +23,7 @@ unsigned int WINAPI clientHandler(void* clientInfo) {
 		if (hClientSock == hClientSocks[i]) {
 			while (i++ < clientCount - 1) {
 				hClientSocks[i] = hClientSocks[i + 1];
-				memcpy(sessionKey[i], sessionKey[i + 1], 32);
+				memcpy(&sessionList[i], &sessionList[i + 1], sizeof(DC_SESSION));
 			}
 			break;
 		}

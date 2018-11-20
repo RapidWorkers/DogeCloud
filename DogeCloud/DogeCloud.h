@@ -53,5 +53,9 @@ void checkDogeConfig();
 void readRelayServerPath(SOCKADDR_IN *RelayServAddr);
 
 //fileServerConnector
-void openFileServer(char *fileServerAddr, unsigned long fileServerPort);
+void openFileServer(char *fileServerAddr, unsigned long fileServerPort, unsigned char *authKey);
 void doFileManage(SOCKET hFileSrvSock);
+void showFileList(SOCKET hFileSrvSock, int *errorFlag);
+void moveDir(SOCKET hFileSrvSock, int *errorFlag);
+void moveFileListPage(SOCKET hFileSrvSock, char type, int *errorFlag);
+void doFileJob(SOCKET hFileSrvSock, int jobType, int *errorFlag);

@@ -52,8 +52,9 @@ extern "C" {
 			unsigned long opCode;//operation code -> to classify packet
 			unsigned long dataLen;
 			unsigned char UserFileServerAuthKey[32];//random sha256 hash
+			unsigned long userUID;
 		} Data;
-		char buf[40];
+		char buf[44];
 	} sf_AuthUser;
 
 	typedef union {
@@ -99,10 +100,11 @@ extern "C" {
 			unsigned char jobType;  //0 = download, 1 = upload (from the viewpoint of client)
 			unsigned char fileName[255]; //since NTFS filesystem's max file name length is 255
 			unsigned char fileHash[32];
+			unsigned char IV[16];//IV값은 DB에 저장되거나 복호화에 사용됨
 			unsigned long long fileSize;
 		}Data;
-		char buf[304];
-	} all_FileInfo;
+		char buf[320];
+	} cffc_FileInfo;
 
 	typedef union {
 		struct {
@@ -135,9 +137,8 @@ extern "C" {
 		struct {
 			unsigned long opCode;
 			unsigned long dataLen;
-			unsigned char pageNum;
 		}Data;
-		char buf[9];
+		char buf[8];
 	} cf_ListFile;
 
 	typedef union {
@@ -145,11 +146,15 @@ extern "C" {
 			unsigned long opCode;
 			unsigned long dataLen;
 			unsigned char statusCode; //0 = fail, 1 = success
-			unsigned char fileCount; //max 20
-			unsigned char fileName[20][255];
+			unsigned char fileCount; //max 10
+			unsigned char fileName[10][255];
+			unsigned char fileType[10]; //0 = 폴더, 1 = 파일
+			unsigned char currentPage;
+			unsigned char totalPage;
+			unsigned char currentDir[255];
 		}Data;
-		char buf[5110];
-	} cf_ListFileResp;
+		char buf[2827];
+	} fc_ListFileResp;
 
 	typedef union {
 		struct {
@@ -159,6 +164,15 @@ extern "C" {
 		}Data;
 		char buf[9];
 	} cf_ListPageMove;
+
+	typedef union {
+		struct {
+			unsigned long opCode;
+			unsigned long dataLen;
+			unsigned char statusCode;
+		}Data;
+		char buf[9];
+	} fc_ListPageMoveResp;
 
 	typedef union {
 		struct {

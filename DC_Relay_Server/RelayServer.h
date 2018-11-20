@@ -33,6 +33,11 @@ typedef struct {
 	char dbase[255];
 } MYSQL_SERVER;
 
+typedef struct {
+	unsigned long userUID;
+	char currentStatus;
+	char sessionKey[32];
+} DC_SESSION;
 
 //defining macro function for handling error on send and receive packet
 #define sendData(hClientSock, packetBuffer, packetSize, flag) \
@@ -52,8 +57,7 @@ extern HANDLE hMutex;
 
 //for socket and session
 extern SOCKET hClientSocks[MAX_CON];
-extern char sessionKey[MAX_CON][32];
-extern char currentStatus[MAX_CON];
+extern DC_SESSION sessionList[MAX_CON];
 extern int clientCount;
 
 //for mysql
@@ -94,4 +98,4 @@ void initFSConnection(SOCKET *hFileSrvSock, SOCKADDR_IN *FileServAddr);
 
 //user to FileServer bridge
 void procFileServerConnReq(SOCKET hClientSock);
-void authFSUser(char* authKey, int *resultFlag);
+void authFSUser(unsigned char* authKey, unsigned long userUID, int *resultFlag);
