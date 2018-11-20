@@ -5,20 +5,20 @@ Kwangwoon Univ. School of Computer and Info. Eng. / Advanced C Programming Proje
 
 # Disclaimer
 * 이 프로젝트는 고급 C 프로그래밍의 팀 과제로써 수행되는 것이며 광운대학교의 지원을 받지 않았습니다.
-* This project is not supported by Kwangwoon Univ. This project is a part of team assignment of subject "Advanced C Programming".
+* This project is not supported by Kwangwoon Univ and this project is a part of team assignment of subject "Advanced C Programming".
 
 ## Requirements
 * Microsoft(R) Visual Studio (>=2017)
-* MariaDB (planned)
-* Windows O/S (Due to WinSock2 Library, not compatible with *nix)
+* MariaDB or MySQL (Recommend MariaDB)
+* Windows O/S (Since This program used a lot of Windows API, not compatible with *nix system.)
 
 ## Before Building Source Code
 * 만일 기본 헤더파일들에 대해 경로 오류가 발생할 경우 Visual Studio의 프로젝트 속성에서 Windows SDK 버전을 지정해 주어야 합니다.
 * If there's an path error on default header files like stdio.h, you should check Project Propertis and set the Windows SDK version to what you have. 
 
 ## How to Run Program
-1) RelayServer 실행
-2) FileServer 실행 (현재는 FileServer 미구현으로 실행하지 않음)
+1) FileServer 실행
+2) RelayServer 실행
 3) DogeCloud 실행
 
 ## Maintainers
