@@ -187,8 +187,14 @@ int main()
 		hClientSock = accept(hServSock, (SOCKADDR*)&clientAddr, &szClntAddr);
 
 		if (hClientSock == INVALID_SOCKET) {//클라이언트 접속 실패시
-			printDebugMsg(3, DC_ERRORLEVEL, "Client Accept Fail");
+			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Client Accept Fail");
 			break;
+		}
+
+		if (clientCount >= MAX_CON) {//접속 제한 도달시
+			printDebugMsg(DC_WARN, DC_ERRORLEVEL, "MAX CONNECTION REACHED, CLOSE CONNECTION!!");
+			closesocket(hClientSock);
+			continue;
 		}
 
 		WaitForSingleObject(hMutex, INFINITE);
@@ -200,6 +206,7 @@ int main()
 		DC_SOCK_INFO clientInfo;
 		clientInfo.hSocket = &hClientSock;
 		inet_ntop(AF_INET, &clientAddr.sin_addr, clientInfo.clientIP, 16);//클라이언트 ip 문자열로 변환
+		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Connection Limit: %d / %d", clientCount, MAX_CON);
 		ReleaseMutex(hMutex);
 		hThread = (HANDLE)_beginthreadex(NULL, 0, clientHandler, (void*)&clientInfo, 0, NULL);//쓰레드 생성하여 넘김
 		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Client Connected: %s", clientInfo.clientIP);
