@@ -51,10 +51,14 @@ unsigned int WINAPI clientHandler(void* clientInfo) {
 	WaitForSingleObject(hMutex, INFINITE);
 	for (int i = 0; i < clientCount; i++) {
 		if (hClientSock == hClientSocks[i]) {
-			while (i++ < clientCount - 1) {
+			while (i < clientCount - 1) {
 				hClientSocks[i] = hClientSocks[i + 1];
 				memcpy(&sessionList[i], &sessionList[i + 1], sizeof(DC_SESSION));
+				i++;
 			}
+			//변수 0으로 설정 => 완전 삭제
+			memset(&sessionList[i], 0, sizeof(DC_SESSION));
+			memset(&hClientSocks[i], 0, sizeof(SOCKET));
 			break;
 		}
 	}
