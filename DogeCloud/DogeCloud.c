@@ -1,5 +1,36 @@
+/*
+Copyright (C) 2018 S.H.Kim (soohyunkim@kw.ac.kr)
+Copyright (C) 2018 K.J Choi (chlrhkdwls99@naver.com)
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+/**
+	@file DogeCloud.c
+	@date 2018/11/21
+	@author 멍멍아야옹해봐
+	@brief DogeCloud Main 파일
+*/
+
 #include "DogeCloud.h"
 
+/**
+	@fn void printMenu()
+	@brief DogeCloud 메인 메뉴 출력
+	@author 멍멍아야옹해봐
+*/
 void printMenu() {
 	system("cls");
 	printProgramInfo();
@@ -34,11 +65,34 @@ void printMenu() {
 	}
 }
 
-//session related var
+//세션 관련 변수
+/**
+	@var int loginFlag
+	로그인 여부 저장
+*/
 int loginFlag = 0;
+
+/**
+	@var char sessionKey[32]
+	중계서버 인증 세션키 저장용 변수
+*/
 char sessionKey[32] = { 0, };
+
+/**
+	@var char currentUsername[100]
+	현재 로그인된 유저 이름 저장
+*/
 char currentUsername[100] = { 0, };
 
+/**
+	@fn int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelayServAddr)
+	@brief DogeCloud 중계 서버 연결
+	@author 멍멍아야옹해봐
+	@param *wsaData WSADATA 구조체 주소
+	@param *hRelayServSocket SOCKET 구조체 주소
+	@param *RelayServAddr SOCKADDR_IN 구조체 주소
+	@return 0 = 실패, 1 = 성공
+*/
 int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelayServAddr) {
 	printProgramInfo();
 
@@ -47,16 +101,16 @@ int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelaySe
 		return 0;
 	}
 
-	*hRelayServSocket = socket(PF_INET, SOCK_STREAM, 0);
-	if (*hRelayServSocket == INVALID_SOCKET) {
+	*hRelayServSocket = socket(PF_INET, SOCK_STREAM, 0); //소켓 초기화
+	if (*hRelayServSocket == INVALID_SOCKET) {//소켓 생성 성공했는지 검사
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "유효하지 않은 소켓입니다.\n");
 		return 0;
 	}
 
-	readRelayServerPath(RelayServAddr);
+	readRelayServerPath(RelayServAddr); //중계서버 주소 설정파일에서 읽어옴
 
-	int err = (connect(*hRelayServSocket, (SOCKADDR*)RelayServAddr, sizeof(*RelayServAddr)) == SOCKET_ERROR);
-	if (err) //생성된 소켓으로 서버에 연결
+	int err = (connect(*hRelayServSocket, (SOCKADDR*)RelayServAddr, sizeof(*RelayServAddr)) == SOCKET_ERROR);//중계서버에 연결
+	if (err) //에러 검사
 	{
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "중계서버와의 연결이 실패했습니다: %d", WSAGetLastError());
 		return 0;
@@ -67,13 +121,34 @@ int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelaySe
 	return 1;
 }
 
+/**
+	@fn int main()
+	@brief DogeCloud 진입점(Main)
+	@author 멍멍아야옹해봐
+*/
 int main() {
 
+	/**
+	@var WSADATA wsaData;
+	소켓 라이브러리용 구조체
+	*/
 	WSADATA wsaData;
-	SOCKET hRelayServSocket, hFileServSocket;
-	SOCKADDR_IN RelayServAddr, FileServAddr;
 
-	if (!initProgram(&wsaData, &hRelayServSocket, &RelayServAddr)) {
+	/**
+	@var SOCKET hRelayServSocket;
+	@var SOCKET hFileServSocket;
+	서버 연결용 소켓 구조체
+	*/
+	SOCKET hRelayServSocket, hFileServSocket;
+
+	/**
+	@var SOCKADDR_IN RelayServAddr;
+	서버 주소 저장하는 구조체
+	*/
+	SOCKADDR_IN RelayServAddr;
+
+
+	if (!initProgram(&wsaData, &hRelayServSocket, &RelayServAddr)) {//initProgram 함수로 초기화 및 연결
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램 초기화 실패");
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
 		system("pause");
@@ -82,17 +157,18 @@ int main() {
 
 	printMenu();
 
-	while (1) {
-
+	while (1) {//메뉴 선택은 종료할때까지 무한반복
 		printMenu();
-		int select;
+
+		int select;//유저 입력 저장용
 		scanf_s("%d", &select);
 		clearStdinBuffer();
 
+		//입력 받고 화면 비우기
 		system("cls");
 		printProgramInfo();
 
-		if (loginFlag == 0) {
+		if (loginFlag == 0) {//로그인을 안했다면
 			switch (select) {
 			case 1: //로그인
 				userLogin(hRelayServSocket);
@@ -116,7 +192,7 @@ int main() {
 				break;
 			}
 		}
-		else if (loginFlag == 1) {
+		else if (loginFlag == 1) {//로그인을 했다면
 			switch (select) {
 			case 1: //메모 관리
 				manageMemo(hRelayServSocket);
@@ -131,14 +207,14 @@ int main() {
 				userLogout(hRelayServSocket);
 				break;
 			case 5: //종료
-				userLogout(hRelayServSocket);
+				userLogout(hRelayServSocket);//먼저 로그아웃
 				closesocket(hRelayServSocket); //소켓 해제
-				printf("Closed!\n");
-				WSACleanup();
+				printf_s("서버 연결 종료!\n");
+				WSACleanup();//소켓 라이브러리 해제
 				system("pause");
-				exit(0);
+				exit(0);//종료
 				break;
-			default:
+			default://올바르지 않은 입력
 				printDebugMsg(DC_WARN, DC_ERRORLEVEL, "올바르지 않은 입력입니다.");
 				Sleep(1000);
 				break;
@@ -146,8 +222,10 @@ int main() {
 		}
 	}
 
-	closesocket(hRelayServSocket); //소켓 라이브러리 해제
-	printf("Closed!\n");
-	WSACleanup();
+	closesocket(hRelayServSocket); //소켓 연결 해제
+	printf_s("서버 연결 종료!\n");
+	WSACleanup();//소켓 라이브러리 해제
 	system("pause");
+
+	return 0;
 }

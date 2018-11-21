@@ -29,6 +29,36 @@
     <ClCompile Include="userFileManager.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\lib\mariadb\Win32\include\errmsg.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_com.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_ctype.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_dyncol.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_stmt.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_version.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\ma_io.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\ma_list.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\ma_pvio.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\ma_tls.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysql.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysqld_error.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysql\client_plugin.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysql\plugin_auth.h" />
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysql\plugin_auth_common.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\errmsg.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_com.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_ctype.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_dyncol.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_stmt.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_version.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\ma_io.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\ma_list.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\ma_pvio.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\ma_tls.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mysql.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mysqld_error.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mysql\client_plugin.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mysql\plugin_auth.h" />
+    <ClInclude Include="..\lib\mariadb\x64\include\mysql\plugin_auth_common.h" />
     <ClInclude Include="FileServer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

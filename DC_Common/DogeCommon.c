@@ -2,16 +2,24 @@
 
 #include "DC_Common.h"
 
-//external library
+//외부 라이브러리 로드
 #include "sha256.h"
 #include "lea.h"
 #include "duthomhas\csprng.h"
 #pragma comment(lib, "dllLEA.lib")
 
-#ifdef __cplusplus //check if cpp compiler compile this code.
+#ifdef __cplusplus //CPP 호환성을 위해
 extern "C" {
 #endif
-
+	/**
+		@fn void printDebugMsg(int targetErrorLevel, int currentErrorLevel, const char* format, ...)
+		@brief 디버그 메시지 표시
+		@author 멍멍아야옹해봐
+		@param targetErrorLevel 오류 수준
+		@param currentErrorLevel 설정된 오류 수준
+		@param *format 서식 문자열
+		@param ... 기타 파라미터
+	*/
 	DLL void printDebugMsg(int targetErrorLevel, int currentErrorLevel, const char* format, ...) {
 		char buf[512] = { 0, };
 
@@ -42,6 +50,13 @@ extern "C" {
 		return;
 	}
 
+	/**
+		@fn void updateProgress(int current, int total)
+		@brief 프로그레스 바 생성/업데이트
+		@author 멍멍아야옹해봐
+		@param current 현재 수치
+		@param total 전체 수치
+	*/
 	DLL void updateProgress(int current, int total)
 	{	
 		int length = 30;//프로그레스 바 길이
@@ -63,6 +78,13 @@ extern "C" {
 		return;
 	}
 
+	/**
+		@fn void SHA256_Text(const char* text, char* buf)
+		@brief 문자열의 SHA256 구하기
+		@author 멍멍아야옹해봐
+		@param *text 구할 문자열
+		@param *buf 저장할 공간(32바이트)
+	*/
 	DLL void SHA256_Text(const char* text, char* buf) {
 		if (text == NULL || buf == NULL) return;
 		SHA256_CTX hSHA256;
@@ -72,6 +94,13 @@ extern "C" {
 		return;
 	}
 
+	/**
+		@fn void GenerateCSPRNG(unsigned char *buffer, int numSize)
+		@brief 암호학적으로 안전한 난수 생성
+		@author 멍멍아야옹해봐
+		@param *buffer 저장할 공간
+		@param numSize 생성할 크기
+	*/
 	DLL void GenerateCSPRNG(unsigned char *buffer, int numSize) {
 		if (buffer == NULL) return;
 		CSPRNG rng = csprng_create();
@@ -81,6 +110,12 @@ extern "C" {
 		return;
 	}
 
+	/**
+		@fn void GenerateSessionKey(char sessionKey[32])
+		@brief 세션키 생성
+		@author 멍멍아야옹해봐
+		@param sessionKey[32] 세션키 저장할 배열
+	*/
 	DLL void GenerateSessionKey(char sessionKey[32]) {
 		if (sessionKey == NULL) return;
 		unsigned char buffer[128] = { 0, };
@@ -88,6 +123,11 @@ extern "C" {
 		SHA256_Text(buffer, sessionKey);
 	}
 
+	/**
+		@fn void printProgramInfo()
+		@brief DogeCloud 정보 표시
+		@author 멍멍아야옹해봐
+	*/
 	DLL void printProgramInfo() {
 		unsigned char logo_txt[] = {
 			0x20, 0x20, 0x5f, 0x5f, 0x5f, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
@@ -117,25 +157,30 @@ extern "C" {
 		printf_s("\tVersion: %d.%d (%s)\n", MAJOR_VERSION, MINOR_VERSION, VER_STATUS);
 		printf_s("=======================================\n");
 	}
-
+	
+	/**
+		@fn void printLicense()
+		@brief DogeCloud 라이선스 표시
+		@author 멍멍아야옹해봐
+	*/
 	DLL void printLicense() {
-		printf_s("이 프로그램에 포함된 라이브러리 및 소스 코드에 대한 라이센스는 \nhttps://github.com/RapidWorkers/DogeCloud 에서 확인하십시오.");
-		printf_s("\
-			Copyright (C) 2018 S.H.Kim (soohyunkim@kw.ac.kr)\
-			Copyright(C) 2018 K.J Choi(chlrhkdwls99@naver.com)\
-			\
-			This program is free software; you can redistribute it and/or\
-			modify it under the terms of the GNU General Public License\
-			as published by the Free Software Foundation; either version 2\
-			of the License, or (at your option) any later version.\
-			\
-			This program is distributed in the hope that it will be useful,\
-			but WITHOUT ANY WARRANTY; without even the implied warranty of\
-			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the\
-			GNU General Public License for more details.\
-			\
-			You should have received a copy of the GNU General Public License\
-			along with this program; if not, write to the Free Software\
+		puts("이 프로그램에 포함된 라이브러리 및 소스 코드에 대한 라이센스는 \nhttps://github.com/RapidWorkers/DogeCloud 에서 확인하십시오.");
+		puts("\
+			Copyright (C) 2018 S.H.Kim (soohyunkim@kw.ac.kr)\n\
+			Copyright(C) 2018 K.J Choi(chlrhkdwls99@naver.com)\n\
+			\n\
+			This program is free software; you can redistribute it and/or\n\
+			modify it under the terms of the GNU General Public License\n\
+			as published by the Free Software Foundation; either version 2\n\
+			of the License, or (at your option) any later version.\n\
+			\n\
+			This program is distributed in the hope that it will be useful,\n\
+			but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
+			MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the\n\
+			GNU General Public License for more details.\n\
+			\n\
+			You should have received a copy of the GNU General Public License\n\
+			along with this program; if not, write to the Free Software\n\
 			Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110 - 1301, USA.");
 	}
 

@@ -4,9 +4,6 @@
     <Filter Include="lib">
       <UniqueIdentifier>{71b9ded2-845e-4afd-9a97-c0b88a571ae8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lib\SQLite">
-      <UniqueIdentifier>{dbbd996d-16bb-4445-b1ce-5100fb2104b6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>

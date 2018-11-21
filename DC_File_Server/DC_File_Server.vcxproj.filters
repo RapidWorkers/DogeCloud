@@ -13,6 +13,18 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{d15eabec-5f6f-40f9-a72d-3bdf2338deb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\MariaDB">
+      <UniqueIdentifier>{f90db5f1-db1d-4867-b9e4-93032b5b864b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\MariaDB\Win32">
+      <UniqueIdentifier>{d3e3a071-846c-41ae-8d56-1e6a396a56bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\MariaDB\x64">
+      <UniqueIdentifier>{d25126df-7458-4f7a-be62-4016bd93e786}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="socketHandler.c">
@@ -43,6 +55,96 @@
   <ItemGroup>
     <ClInclude Include="FileServer.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\errmsg.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_com.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_ctype.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_dyncol.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_stmt.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\mariadb_version.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\ma_io.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\ma_list.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\ma_pvio.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\ma_tls.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysql.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysqld_error.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysql\client_plugin.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysql\plugin_auth.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\Win32\include\mysql\plugin_auth_common.h">
+      <Filter>lib\MariaDB\Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\errmsg.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_com.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_ctype.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_dyncol.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_stmt.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\mariadb_version.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\ma_io.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\ma_list.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\ma_pvio.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\ma_tls.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\mysql.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\mysqld_error.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\mysql\client_plugin.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\mysql\plugin_auth.h">
+      <Filter>lib\MariaDB\x64</Filter>
+    </ClInclude>
+    <ClInclude Include="..\lib\mariadb\x64\include\mysql\plugin_auth_common.h">
+      <Filter>lib\MariaDB\x64</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
