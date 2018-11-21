@@ -1,17 +1,54 @@
+/*
+Copyright (C) 2018 S.H.Kim (soohyunkim@kw.ac.kr)
+Copyright (C) 2018 K.J Choi (chlrhkdwls99@naver.com)
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+/**
+	@file configReader.c
+	@date 2018/11/21
+	@author 멍멍아야옹해봐
+	@brief FileServer 설정 파일 관련 함수 모음
+*/
+
 #include "FileServer.h"
 
+/**
+	@fn void checkFileConfig()
+	@brief 파일서버 설정파일 유무 검사
+	@author 멍멍아야옹해봐
+*/
 void checkFileConfig() {
 	FILE *fp;
 
-	if (fopen_s(&fp, "./FileServerConfig.ini", "r")) {
+	if (fopen_s(&fp, "./FileServerConfig.ini", "r")) {//열어보고 없으면 에러
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: FileServerConfig.ini File Error");
 		system("pause");
 		exit(1);//exit with error
 	}
-	fclose(fp);
+	fclose(fp);//파일을 닫는다
 	return;
 }
 
+/**
+	@fn void readMySQLConfig(MYSQL_SERVER *serverInfo)
+	@brief MySQL 서버 설정 읽어옴
+	@author 멍멍아야옹해봐
+	@param *serverInfo MySQL 서버 정보 구조체 포인터
+*/
 void readMySQLConfig(MYSQL_SERVER *serverInfo) {
 	checkFileConfig();
 
