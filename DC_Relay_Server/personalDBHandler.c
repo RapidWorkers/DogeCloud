@@ -205,6 +205,7 @@ void procUploadPersonalDBFile(SOCKET hClientSock) {
 			}
 		}
 		ReleaseMutex(hMutex);
+		remove(fileName);//덮어쓰기 위해서 원 파일은 삭제
 		rename(tmpFileName, fileName);//임시파일을 db 폴더로 이동시킴
 	}
 	else {

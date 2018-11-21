@@ -25,6 +25,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
 #include "DogeCloud.h"
+#include <sqlite3.h>
 
 /**
 	@fn void manageContacts(SOCKET hSocket)
@@ -128,10 +129,10 @@ void manageContacts(SOCKET hSocket) {
 */
 void manageMemo(SOCKET hSocket) {
 	/**
-		@var char originalHash[32]
+		@var unsigned char originalHash[32]
 		DB 파일 해쉬 저장용
 	*/
-	char originalHash[32];
+	unsigned char originalHash[32];
 
 	/**
 		@var FILE *fp
@@ -142,7 +143,7 @@ void manageMemo(SOCKET hSocket) {
 	system("cls");
 
 	//DB파일 열기
-	if (fopen_s(&fp, "./myinfoClient.db", "r")) {
+	if (fopen_s(&fp, "./myinfoClient.db", "rb")) {
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
 		system("pause");
@@ -154,12 +155,19 @@ void manageMemo(SOCKET hSocket) {
 	//sqlite에서 열기 위해 파일 닫음
 	fclose(fp);
 
-	/**
-		@var int maxpage
-		최대 페이지 수
-	*/
-	int maxpage = 2;
+	//데이터베이스 오픈
+	sqlite3 *dbHandle;
+	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		system("pause");
+		exit(1);
+	}
 
+	char* countQuery = "SELECT count(id) FROM memo;";
+	char* selectMemoQuery = "SELECT * FROM memo LIMIT 10 OFFSET %d;";
+
+	int count = 0;
 	/**
 		@var int page
 		현재 페이지
@@ -167,11 +175,45 @@ void manageMemo(SOCKET hSocket) {
 	int page = 1;
 
 	while (1) {//종료될 때 까지 반복
+
+		sqlite3_stmt* stmt;
+		if (sqlite3_prepare(dbHandle, countQuery, -1, &stmt, NULL) == SQLITE_OK)
+		{
+			if (sqlite3_step(stmt) == SQLITE_ROW) {
+				count = sqlite3_column_int(stmt, 0);
+			}
+			else {
+				printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
+				printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+				system("pause");
+				exit(1);
+			}
+		}
+		sqlite3_finalize(stmt);
+
+		/**
+			@var int maxpage
+			최대 페이지 수
+		*/
+		int maxpage = (count-1) / 10 + 1;
+
 		system("cls");
 		printf_s("\n******************************************************************************************");
-		printf_s("\n%4s %60s", "순번", "내용 일부 (한글 기준 최대 30자)");
-		printf_s("\n%4d %60s", 1, "큰 여우가 작은 들을 넘어서 움직이고 있다. 그렇기에 나는 더  ");
-		printf_s("\n%4d %60s", 2, "테스트 ");
+		if (count == 0) {
+			printf_s("\n%80s", "저장된 메모가 없습니다.");
+		}
+		else {
+			printf_s("\n%4s %60s", "순번", "내용 일부 (한글 기준 최대 30자)");
+			char *query = sqlite3_mprintf(selectMemoQuery, (page - 1) * 10);
+			if (sqlite3_prepare(dbHandle, query, -1, &stmt, NULL) == SQLITE_OK)
+			{
+				while (sqlite3_step(stmt) == SQLITE_ROW) {
+					printf_s("\n%4d %60.60s", sqlite3_column_int(stmt, 0), (char*)sqlite3_column_text(stmt, 1));
+				}
+			}
+			sqlite3_finalize(stmt);
+			sqlite3_free(query);
+		}
 		printf_s("\n\t\t\t 페이지 %d / %d", page, maxpage);
 		printf_s("\n******************************************************************************************\n");
 		printf_s("\n\t*********  메   뉴   *********");
@@ -200,12 +242,13 @@ void manageMemo(SOCKET hSocket) {
 			deleteMemo();
 			break;
 		case 4://이전 페이지
-			if (maxpage > page) page++;
-			break;
-		case 5://다음 페이지
 			if (page > 1) page--;
 			break;
+		case 5://다음 페이지
+			if (maxpage > page) page++;
+			break;
 		case 6://나가기
+			sqlite3_close(dbHandle);
 			uploadPersonalDBFile(hSocket, originalHash);
 			return;
 			break;

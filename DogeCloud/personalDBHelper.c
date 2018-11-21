@@ -26,6 +26,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "DogeCloud.h"
 #include <sqlite3.h>
+#include <stdlib.h>
 
 /**
 	@fn void downloadPersonalDBFile(SOCKET hSocket)
@@ -231,7 +232,9 @@ void uploadPersonalDBFile(SOCKET hSocket, char* originalHash) {
 		fseek(infoFile, 0, SEEK_SET);
 
 		//파일 사이즈 전송
+		fileSize = htonl(fileSize);
 		sendData(hSocket, &fileSize, 4, 0);
+		fileSize = ntohl(fileSize);
 
 		/**
 			@var unsigned char dataBuffer[4096]
@@ -282,6 +285,7 @@ void uploadPersonalDBFile(SOCKET hSocket, char* originalHash) {
 			exit(1);
 		}
 	}
+	fclose(infoFile);
 	puts("\n유저 정보 업로드 완료");
 	system("pause");
 	return;
@@ -342,7 +346,7 @@ void addMemo() {
 	sqlite3 *dbHandle;
 
 	//메모 저장을 위한 쿼리
-	char *insertMemo = "";
+	char *insertMemo = "INSERT into memo VALUES(NULL, '%q');";
 
 	//임시로 사용할 파일이름 생성
 	GenerateCSPRNG(tmpRandomNum, 15);
@@ -378,13 +382,46 @@ void addMemo() {
 		exit(1);
 	}
 
-	//TODO: db 처리
+	unsigned long memoFileSize;
+	fseek(tmpFile, 0, SEEK_END);
+	memoFileSize = ftell(tmpFile);
 
-	//db 처리 완료
+	if (memoFileSize == 0) {//만약 파일 사이즈가 0이면 아무 작업도 없는것
+		sqlite3_close(dbHandle);
+		fclose(tmpFile);
+		remove(tmpFileName);//임시파일 삭제
+		return;
+	}
+
+	rewind(tmpFile);
+	char* text = (void*)calloc(1, memoFileSize+1);
+	unsigned long left = memoFileSize;
+	unsigned long toRead;
+
+	while (1) {//다 읽을 때 까지 반복
+		if (left < 4096U)//4KB보다 작은만큼 남으면
+			toRead = left;//남은 만큼 읽음
+		else//아니면
+			toRead = 4096U;//4KiB만큼 읽음
+		//파일 읽어서 버퍼에 저장
+		fread(text + (memoFileSize - left), toRead, 1, tmpFile);
+
+		left -= toRead;//보낸만큼 뺀다
+		updateProgress(memoFileSize - left, memoFileSize);//프로그레스 바 업데이트(생성)
+		if (!left) break;//완료시 탈출
+	}
+
+	char* query = sqlite3_mprintf(insertMemo, text);
+	
+	sqlite3_exec(dbHandle, query, NULL, NULL, NULL);//db에 삽입
 
 	fclose(tmpFile);//파일 해제
 	remove(tmpFileName);//임시파일 삭제
 	sqlite3_close(dbHandle);//db파일 닫기
+
+	//동적 할당 변수 free
+	free(text);
+	sqlite3_free(query);
 
 	return;
 }
