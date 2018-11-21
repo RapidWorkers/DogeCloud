@@ -60,7 +60,7 @@ void procFileDownDemo(SOCKET hClientSock) {
 	fseek(randFile, 0, SEEK_SET);
 
 	fileSize = htonl(fileSize);
-	send(hClientSock, &fileSize, 4, 0);//send file size
+	send(hClientSock, (char*)&fileSize, 4, 0);//send file size
 	fileSize = ntohl(fileSize);
 
 	unsigned char dataBuffer[2048]; //2KiB

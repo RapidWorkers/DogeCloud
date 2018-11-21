@@ -40,7 +40,7 @@ unsigned int WINAPI clientHandler(void* clientInfo) {
 
 	unsigned long opCode = 0;
 
-	while (recvRaw(hClientSock, &opCode, 4, 0)) {//연결이 끊길때까지 옵코드를 클라이언트에서 받아옴
+	while (recvRaw(hClientSock, (char*)&opCode, 4, 0)) {//연결이 끊길때까지 옵코드를 클라이언트에서 받아옴
 		opCode = ntohl(opCode);//호스트 엔디안으로 변환
 		packetHandler(hClientSock, clientIP, opCode);//패킷 핸들러로 넘김
 	}

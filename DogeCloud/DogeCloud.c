@@ -136,10 +136,9 @@ int main() {
 
 	/**
 	@var SOCKET hRelayServSocket;
-	@var SOCKET hFileServSocket;
 	서버 연결용 소켓 구조체
 	*/
-	SOCKET hRelayServSocket, hFileServSocket;
+	SOCKET hRelayServSocket;
 
 	/**
 	@var SOCKADDR_IN RelayServAddr;
