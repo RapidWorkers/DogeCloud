@@ -111,12 +111,12 @@ extern "C" {
 	}
 
 	/**
-		@fn void GenerateSessionKey(char sessionKey[32])
+		@fn void GenerateSessionKey(char *sessionKey)
 		@brief 세션키 생성
 		@author 멍멍아야옹해봐
-		@param sessionKey[32] 세션키 저장할 배열
+		@param *sessionKey 세션키 저장할 배열(32바이트)
 	*/
-	DLL void GenerateSessionKey(char sessionKey[32]) {
+	DLL void GenerateSessionKey(char *sessionKey) {
 		if (sessionKey == NULL) return;
 		unsigned char buffer[128] = { 0, };
 		GenerateCSPRNG(buffer, 127);

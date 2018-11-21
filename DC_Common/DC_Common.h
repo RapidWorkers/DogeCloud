@@ -124,12 +124,12 @@ extern "C" {
 	DLL void SHA256_Text(const char* text, char* buf);
 
 	/**
-		@fn void GenerateSessionKey(char sessionKey[32])
+		@fn void GenerateSessionKey(char *sessionKey)
 		@brief 세션키 생성
 		@author 멍멍아야옹해봐
-		@param sessionKey[32] 세션키 저장할 배열
+		@param *sessionKey 세션키 저장할 배열(32바이트)
 	*/
-	DLL void GenerateSessionKey(char sessionKey[32]);
+	DLL void GenerateSessionKey(char *sessionKey);
 
 	/**
 		@fn void GenerateCSPRNG(unsigned char *buffer, int numSize)
@@ -146,21 +146,21 @@ extern "C" {
 		@brief 지정할 크기가 전송될 때 까지 전송
 		@author 멍멍아야옹해봐
 		@param socket 소켓
-		@param packetBuffer 패킷 버퍼
-		@param packetSize 패킷 사이즈
-		@param flag 소켓 플래그
+		@param buffer 패킷 버퍼
+		@param sendByte 패킷 사이즈
+		@param flags 소켓 플래그
 		@return 0 = 실패, 1 = 성공
 	*/
 	DLL bool sendRaw(SOCKET socket, char* buffer, int sendByte, int flags);
 
 	/**
-		@fn bool recvRaw(SOCKET socket, char* buffer, int sendByte, int flags)
+		@fn bool recvRaw(SOCKET socket, char* buffer, int recvByte, int flags)
 		@brief 지정할 크기가 수신될 때 까지 수신
 		@author 멍멍아야옹해봐
 		@param socket 소켓
-		@param packetBuffer 패킷 버퍼
-		@param packetSize 패킷 사이즈
-		@param flag 소켓 플래그
+		@param buffer 패킷 버퍼
+		@param recvByte 패킷 사이즈
+		@param flags 소켓 플래그
 		@return 0 = 실패, 1 = 성공
 	*/
 	DLL bool recvRaw(SOCKET socket, char* buffer, int recvByte, int flags);
