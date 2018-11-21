@@ -37,6 +37,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "../DC_Common/DC_Common.h"
 
+//동적 라이브러리 로드
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "DC_Common.lib")
 

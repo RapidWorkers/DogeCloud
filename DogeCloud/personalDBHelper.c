@@ -59,12 +59,6 @@ void downloadPersonalDBFile(SOCKET hSocket) {
 	unsigned long fileSize;
 
 	/**
-		@var unsigned long left
-		남은 파일 크기
-	*/
-	unsigned long left = fileSize;
-
-	/**
 		@var unsigned char dataBuffer[4096]
 		다운로드 버퍼 4KiB
 	*/
@@ -93,6 +87,12 @@ void downloadPersonalDBFile(SOCKET hSocket) {
 
 	recvData(hSocket, &fileSize, 4, 0);
 	fileSize = ntohl(fileSize);//호스트 특정 인디안으로 변환
+
+	/**
+		@var unsigned long left
+		남은 파일 크기
+	*/
+	unsigned long left = fileSize;
 
 	puts("\n유저 정보 다운로드 시작...");
 
@@ -176,8 +176,10 @@ void uploadPersonalDBFile(SOCKET hSocket, char* originalHash) {
 	//해쉬 구하기
 	getFileHash(infoFile, fileHash);
 
-	if (!memcmp(fileHash, originalHash, 32))//만약에 파일이 수정되지 않았다면
+	if (!memcmp(fileHash, originalHash, 32)) {//만약에 파일이 수정되지 않았다면
+		fclose(infoFile);//파일 닫기
 		return;//그냥 종료한다
+	}
 
 	//수정된 파일이라면 계속 진행한다.
 	
