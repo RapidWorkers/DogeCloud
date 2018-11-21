@@ -1,3 +1,7 @@
+/*
+삭제 예정
+*/
+
 #include "RelayServer.h"
 
 void procFileUpDemo(SOCKET hClientSock) {
@@ -10,7 +14,7 @@ void procFileUpDemo(SOCKET hClientSock) {
 	}
 
 	unsigned long fileSize;
-	recv(hClientSock, &fileSize, 4, 0);
+	recv(hClientSock, (char*)&fileSize, 4, 0);
 	fileSize = ntohl(fileSize);
 
 	printf("File Size is %d byte", fileSize);
@@ -41,7 +45,7 @@ void procFileUpDemo(SOCKET hClientSock) {
 void procFileDownDemo(SOCKET hClientSock) {
 	FILE *randFile;
 
-	if ((randFile = fopen("Server_randomGenUpFile", "wb+")) == NULL) {
+	if (fopen_s(&randFile, "Server_randomGenUpFile", "wb+")) {
 		printf("ERROR");
 		exit(1);
 	}

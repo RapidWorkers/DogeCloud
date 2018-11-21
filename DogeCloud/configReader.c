@@ -47,7 +47,7 @@ void checkDogeConfig() {
 
 /**
 	@fn void readRelayServerPath(SOCKADDR_IN *RelayServAddr)
-	@brief DogeCloud 중계 서버 설정파일 유무 확인
+	@brief DogeCloud 중계 서버 경로 읽어오기
 	@author 멍멍아야옹해봐
 	@param *RelayServAddr 중계 서버 연결용 주소 구조체 주소
 */

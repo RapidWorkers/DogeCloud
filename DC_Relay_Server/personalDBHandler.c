@@ -1,6 +1,38 @@
+/*
+Copyright (C) 2018 S.H.Kim (soohyunkim@kw.ac.kr)
+Copyright (C) 2018 K.J Choi (chlrhkdwls99@naver.com)
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+/**
+	@file personalDBHandler.c
+	@date 2018/11/21
+	@author 멍멍아야옹해봐
+	@brief RelayServer 개인 DB 업다운 함수 모음
+*/
+
 #include "RelayServer.h"
 #include <sqlite3.h>
 
+/**
+	@fn void procDownloadPersonalDBFile(SOCKET hClientSock)
+	@brief 사용자의 개인 DB 다운로드 요청 처리
+	@author 멍멍아야옹해봐
+	@param hClientSock 사용자 연결된 소켓
+*/
 void procDownloadPersonalDBFile(SOCKET hClientSock) {
 	cs_DownloadPersonalDBReq DownloadInfoReq;
 	sc_DownloadPersonalDBResp DownloadInfoResp;
@@ -64,7 +96,7 @@ void procDownloadPersonalDBFile(SOCKET hClientSock) {
 	fileSize = ftell(infoFile);
 
 	fileSize = htonl(fileSize);
-	sendData(hClientSock, &fileSize, 4, 0);
+	sendData(hClientSock, (char*)&fileSize, 4, 0);
 	fileSize = ntohl(fileSize);
 
 	fseek(infoFile, 0, SEEK_SET);
@@ -96,6 +128,12 @@ void procDownloadPersonalDBFile(SOCKET hClientSock) {
 	fclose(infoFile);
 }
 
+/**
+	@fn void procUploadPersonalDBFile(SOCKET hClientSock)
+	@brief 사용자의 개인 DB 업로드 요청 처리
+	@author 멍멍아야옹해봐
+	@param hClientSock 사용자 연결된 소켓
+*/
 void procUploadPersonalDBFile(SOCKET hClientSock) {
 	cs_PersonalDBEditDone PersonalDBEditDone;
 	sc_PersonalDBEditDoneResp PersonalDBEditDoneResp;
@@ -128,10 +166,10 @@ void procUploadPersonalDBFile(SOCKET hClientSock) {
 	}
 
 	//다운로드 모드 진입
-	unsigned int fileSize = 0;
+	unsigned long fileSize = 0;
 
 	//파일 사이즈 수신
-	recvData(hClientSock, &fileSize, 4, 0);
+	recvData(hClientSock, (char*)&fileSize, 4, 0);
 	fileSize = ntohl(fileSize);
 	unsigned int left = fileSize;
 	unsigned int toRead;
