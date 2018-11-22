@@ -34,22 +34,16 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 	@param hSocket 중계서버 연결된 소켓
 */
 void manageContacts(SOCKET hSocket) {
-	/**
-		@var char originalHash[32]
-		DB 파일 해쉬 저장용
-	*/
+	/** @brief DB 파일 해쉬 저장용 */
 	char originalHash[32];
 
-	/**
-		@var FILE *fp
-		파일 읽어오기 위한 구조체 포인터
-	*/
+	/** @brief db 읽어오기 위한 파일 구조체 포인터 */
 	FILE *fp;
 
 	system("cls");
 
 	//DB파일 열기
-	if (fopen_s(&fp, "./myinfoClient.db", "r")) {
+	if (fopen_s(&fp, "./myinfoClient.db", "rb")) {
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
 		system("pause");
@@ -62,16 +56,10 @@ void manageContacts(SOCKET hSocket) {
 	//sqlite에서 열기 위해 파일 닫음
 	fclose(fp); 
 
-	/**
-		@var int maxpage
-		최대 페이지 수
-	*/
+	/** @brief 최대 페이지 수 */
 	int maxpage = 2;
 
-	/**
-		@var int page
-		현재 페이지
-	*/
+	/** @brief 현재 페이지 */
 	int page = 1;
 
 	while (1) {//종료될 때 까지 반복
@@ -128,16 +116,10 @@ void manageContacts(SOCKET hSocket) {
 	@param hSocket 중계서버 연결된 소켓
 */
 void manageMemo(SOCKET hSocket) {
-	/**
-		@var unsigned char originalHash[32]
-		DB 파일 해쉬 저장용
-	*/
+	/** @brief DB 파일 해쉬 저장용 */
 	unsigned char originalHash[32];
 
-	/**
-		@var FILE *fp
-		파일 읽어오기 위한 구조체 포인터
-	*/
+	/** @brief 파일 읽어오기 위한 구조체 포인터 */
 	FILE *fp;
 
 	system("cls");
@@ -155,7 +137,7 @@ void manageMemo(SOCKET hSocket) {
 	//sqlite에서 열기 위해 파일 닫음
 	fclose(fp);
 
-	//데이터베이스 오픈
+	/** @brief sqlite3을 위한 handle */
 	sqlite3 *dbHandle;
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
@@ -167,11 +149,9 @@ void manageMemo(SOCKET hSocket) {
 	char* countQuery = "SELECT count(id) FROM memo;";
 	char* selectMemoQuery = "SELECT * FROM memo LIMIT 10 OFFSET %d;";
 
+	/** @brief 메모 개수 */
 	int count = 0;
-	/**
-		@var int page
-		현재 페이지
-	*/
+	/** @brief 현재 페이지 */
 	int page = 1;
 
 	while (1) {//종료될 때 까지 반복
@@ -191,12 +171,10 @@ void manageMemo(SOCKET hSocket) {
 		}
 		sqlite3_finalize(stmt);
 
-		/**
-			@var int maxpage
-			최대 페이지 수
-		*/
+		/** @brief 최대 페이지 수 */
 		int maxpage = (count-1) / 10 + 1;
 
+		//메모 출력
 		system("cls");
 		printf_s("\n******************************************************************************************");
 		if (count == 0) {
@@ -236,10 +214,10 @@ void manageMemo(SOCKET hSocket) {
 			addMemo();
 			break;
 		case 2://보기 및 수정
-			modifyMemo();
+			modifyMemo(count);
 			break;
 		case 3://삭제
-			deleteMemo();
+			deleteMemo(count);
 			break;
 		case 4://이전 페이지
 			if (page > 1) page--;

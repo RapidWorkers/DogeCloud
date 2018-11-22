@@ -65,25 +65,6 @@ void printMenu() {
 	}
 }
 
-//세션 관련 변수
-/**
-	@var int loginFlag
-	로그인 여부 저장
-*/
-int loginFlag = 0;
-
-/**
-	@var char sessionKey[32]
-	중계서버 인증 세션키 저장용 변수
-*/
-char sessionKey[32] = { 0, };
-
-/**
-	@var char currentUsername[100]
-	현재 로그인된 유저 이름 저장
-*/
-char currentUsername[100] = { 0, };
-
 /**
 	@fn int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelayServAddr)
 	@brief DogeCloud 중계 서버 연결
@@ -121,6 +102,25 @@ int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelaySe
 	return 1;
 }
 
+//세션 관련 전역 변수
+/**
+	@var int loginFlag
+	로그인 여부 저장
+*/
+int loginFlag = 0;
+
+/**
+	@var char currentUsername[100]
+	현재 로그인된 유저 이름 저장
+*/
+char sessionKey[32] = { 0, };
+
+/**
+	@var char sessionKey[32]
+	중계서버 인증 세션키 저장용 변수
+*/
+char currentUsername[100] = { 0, };
+
 /**
 	@fn int main()
 	@brief DogeCloud 진입점(Main)
@@ -128,24 +128,14 @@ int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelaySe
 */
 int main() {
 
-	/**
-	@var WSADATA wsaData;
-	소켓 라이브러리용 구조체
-	*/
+	/** @brief 라이브러리용 구조체 */
 	WSADATA wsaData;
 
-	/**
-	@var SOCKET hRelayServSocket;
-	서버 연결용 소켓 구조체
-	*/
+	/** @brief 서버 연결용 소켓 구조체 */
 	SOCKET hRelayServSocket;
 
-	/**
-	@var SOCKADDR_IN RelayServAddr;
-	서버 주소 저장하는 구조체
-	*/
+	/** @brief 서버 주소 저장하는 구조체 */
 	SOCKADDR_IN RelayServAddr;
-
 
 	if (!initProgram(&wsaData, &hRelayServSocket, &RelayServAddr)) {//initProgram 함수로 초기화 및 연결
 		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램 초기화 실패");

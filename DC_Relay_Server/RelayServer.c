@@ -83,26 +83,14 @@ MYSQL sqlHandle;
 */
 int main()
 {
-	/**
-		@var WSADATA wsaData
-		wsa 라이브러리용 구조체
-	*/
+	/** @brief wsa 라이브러리용 구조체 */
 	WSADATA wsaData;
-	/**
-		@var SOCKET hServSock, hClientSock
-		서버용 소켓, 클라이언트 접속 처리용 소켓
-	*/
+	/** @brief 서버용 소켓, 클라이언트 접속 처리용 소켓 */
 	SOCKET hServSock, hClientSock;
-	/**
-		@var SOCKADDR_IN servAddr, clientAddr
-		서버 주소, 클라이언트 주소 담는 구조체
-	*/
+	/** @brief 서버 주소, 클라이언트 주소 담는 구조체 */
 	SOCKADDR_IN servAddr, clientAddr;
 
-	/**
-		@var HANDLE hThread
-		멀티쓰레드 핸들
-	*/
+	/** @brief 멀티쓰레드 핸들 */
 	HANDLE hThread = NULL;
 	//unsigned int threadID;
 
@@ -199,10 +187,7 @@ int main()
 
 		WaitForSingleObject(hMutex, INFINITE);
 		hClientSocks[clientCount++] = hClientSock;
-		/**
-			@var DC_SOCK_INFO clientInfo
-			클라이언트 정보 담은 구조체
-		*/
+		/** @brief 클라이언트 정보 담은 구조체 */
 		DC_SOCK_INFO clientInfo;
 		clientInfo.hSocket = &hClientSock;
 		inet_ntop(AF_INET, &clientAddr.sin_addr, clientInfo.clientIP, 16);//클라이언트 ip 문자열로 변환

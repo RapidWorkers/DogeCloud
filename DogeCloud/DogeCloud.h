@@ -262,16 +262,18 @@ void deleteContacts();
 void addMemo();
 
 /**
-	@fn void modifyMemo()
-	@brief DogeCloud DB¿¡ ¸Þ¸ð ¼öÁ¤
-	@author ¸Û¸Û¾Æ¾ß¿ËÇØºÁ
+@fn void modifyMemo()
+@brief DogeCloud DB¿¡ ¸Þ¸ð ¼öÁ¤
+@author ¸Û¸Û¾Æ¾ß¿ËÇØºÁ
+@param count ÇöÀç ¸Þ¸ð °³¼ö
 */
-void modifyMemo();
+void modifyMemo(int count);
 
 /**
-	@fn void deleteMemo()
-	@brief DogeCloud DB¿¡ ¸Þ¸ð »èÁ¦
-	@author ¸Û¸Û¾Æ¾ß¿ËÇØºÁ
+@fn void deleteMemo(int count)
+@brief DogeCloud DB¿¡ ¸Þ¸ð »èÁ¦
+@author ¸Û¸Û¾Æ¾ß¿ËÇØºÁ
+@param count ÇöÀç ¸Þ¸ð °³¼ö
 */
-void deleteMemo();
+void deleteMemo(int count);
 

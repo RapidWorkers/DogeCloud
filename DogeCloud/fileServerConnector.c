@@ -36,16 +36,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 void openFileServer(char *fileServerAddr, unsigned long fileServerPort, unsigned char *authKey) {
 
-	/**
-		@var SOCKADDR_IN fileSrvConAddr;
-		파일 서버 주소 저장하는 구조체
-	*/
+	/** @brief 파일 서버 주소 저장하는 구조체 */
 	SOCKADDR_IN fileSrvConAddr;
 
-	/**
-		@var SOCKET hFileSrvSock
-		파일서버 소켓
-	*/
+	/** @brief 파일서버 소켓 */
 	SOCKET hFileSrvSock;
 	memset(&fileSrvConAddr, 0, sizeof(fileSrvConAddr));
 
@@ -133,22 +127,13 @@ void openFileServer(char *fileServerAddr, unsigned long fileServerPort, unsigned
 */
 void doFileManage(SOCKET hFileSrvSock) {
 
-	/**
-		@var SOCKADDR_IN fileSrvConAddr;
-		파일 서버 주소 저장하는 구조체
-	*/
+	/** @brief 파일 서버 주소 저장하는 구조체 */
 
-	/**
-		@var int currentPage
-		현재 페이지 저장
-	*/
+	/** @brief 현재 페이지 저장 */
 	int currentPage = 1; //처음 페이지는 1페이지
 	while (1) {//메뉴 출력은 종료할 때 까지 무한반복
 
-		/**
-			@var int errorFlag
-			에러 감지용
-		*/
+		/** @brief 에러 감지용 */
 		int errorFlag = 0;
 
 		system("cls");
