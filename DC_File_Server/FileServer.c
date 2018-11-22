@@ -32,20 +32,25 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 HANDLE hMutex;
 /**
-	@var SOCKET hClientSocks[MAX_CON]
-	소켓 저장용 구조체 배열
+@var SOCKET *hClientSocks
+소켓 저장용 구조체 배열
 */
-SOCKET hClientSocks[MAX_CON];
+SOCKET *hClientSocks;
 /**
-	@var DC_FILE_SESSION sessionList[MAX_CON]
-	세션 저장용 구조체 배열
+@var DC_FILE_SESSION *sessionList
+세션 저장용 구조체 배열
 */
-DC_FILE_SESSION sessionList[MAX_CON];
+DC_FILE_SESSION *sessionList;
 /**
-	@var DC_AUTHWAIT_LIST authWaitList[MAX_CON]
-	인증 대기열 저장 구조체 배열
+@var DC_AUTHWAIT_LIST *authWaitList
+인증 대기열 저장 구조체 배열
 */
-DC_AUTHWAIT_LIST authWaitList[MAX_CON];
+DC_AUTHWAIT_LIST *authWaitList;
+/**
+@var int maxConnection
+최대 접속수
+*/
+int maxConnection;
 /**
 	@var int clientCount
 	접속 카운트
@@ -101,6 +106,18 @@ int main()
 
 	//에러레벨 읽어오고 설정
 	setErrorLevel();
+
+	maxConnection = readMaxConn();
+	sessionList = (DC_FILE_SESSION*)calloc(maxConnection, sizeof(DC_FILE_SESSION));
+	hClientSocks = (SOCKET*)calloc(maxConnection, sizeof(SOCKET));
+	authWaitList = (DC_AUTHWAIT_LIST*)calloc(maxConnection, sizeof(DC_AUTHWAIT_LIST));
+
+	if (sessionList == NULL || hClientSocks == NULL || authWaitList == NULL) {
+		printDebugMsg(DC_ERROR, errorLevel, "Memory Allocation Fail");
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
+		system("pause");
+		exit(1);
+	}
 
 	printProgramInfo();
 
@@ -167,7 +184,7 @@ int main()
 			break;
 		}
 
-		if (clientCount >= MAX_CON) {//접속 제한 도달시
+		if (clientCount >= maxConnection) {//접속 제한 도달시
 			printDebugMsg(DC_WARN, errorLevel, "MAX CONNECTION REACHED, CLOSE CONNECTION!!");
 			closesocket(hClientSock);
 			continue;
@@ -182,7 +199,7 @@ int main()
 		ReleaseMutex(hMutex);
 		hThread = (HANDLE)_beginthreadex(NULL, 0, clientHandler, (void*)&clientInfo, 0, NULL);//쓰레드 생성하여 넘김
 		printDebugMsg(DC_INFO, errorLevel, "Client Connected: %s", clientInfo.clientIP);
-		printDebugMsg(DC_INFO, errorLevel, "Connection Limit: %d / %d", clientCount, MAX_CON);
+		printDebugMsg(DC_INFO, errorLevel, "Connection Limit: %d / %d", clientCount, maxConnection);
 	}
 
 	closesocket(hServSock);//서버 종료시 소켓 종료

@@ -56,6 +56,17 @@ void setErrorLevel() {
 }
 
 /**
+@fn int readMaxConn()
+@brief ÃÖ´ë Á¢¼Ó¼ö ¹ÝÈ¯
+@author ¸Û¸Û¾Æ¾ß¿ËÇØºÁ
+@return ÃÖ´ë Á¢¼Ó¼ö
+*/
+int readMaxConn() {
+	checkFileConfig();
+	return GetPrivateProfileInt("NetworkConfig", "max_conn", 100, "./FileServerConfig.ini");
+}
+
+/**
 @fn void readBindInfo(SOCKADDR_IN *servAddr)
 @brief ¼­¹ö IP, Æ÷Æ® ¼³Á¤ ÀÐ¾î¿È
 @author ¸Û¸Û¾Æ¾ß¿ËÇØºÁ

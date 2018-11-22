@@ -40,15 +40,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "DC_Common.lib")
 
-#define DEVELOPEMENT_MODE
-
-//FOR TESTING ONLY
-#ifdef DEVELOPEMENT_MODE
-#define BIND_ADDR "127.0.0.1"
-#define BIND_PORT 15384
-#define MAX_CON 100
-#endif
-
 typedef struct {
 	char srvAddr[255];
 	unsigned long srvPort;
@@ -101,15 +92,22 @@ if (!recvRaw(hClientSock, packetBuffer, packetSize, flag)) {\
 */
 extern HANDLE hMutex;
 /**
-	@var SOCKET hClientSocks[MAX_CON]
-	소켓 저장용 구조체 배열
+@var SOCKET *hClientSocks
+소켓 저장용 구조체 배열 포인터(동적할당으로 생성됨)
 */
-extern SOCKET hClientSocks[MAX_CON];
+extern SOCKET *hClientSocks;
 /**
-	@var DC_SESSION sessionList[MAX_CON]
-	세션 저장용 구조체 배열
+@var DC_SESSION *sessionList
+세션 저장용 구조체 배열 포인터(동적할당으로 생성됨)
 */
-extern DC_SESSION sessionList[MAX_CON];
+extern DC_SESSION *sessionList;
+
+/**
+@var int maxConnection
+최대 접속수
+*/
+extern int maxConnection;
+
 /**
 	@var int clientCount
 	접속 카운트
@@ -253,6 +251,14 @@ void checkRelayConfig();
 	@author 멍멍아야옹해봐
 */
 void setErrorLevel();
+
+/**
+@fn int readMaxConn()
+@brief 최대 접속수 반환
+@author 멍멍아야옹해봐
+@return 최대 접속수
+*/
+int readMaxConn();
 
 /**
 @fn void readBindInfo(SOCKADDR_IN *servAddr)

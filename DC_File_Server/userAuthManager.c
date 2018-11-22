@@ -51,7 +51,7 @@ void procAddUserAuthWaitList(SOCKET hClientSock) {
 	AuthUserResp.Data.opCode = htonl(OP_FS_AUTHUSERRESP);
 	AuthUserResp.Data.dataLen = htonl(sizeof(AuthUserResp) - 8);
 
-	if (authWaitCount+clientCount >= MAX_CON) {//만약 인증 대기 + 접속 수가 최대 접속수를 초과하면
+	if (authWaitCount+clientCount >= maxConnection) {//만약 인증 대기 + 접속 수가 최대 접속수를 초과하면
 		AuthUserResp.Data.statusCode = 0;//접속 거부
 		printDebugMsg(DC_WARN, errorLevel, "WARN: Auth Waiting List and Server Connection is FULL.");
 	}

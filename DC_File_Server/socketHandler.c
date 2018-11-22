@@ -63,7 +63,7 @@ unsigned int WINAPI clientHandler(void* clientInfo) {
 		}
 	}
 	clientCount--;//클라이언트 카운트 감소
-	printDebugMsg(DC_INFO, errorLevel, "Connection Limit: %d / %d", clientCount, MAX_CON);
+	printDebugMsg(DC_INFO, errorLevel, "Connection Limit: %d / %d", clientCount, maxConnection);
 	ReleaseMutex(hMutex);
 
 	closesocket(hClientSock);//소켓 종료
