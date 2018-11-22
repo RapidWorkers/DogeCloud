@@ -55,26 +55,71 @@ void manageContacts(SOCKET hSocket) {
 
 	//sqlite에서 열기 위해 파일 닫음
 	fclose(fp); 
+	
+	/** @brief sqlite3을 위한 handle */
+	sqlite3 *dbHandle;
+	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		system("pause");
+		exit(1);
+	}
 
-	/** @brief 최대 페이지 수 */
-	int maxpage = 2;
+	char* countQuery = "SELECT count(id) FROM contacts;";
+	char* selectContactsQuery = "SELECT * FROM contacts LIMIT 10 OFFSET %d;";
+
+	int count = 0;
 
 	/** @brief 현재 페이지 */
 	int page = 1;
 
 	while (1) {//종료될 때 까지 반복
+
+		sqlite3_stmt* stmt;
+		if (sqlite3_prepare(dbHandle, countQuery, -1, &stmt, NULL) == SQLITE_OK)
+		{
+			if (sqlite3_step(stmt) == SQLITE_ROW) {
+				count = sqlite3_column_int(stmt, 0);
+			}
+			else {
+				printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
+				printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+				system("pause");
+				exit(1);
+			}
+		}
+		sqlite3_finalize(stmt);
+
+		/** @brief 최대 페이지 수 */
+		int maxpage = (count - 1) / 10 + 1;
+
 		system("cls");
 		printf_s("\n******************************************************************************************");
-		printf_s("\n%4s %16s %30s %15s %15s %15s %15s", "순번", "이름", "이메일", "연락처1", "연락처2", "연락처3", "연락처4");
-		printf_s("\n%4d %16s %30s %15s %15s %15s %15s", 1, "홍길동일", "myemail@myemailtest.com", "010-0000-0000", "010-0000-0000", "010-0000-0000", "010-0000-0000");
+		if (count == 0) {
+			puts("\n저장된 연락처가 없습니다.");
+		}
+		else {
+			printf_s("\n%4s %16s %30s %20s %20s %20s", "순번", "이름", "이메일", "연락처1", "연락처2", "연락처3");
+			char *query = sqlite3_mprintf(selectContactsQuery, (page - 1) * 10);
+			if (sqlite3_prepare(dbHandle, query, -1, &stmt, NULL) == SQLITE_OK)
+			{
+				while (sqlite3_step(stmt) == SQLITE_ROW) {
+					printf_s("\n%4d %16s %30s %20s %20s %20s", sqlite3_column_int(stmt, 0), (char*)sqlite3_column_text(stmt, 1), (char*)sqlite3_column_text(stmt, 2),
+						(char*)sqlite3_column_text(stmt, 3), (char*)sqlite3_column_text(stmt, 4), (char*)sqlite3_column_text(stmt, 5));
+				}
+			}
+			sqlite3_finalize(stmt);
+			sqlite3_free(query);
+		}
 		printf_s("\t\t\t 페이지 %d / %d", page, maxpage);
 		printf_s("\n******************************************************************************************\n");
 		printf_s("\n\t*********  메   뉴   *********");
 		printf_s("\n\t1. 추가");
 		printf_s("\n\t2. 수정");
-		printf_s("\n\t3. 이전 페이지");
-		printf_s("\n\t4. 다음 페이지");
-		printf_s("\n\t5. 변경사항 서버에 저장 및 나가기");
+		printf_s("\n\t3. 삭제");
+		printf_s("\n\t4. 이전 페이지");
+		printf_s("\n\t5. 다음 페이지");
+		printf_s("\n\t6. 변경사항 서버에 저장 및 나가기");
 		printf_s("\n\t******************************");
 		printf_s("\n\t메뉴 선택 : ");
 
@@ -88,15 +133,19 @@ void manageContacts(SOCKET hSocket) {
 			addContacts();
 			break;
 		case 2://수정
-			modifyContacts();
+			modifyContacts(count);
 			break;
-		case 3://이전 페이지
-			if (maxpage > page) page++;
+		case 3://삭제
+			deleteContacts(count);
 			break;
-		case 4://다음 페이지
+		case 4://이전 페이지
 			if (page > 1) page--;
 			break;
-		case 5://나가기
+		case 5://다음 페이지
+			if (maxpage > page) page++;
+			break;
+		case 6://나가기
+			sqlite3_close(dbHandle);
 			uploadPersonalDBFile(hSocket, originalHash);
 			return;
 			break;
@@ -178,7 +227,7 @@ void manageMemo(SOCKET hSocket) {
 		system("cls");
 		printf_s("\n******************************************************************************************");
 		if (count == 0) {
-			printf_s("\n%80s", "저장된 메모가 없습니다.");
+			puts("\n저장된 메모가 없습니다.");
 		}
 		else {
 			printf_s("\n%4s %60s", "순번", "내용 일부 (한글 기준 최대 30자)");
@@ -186,7 +235,18 @@ void manageMemo(SOCKET hSocket) {
 			if (sqlite3_prepare(dbHandle, query, -1, &stmt, NULL) == SQLITE_OK)
 			{
 				while (sqlite3_step(stmt) == SQLITE_ROW) {
-					printf_s("\n%4d %60.60s", sqlite3_column_int(stmt, 0), (char*)sqlite3_column_text(stmt, 1));
+					const unsigned char *str = sqlite3_column_text(stmt, 1);
+					char* newLinePtr = strchr(str, '\n');
+
+					if (newLinePtr != NULL) {//다음 줄로 넘어가지 않도록 다음줄이 있는경우와 없는경우 출력을 달리함
+						int printLen = newLinePtr - str;
+						printf_s("\n%4d %60.*s", sqlite3_column_int(stmt, 0), printLen, str);
+					}
+					else {
+						printf_s("\n%4d %60.60s", sqlite3_column_int(stmt, 0), str);
+					}
+
+					
 				}
 			}
 			sqlite3_finalize(stmt);

@@ -121,7 +121,7 @@ extern "C" {
 		@param *text 구할 문자열
 		@param *buf 저장할 공간(32바이트)
 	*/
-	DLL void SHA256_Text(const char* text, char* buf);
+	DLL void SHA256_Text(const char* text, unsigned char* buf);
 
 	/**
 		@fn void GenerateSessionKey(char *sessionKey)
@@ -174,7 +174,7 @@ extern "C" {
 		@param *file 파일 구조체 포인터
 		@param *result 결과를 저장할 공간(32바이트)
 	*/
-	DLL void getFileHash(FILE *file, char* result);
+	DLL void getFileHash(FILE *file, unsigned char* result);
 
 	/**
 		@fn void encryptFileLEA(FILE *infile, FILE *outfile, char* encKey, char* nonceIV)

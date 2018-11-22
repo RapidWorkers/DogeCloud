@@ -41,6 +41,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //에러레벨 설정
 #define DC_ERRORLEVEL 0
 
+typedef struct _contacts {
+	char name[31];
+	char email[51];
+	char phone1[21];
+	char phone2[21];
+	char phone3[21];
+} DC_CONTACTS;
+
 /**
 	@fn sendData(hSocket, packetBuffer, packetSize, flag)
 	@brief 패킷 전송 처리용 매크로 함수
@@ -241,18 +249,20 @@ void uploadPersonalDBFile(SOCKET hSocket, char* originalHash);
 void addContacts();
 
 /**
-	@fn void modifyContacts()
-	@brief DogeCloud DB에 연락처 수정
-	@author 멍멍아야옹해봐
+@fn void modifyContacts(int count)
+@brief DogeCloud DB에 연락처 수정
+@author 멍멍아야옹해봐
+@param count 현재 연락처 개수
 */
-void modifyContacts();
+void modifyContacts(int count);
 
 /**
-	@fn void deleteContacts()
-	@brief DogeCloud DB에 연락처 삭제
-	@author 멍멍아야옹해봐
+@fn void deleteContacts(int count)
+@brief DogeCloud DB에 연락처 삭제
+@author 멍멍아야옹해봐
+@param count 현재 연락처 개수
 */
-void deleteContacts();
+void deleteContacts(int count);
 
 /**
 	@fn void addMemo()
@@ -262,7 +272,7 @@ void deleteContacts();
 void addMemo();
 
 /**
-@fn void modifyMemo()
+@fn void modifyMemo(int count)
 @brief DogeCloud DB에 메모 수정
 @author 멍멍아야옹해봐
 @param count 현재 메모 개수

@@ -85,7 +85,7 @@ extern "C" {
 		@param *text 구할 문자열
 		@param *buf 저장할 공간(32바이트)
 	*/
-	DLL void SHA256_Text(const char* text, char* buf) {
+	DLL void SHA256_Text(const char* text, unsigned char* buf) {
 		if (text == NULL || buf == NULL) return;
 		SHA256_CTX hSHA256;
 		sha256_init(&hSHA256);
