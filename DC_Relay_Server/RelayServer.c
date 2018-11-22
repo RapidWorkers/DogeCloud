@@ -32,7 +32,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 HANDLE hMutex;
 
-//create Client Sock array
 /**
 	@var SOCKET hClientSocks[MAX_CON]
 	소켓 저장용 구조체 배열
@@ -140,10 +139,7 @@ int main()
 	}
 
 	//서버 주소 설정
-	memset(&servAddr, 0, sizeof(servAddr));
-	servAddr.sin_family = AF_INET;
-	servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	servAddr.sin_port = htons(BIND_PORT);
+	readBindInfo(&servAddr);
 
 	if (bind(hServSock, (SOCKADDR*)&servAddr, sizeof(servAddr))) {//바인드
 		printDebugMsg(DC_ERROR, errorLevel, "Bind Fail");
@@ -176,7 +172,9 @@ int main()
 	}
 
 	printDebugMsg(DC_INFO, errorLevel, "Server Started");
-	printDebugMsg(DC_INFO, errorLevel, "Server Listening at %s:%d", "NOT IMPLEMENTED", 0);
+	char serverIP[16] = { 0, };
+	inet_ntop(AF_INET, &servAddr.sin_addr, serverIP, 16);
+	printDebugMsg(DC_INFO, errorLevel, "Server Listening at %s:%d", serverIP, ntohs(servAddr.sin_port));//리스닝 정보 표시
 
 	//클라이언트 접속 대기
 	while (1) {

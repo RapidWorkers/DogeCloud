@@ -56,6 +56,31 @@ void setErrorLevel() {
 }
 
 /**
+@fn void readBindInfo(SOCKADDR_IN *servAddr)
+@brief ¼­¹ö IP, Æ÷Æ® ¼³Á¤ ÀÐ¾î¿È
+@author ¸Û¸Û¾Æ¾ß¿ËÇØºÁ
+@param *servAddr ¼­¹ö ÁÖ¼Ò Á¤º¸ ÀúÀå ±¸Á¶Ã¼ Æ÷ÀÎÅÍ
+*/
+void readBindInfo(SOCKADDR_IN *servAddr) {
+	checkRelayConfig();
+	
+	char serverIP[16] = { 0, };
+
+	if (servAddr == NULL) return;
+	memset(servAddr, 0, sizeof(SOCKADDR_IN));
+	servAddr->sin_family = AF_INET;
+	GetPrivateProfileString("Bind", "bind_addr", "0.0.0.0", serverIP, 16, "./RelayServerConfig.ini");
+	servAddr->sin_port = htons((short)GetPrivateProfileInt("Bind", "bind_port", 15384, "./RelayServerConfig.ini"));
+
+	if (!strcmp("any", serverIP))
+		servAddr->sin_addr.s_addr = htonl(INADDR_ANY);
+	else
+		inet_pton(AF_INET, serverIP, &servAddr->sin_addr.s_addr);
+
+	return;
+}
+
+/**
 	@fn void readMySQLConfig(MYSQL_SERVER *serverInfo)
 	@brief MySQL ¼­¹ö ¼³Á¤ ÀÐ¾î¿È
 	@author ¸Û¸Û¾Æ¾ß¿ËÇØºÁ

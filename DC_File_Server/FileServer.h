@@ -203,6 +203,13 @@ void checkFileConfig();
 */
 void setErrorLevel();
 /**
+@fn void readBindInfo(SOCKADDR_IN *servAddr)
+@brief 서버 IP, 포트 설정 읽어옴
+@author 멍멍아야옹해봐
+@param *servAddr 서버 주소 정보 저장 구조체 포인터
+*/
+void readBindInfo(SOCKADDR_IN *servAddr);
+/**
 	@fn void readMySQLConfig(MYSQL_SERVER *serverInfo)
 	@brief MySQL 서버 설정 읽어옴
 	@author 멍멍아야옹해봐
