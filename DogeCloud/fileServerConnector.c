@@ -57,7 +57,7 @@ void openFileServer(char *fileServerAddr, unsigned long fileServerPort, unsigned
 	//소켓 생성
 	hFileSrvSock = socket(PF_INET, SOCK_STREAM, 0);
 	if (hFileSrvSock == INVALID_SOCKET) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Invalid File Server Socket");
+		printDebugMsg(DC_ERROR, errorLevel, "Invalid File Server Socket");
 		system("pause");
 		return;
 	}
@@ -66,16 +66,16 @@ void openFileServer(char *fileServerAddr, unsigned long fileServerPort, unsigned
 	int err = (connect(hFileSrvSock, (SOCKADDR*)&fileSrvConAddr, sizeof(fileSrvConAddr)) == SOCKET_ERROR);
 	if (err) //에러가 있다면
 	{
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일서버 연결 실패: %d", WSAGetLastError());
+		printDebugMsg(DC_ERROR, errorLevel, "파일서버 연결 실패: %d", WSAGetLastError());
 		system("pause");
 		return;
 	}
 
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "성공적으로 파일서버에 연결되었습니다.");
+	printDebugMsg(DC_INFO, errorLevel, "성공적으로 파일서버에 연결되었습니다.");
 	Sleep(500);
 
 	//파일서버 인증 시작
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "파일서버 인증 시작.");
+	printDebugMsg(DC_INFO, errorLevel, "파일서버 인증 시작.");
 
 	//파일서버 로그인 패킷 설정
 	memcpy(LoginFile.Data.UserFileServerAuthKey, authKey, 32);//인증키 패킷으로 복사
@@ -93,15 +93,15 @@ void openFileServer(char *fileServerAddr, unsigned long fileServerPort, unsigned
 	LoginFileResp.Data.dataLen = ntohl(LoginFileResp.Data.dataLen);
 
 	if (LoginFileResp.Data.statusCode == 0) {//인증이 실패한 경우 부정 접속 또는 인증 실패
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일서버 부정 접속 감지");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "파일서버 부정 접속 감지");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 		return;
 	}
 
 	//인증 성공 메시지 출력
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "파일서버 인증 성공.");
+	printDebugMsg(DC_INFO, errorLevel, "파일서버 인증 성공.");
 	Sleep(500);
 
 	//파일서버 메뉴 출력
@@ -109,8 +109,8 @@ void openFileServer(char *fileServerAddr, unsigned long fileServerPort, unsigned
 
 	//파일서버와의 작업이 종료되었을 경우
 	if (closesocket(hFileSrvSock)) {//소켓 종료
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일서버 소켓 종료 실패: %d", WSAGetLastError());
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "파일서버 소켓 종료 실패: %d", WSAGetLastError());
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 		return;
@@ -178,14 +178,14 @@ void doFileManage(SOCKET hFileSrvSock) {
 			return;//이 함수 종료시 계속되는 코드에서 소켓 종료됨
 			break;
 		default: //유효하지 않은 입력
-			printDebugMsg(DC_WARN, DC_ERRORLEVEL, "올바르지 않은 입력입니다.");
+			printDebugMsg(DC_WARN, errorLevel, "올바르지 않은 입력입니다.");
 			Sleep(1000);
 			break;
 		}
 
 		if (errorFlag) {//에러가 감지되었을 경우
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일서버 통신 오류");
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일서버 연결을 종료합니다.");
+			printDebugMsg(DC_ERROR, errorLevel, "파일서버 통신 오류");
+			printDebugMsg(DC_ERROR, errorLevel, "파일서버 연결을 종료합니다.");
 			system("pause");
 			return;//파일서버 연결 종료
 		}
@@ -229,7 +229,7 @@ void moveDir(SOCKET hFileSrvSock, int *errorFlag) {
 	MoveDirResp.Data.dataLen = ntohl(MoveDirResp.Data.dataLen);
 
 	if (!MoveDirResp.Data.statusCode) {//디렉토리 변경 실패시
-		printDebugMsg(DC_WARN, DC_ERRORLEVEL, "존재하지 않는 디렉토리이거나 요청이 실패했습니다.");
+		printDebugMsg(DC_WARN, errorLevel, "존재하지 않는 디렉토리이거나 요청이 실패했습니다.");
 	}
 
 	return;
@@ -268,7 +268,7 @@ void moveFileListPage(SOCKET hFileSrvSock, char type, int *errorFlag) {
 
 	if (!ListPageMoveResp.Data.statusCode) {//실패시
 		*errorFlag = 1;
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "요청이 실패했습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "요청이 실패했습니다.");
 	}
 
 	return;
@@ -305,7 +305,7 @@ void showFileList(SOCKET hFileSrvSock, int *errorFlag) {
 
 	if (!ListFileResp.Data.statusCode) {//실패시
 		*errorFlag = 1;//파일 목록을 불러오지 못했으므로
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일서버에서 파일 목록을 가져오지 못했습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "파일서버에서 파일 목록을 가져오지 못했습니다.");
 		return;
 	}
 

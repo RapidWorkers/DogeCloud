@@ -57,8 +57,8 @@ void printMenu() {
 		printf_s("\n\t메뉴 선택 : ");
 		break;
 	default://유효하지 않은 로그인 상태일 때
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "유효하지 않은 LoginFlag 상태입니다. 메모리 변조 의심!!\n");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다..");
+		printDebugMsg(DC_ERROR, errorLevel, "유효하지 않은 LoginFlag 상태입니다. 메모리 변조 의심!!\n");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다..");
 		system("pause");
 		exit(1);
 		break;
@@ -78,13 +78,13 @@ int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelaySe
 	printProgramInfo();
 
 	if (WSAStartup(MAKEWORD(2, 2), wsaData) != 0) { //소켓 라이브러리 초기화
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "WSAStartup 실패!\n");
+		printDebugMsg(DC_ERROR, errorLevel, "WSAStartup 실패!\n");
 		return 0;
 	}
 
 	*hRelayServSocket = socket(PF_INET, SOCK_STREAM, 0); //소켓 초기화
 	if (*hRelayServSocket == INVALID_SOCKET) {//소켓 생성 성공했는지 검사
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "유효하지 않은 소켓입니다.\n");
+		printDebugMsg(DC_ERROR, errorLevel, "유효하지 않은 소켓입니다.\n");
 		return 0;
 	}
 
@@ -93,11 +93,11 @@ int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelaySe
 	int err = (connect(*hRelayServSocket, (SOCKADDR*)RelayServAddr, sizeof(*RelayServAddr)) == SOCKET_ERROR);//중계서버에 연결
 	if (err) //에러 검사
 	{
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "중계서버와의 연결이 실패했습니다: %d", WSAGetLastError());
+		printDebugMsg(DC_ERROR, errorLevel, "중계서버와의 연결이 실패했습니다: %d", WSAGetLastError());
 		return 0;
 	}
 
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "성공적으로 중계서버에 연결되었습니다.\n");
+	printDebugMsg(DC_INFO, errorLevel, "성공적으로 중계서버에 연결되었습니다.\n");
 	Sleep(500);
 	return 1;
 }
@@ -122,6 +122,12 @@ char sessionKey[32] = { 0, };
 char currentUsername[100] = { 0, };
 
 /**
+	@var int errorLevel
+	중계서버 인증 세션키 저장용 변수
+*/
+int errorLevel;
+
+/**
 	@fn int main()
 	@brief DogeCloud 진입점(Main)
 	@author 멍멍아야옹해봐
@@ -137,9 +143,12 @@ int main() {
 	/** @brief 서버 주소 저장하는 구조체 */
 	SOCKADDR_IN RelayServAddr;
 
+	//에러레벨 읽고 설정
+	setErrorLevel();
+
 	if (!initProgram(&wsaData, &hRelayServSocket, &RelayServAddr)) {//initProgram 함수로 초기화 및 연결
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램 초기화 실패");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램 초기화 실패");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -176,7 +185,7 @@ int main() {
 				system("pause");
 				break;
 			default: //유효하지 않은 입력
-				printDebugMsg(DC_WARN, DC_ERRORLEVEL, "올바르지 않은 입력입니다.");
+				printDebugMsg(DC_WARN, errorLevel, "올바르지 않은 입력입니다.");
 				Sleep(1000);
 				break;
 			}
@@ -204,7 +213,7 @@ int main() {
 				exit(0);//종료
 				break;
 			default://올바르지 않은 입력
-				printDebugMsg(DC_WARN, DC_ERRORLEVEL, "올바르지 않은 입력입니다.");
+				printDebugMsg(DC_WARN, errorLevel, "올바르지 않은 입력입니다.");
 				Sleep(1000);
 				break;
 			}

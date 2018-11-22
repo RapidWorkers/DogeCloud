@@ -35,11 +35,23 @@ void checkRelayConfig() {
 	FILE *fp;
 
 	if (fopen_s(&fp, "./RelayServerConfig.ini", "r")) {//파일서버 실정파일 읽을 수 있는지 검사
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: RelayServerConfig.ini File Error");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: RelayServerConfig.ini File Error");
 		system("pause");
 		exit(1);//exit with error
 	}
 	fclose(fp);//설정파일 닫기
+	return;
+}
+
+/**
+	@fn void setErrorLevel()
+	@brief 에러레벨 설정
+	@author 멍멍아야옹해봐
+*/
+void setErrorLevel() {
+	checkRelayConfig();
+
+	errorLevel = GetPrivateProfileInt("DC_Common", "errorLevel", 0, "./RelayServerConfig.ini");
 	return;
 }
 

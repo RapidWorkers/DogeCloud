@@ -45,7 +45,7 @@ unsigned int WINAPI clientHandler(void* clientInfo) {
 		packetHandler(hClientSock, clientIP, opCode);//패킷 핸들러로 넘김
 	}
 
-	printDebugMsg(1, DC_ERRORLEVEL, "Connection Closed");
+	printDebugMsg(1, errorLevel, "Connection Closed");
 
 	//연결이 종료되면 설정되었던 전역변수를 삭제
 	WaitForSingleObject(hMutex, INFINITE);
@@ -63,7 +63,7 @@ unsigned int WINAPI clientHandler(void* clientInfo) {
 		}
 	}
 	clientCount--;//클라이언트 카운트 감소
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Connection Limit: %d / %d", clientCount, MAX_CON);
+	printDebugMsg(DC_INFO, errorLevel, "Connection Limit: %d / %d", clientCount, MAX_CON);
 	ReleaseMutex(hMutex);
 
 	closesocket(hClientSock);//소켓 종료
@@ -81,7 +81,7 @@ unsigned int WINAPI clientHandler(void* clientInfo) {
 void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCode) {
 	if (hClientSock == INVALID_SOCKET) return;//유효하지 않은 소켓이면 그냥 끝냄
 
-	printDebugMsg(DC_DEBUG, DC_ERRORLEVEL, "Got OpCode: %d", opCode);
+	printDebugMsg(DC_DEBUG, errorLevel, "Got OpCode: %d", opCode);
 	switch (opCode) {//opCode에 따라 선택
 	case OP_SF_REGISTERFILESERVER:
 		procRegisterFileServer(hClientSock);
@@ -96,7 +96,7 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 		procListFile(hClientSock);
 		break;
 	default:
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Unknown Packet: %s", clientIP);
+		printDebugMsg(DC_ERROR, errorLevel, "Unknown Packet: %s", clientIP);
 		break;
 	}
 }

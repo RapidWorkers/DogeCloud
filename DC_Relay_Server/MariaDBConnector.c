@@ -43,13 +43,13 @@ void sqlInit(MYSQL *sqlHandle, MYSQL_SERVER serverInfo) {
 		serverInfo.pass, serverInfo.dbase, serverInfo.srvPort, NULL, 0);//접속
 
 	if (mysql_errno(sqlHandle)) {//에러 발생시
-		printDebugMsg(3, DC_ERRORLEVEL, "MariaDB Error!! Program Exit");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_error(sqlHandle));
+		printDebugMsg(3, errorLevel, "MariaDB Error!! Program Exit");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_error(sqlHandle));
 		system("pause");
 		exit(1);//exit with error
 	}
 	else {//에러 없으면
-		printDebugMsg(1, DC_ERRORLEVEL, "Successfully Connected to MariaDB Server.");
+		printDebugMsg(1, errorLevel, "Successfully Connected to MariaDB Server.");
 	}
 	return;
 }
@@ -67,25 +67,25 @@ void sqlInit(MYSQL *sqlHandle, MYSQL_SERVER serverInfo) {
 void sqlPrepareAndExecute(MYSQL *sqlHandle, MYSQL_STMT *stmt, const char *query, MYSQL_BIND *query_bind, MYSQL_BIND *result_bind) {
 
 	if (mysql_stmt_prepare(stmt, query, (unsigned long)strlen(query))) {//준비
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Fail!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: SQL Prepared Statement Fail!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);//exit with error
 	}
 
 	if (mysql_stmt_bind_param(stmt, query_bind)) {//쿼리에 바인딩
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Binding Fail!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: SQL Prepared Statement Binding Fail!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);//exit with error
 	}
 
 	if (mysql_stmt_execute(stmt)) {//쿼리 실행
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Execution fail!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: SQL Prepared Statement Execution fail!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);//exit with error
 	}
@@ -93,9 +93,9 @@ void sqlPrepareAndExecute(MYSQL *sqlHandle, MYSQL_STMT *stmt, const char *query,
 	if (result_bind == NULL) return; //결과물 바인딩 포인터가 null이면 그냥 종료
 
 	if (mysql_stmt_bind_result(stmt, result_bind)) {//결과물 바인딩
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: Result binding Fail!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: Result binding Fail!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);//exit with error
 	}

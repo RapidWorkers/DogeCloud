@@ -53,7 +53,7 @@ void procAddUserAuthWaitList(SOCKET hClientSock) {
 
 	if (authWaitCount+clientCount >= MAX_CON) {//만약 인증 대기 + 접속 수가 최대 접속수를 초과하면
 		AuthUserResp.Data.statusCode = 0;//접속 거부
-		printDebugMsg(DC_WARN, DC_ERRORLEVEL, "WARN: Auth Waiting List and Server Connection is FULL.");
+		printDebugMsg(DC_WARN, errorLevel, "WARN: Auth Waiting List and Server Connection is FULL.");
 	}
 	else {
 		//전역변수에 변수 세팅 => 인증 대기열에 추가
@@ -118,7 +118,7 @@ void procFileLogin(SOCKET hClientSock) {
 	//응답 전송
 	sendData(hClientSock, LoginFileResp.buf, sizeof(fc_LoginFileResp), 0);
 
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Auth Done.");
+	printDebugMsg(DC_INFO, errorLevel, "Auth Done.");
 
 	return;
 }

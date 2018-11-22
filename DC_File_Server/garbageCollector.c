@@ -45,7 +45,7 @@ unsigned int WINAPI waitingListGC() {//미인증 장기 대기 방지 가비지 콜렉터
 			}
 		}
 		ReleaseMutex(hMutex);
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "GC: Cleaned %d waiting List", cleanCount);
+		printDebugMsg(DC_INFO, errorLevel, "GC: Cleaned %d waiting List", cleanCount);
 		Sleep(10000); //다음 작업까지 10초 대기
 	}
 

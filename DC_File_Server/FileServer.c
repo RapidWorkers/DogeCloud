@@ -68,6 +68,12 @@ MYSQL_SERVER serverInfo;
 MYSQL sqlHandle;
 
 /**
+	@var int errorLevel
+	디버그 표시용 에러레벨
+*/
+int errorLevel;
+
+/**
 	@fn int main()
 	@brief 파일서버 진입점
 	@author 멍멍아야옹해봐
@@ -93,6 +99,9 @@ int main()
 	hMutex = CreateMutex(NULL, FALSE, NULL);
 	//DWORD dwErrorCode = 0;
 
+	//에러레벨 읽어오고 설정
+	setErrorLevel();
+
 	printProgramInfo();
 
 	//데이터베이스 설정 읽고 접속
@@ -101,16 +110,16 @@ int main()
 
 	//소켓 초기화 시작
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {//WSA Startup
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "WSAStartup Fail");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "WSAStartup Fail");
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);
 	}
 
 	hServSock = socket(PF_INET, SOCK_STREAM, 0);//서버 소켓 초기화
 	if (hServSock == INVALID_SOCKET) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Invalid Server Socket");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "Invalid Server Socket");
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);
 	}
@@ -122,32 +131,32 @@ int main()
 	servAddr.sin_port = htons(BIND_PORT);
 
 	if (bind(hServSock, (SOCKADDR*)&servAddr, sizeof(servAddr))) {//바인드
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Bind Fail");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "Bind Fail");
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);
 	}
 
 	if (listen(hServSock, 5) == SOCKET_ERROR) {//서버 리스닝 시작
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Listen Fail");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "Listen Fail");
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);
 	}
 
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Server Started");
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Server Listening at %s:%d", "NOT IMPLEMENTED", 0);
+	printDebugMsg(DC_INFO, errorLevel, "Server Started");
+	printDebugMsg(DC_INFO, errorLevel, "Server Listening at %s:%d", "NOT IMPLEMENTED", 0);
 
 	//가비지 콜렉터 시작
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Starting Garbage Collector");
+	printDebugMsg(DC_INFO, errorLevel, "Starting Garbage Collector");
 	hGCThread = (HANDLE)_beginthreadex(NULL, 0, waitingListGC, NULL, 0, NULL);
 	if (hGCThread == NULL) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "GC Start Fail");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "GC Start Fail");
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);
 	}
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Done Starting Garbage Collector");
+	printDebugMsg(DC_INFO, errorLevel, "Done Starting Garbage Collector");
 
 	//클라이언트 접속 대기
 	while (1) {
@@ -155,12 +164,12 @@ int main()
 		hClientSock = accept(hServSock, (SOCKADDR*)&clientAddr, &szClntAddr);
 
 		if (hClientSock == INVALID_SOCKET) {//클라이언트 접속 실패시
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Client Accept Fail");
+			printDebugMsg(DC_ERROR, errorLevel, "Client Accept Fail");
 			break;
 		}
 
 		if (clientCount >= MAX_CON) {//접속 제한 도달시
-			printDebugMsg(DC_WARN, DC_ERRORLEVEL, "MAX CONNECTION REACHED, CLOSE CONNECTION!!");
+			printDebugMsg(DC_WARN, errorLevel, "MAX CONNECTION REACHED, CLOSE CONNECTION!!");
 			closesocket(hClientSock);
 			continue;
 		}
@@ -173,13 +182,13 @@ int main()
 		inet_ntop(AF_INET, &clientAddr.sin_addr, clientInfo.clientIP, 16);//클라이언트 ip 문자열로 변환
 		ReleaseMutex(hMutex);
 		hThread = (HANDLE)_beginthreadex(NULL, 0, clientHandler, (void*)&clientInfo, 0, NULL);//쓰레드 생성하여 넘김
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Client Connected: %s", clientInfo.clientIP);
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Connection Limit: %d / %d", clientCount, MAX_CON);
+		printDebugMsg(DC_INFO, errorLevel, "Client Connected: %s", clientInfo.clientIP);
+		printDebugMsg(DC_INFO, errorLevel, "Connection Limit: %d / %d", clientCount, MAX_CON);
 	}
 
 	closesocket(hServSock);//서버 종료시 소켓 종료
 	WSACleanup();//라이브러리 해제
-	printDebugMsg(1, DC_ERRORLEVEL, "Server Terminated");
+	printDebugMsg(1, errorLevel, "Server Terminated");
 	system("pause");
 	return 0;
 }

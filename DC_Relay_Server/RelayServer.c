@@ -77,6 +77,12 @@ MYSQL_SERVER serverInfo;
 MYSQL sqlHandle;
 
 /**
+	@var int errorLevel
+	디버그 표시용 에러레벨
+*/
+int errorLevel;
+
+/**
 	@fn int main()
 	@brief RelayServer 진입점
 	@author 멍멍아야옹해봐
@@ -98,6 +104,9 @@ int main()
 	hMutex = CreateMutex(NULL, FALSE, NULL);
 	//DWORD dwErrorCode = 0;
 
+	//에러레벨 읽어오고 설정
+	setErrorLevel();
+
 	printProgramInfo();
 
 	//데이터베이스 설정 읽고 접속
@@ -107,8 +116,8 @@ int main()
 	//연락처, 메모 db 저장용 폴더 생성
 	if (!CreateDirectory("./infodb", NULL)) {
 		if (GetLastError() != ERROR_ALREADY_EXISTS) {//이미 폴더가 존재할 때의 경우를 제외한 모든 에러는 프로그램 정지
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Create Directory Fail");
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+			printDebugMsg(DC_ERROR, errorLevel, "Create Directory Fail");
+			printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 			system("pause");
 			exit(1);
 		}
@@ -116,16 +125,16 @@ int main()
 
 	//소켓 초기화 시작
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {//WSA Startup
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "WSAStartup Fail");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "WSAStartup Fail");
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);
 	}
 
 	hServSock = socket(PF_INET, SOCK_STREAM, 0);//서버 소켓 초기화
 	if (hServSock == INVALID_SOCKET) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Invalid Server Socket");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "Invalid Server Socket");
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);
 	}
@@ -137,8 +146,8 @@ int main()
 	servAddr.sin_port = htons(BIND_PORT);
 
 	if (bind(hServSock, (SOCKADDR*)&servAddr, sizeof(servAddr))) {//바인드
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Bind Fail");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "Bind Fail");
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);
 	}
@@ -146,28 +155,28 @@ int main()
 	//파일서버 경로 읽어오기
 	readFileServerPath(&fileSrvAddr);
 	for (int i = 0; i < 5; i++) {//파일서버 5번 접속 시도
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Trying to Connect File Server %d / 5", i+1);
+		printDebugMsg(DC_INFO, errorLevel, "Trying to Connect File Server %d / 5", i+1);
 		initFSConnection(&hFileSrvSock, &fileSrvAddr);
 		if (fileServerConnectFlag) break;
 		Sleep(1000);//다음 접속까지 1초 대기
 	}
 
 	if (!fileServerConnectFlag) {//파일서버 연결에 실패하였을 경우
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: File Server Not Online!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: File Server Not Online!!");
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);
 	}
 
 	if (listen(hServSock, 5) == SOCKET_ERROR) {//서버 리스닝 시작
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Listen Fail");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "Listen Fail");
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);
 	}
 
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Server Started");
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Server Listening at %s:%d", "NOT IMPLEMENTED", 0);
+	printDebugMsg(DC_INFO, errorLevel, "Server Started");
+	printDebugMsg(DC_INFO, errorLevel, "Server Listening at %s:%d", "NOT IMPLEMENTED", 0);
 
 	//클라이언트 접속 대기
 	while (1) {
@@ -175,12 +184,12 @@ int main()
 		hClientSock = accept(hServSock, (SOCKADDR*)&clientAddr, &szClntAddr);
 
 		if (hClientSock == INVALID_SOCKET) {//클라이언트 접속 실패시
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Client Accept Fail");
+			printDebugMsg(DC_ERROR, errorLevel, "Client Accept Fail");
 			break;
 		}
 
 		if (clientCount >= MAX_CON) {//접속 제한 도달시
-			printDebugMsg(DC_WARN, DC_ERRORLEVEL, "MAX CONNECTION REACHED, CLOSE CONNECTION!!");
+			printDebugMsg(DC_WARN, errorLevel, "MAX CONNECTION REACHED, CLOSE CONNECTION!!");
 			closesocket(hClientSock);
 			continue;
 		}
@@ -191,16 +200,16 @@ int main()
 		DC_SOCK_INFO clientInfo;
 		clientInfo.hSocket = &hClientSock;
 		inet_ntop(AF_INET, &clientAddr.sin_addr, clientInfo.clientIP, 16);//클라이언트 ip 문자열로 변환
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Connection Limit: %d / %d", clientCount, MAX_CON);
+		printDebugMsg(DC_INFO, errorLevel, "Connection Limit: %d / %d", clientCount, MAX_CON);
 		ReleaseMutex(hMutex);
 		hThread = (HANDLE)_beginthreadex(NULL, 0, clientHandler, (void*)&clientInfo, 0, NULL);//쓰레드 생성하여 넘김
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Client Connected: %s", clientInfo.clientIP);
+		printDebugMsg(DC_INFO, errorLevel, "Client Connected: %s", clientInfo.clientIP);
 
 	}
 
 	closesocket(hServSock);//서버 종료시 소켓 종료
 	WSACleanup();//라이브러리 해제
-	printDebugMsg(1, DC_ERRORLEVEL, "Server Terminated");
+	printDebugMsg(1, errorLevel, "Server Terminated");
 	system("pause");
 	return 0;
 }

@@ -44,12 +44,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 //FOR TESTING ONLY
 #ifdef DEVELOPEMENT_MODE
-#define BUF_SIZE 2048
-#define QUEUE_SIZE 10
 #define BIND_ADDR "127.0.0.1"
 #define BIND_PORT 15384
 #define MAX_CON 100
-#define DC_ERRORLEVEL 0
 #endif
 
 typedef struct {
@@ -77,7 +74,7 @@ typedef struct {
 */
 #define sendData(hClientSock, packetBuffer, packetSize, flag) \
 if (!sendRaw(hClientSock, packetBuffer, packetSize, flag)) {\
-	printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());\
+	printDebugMsg(DC_ERROR, errorLevel, "Connection Error: %d", WSAGetLastError());\
 	return;\
 }
 
@@ -92,7 +89,7 @@ if (!sendRaw(hClientSock, packetBuffer, packetSize, flag)) {\
 */
 #define recvData(hClientSock, packetBuffer, packetSize, flag) \
 if (!recvRaw(hClientSock, packetBuffer, packetSize, flag)) {\
-	printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Connection Error: %d", WSAGetLastError());\
+	printDebugMsg(DC_ERROR, errorLevel, "Connection Error: %d", WSAGetLastError());\
 	return;\
 }
 
@@ -145,6 +142,12 @@ extern SOCKET hFileSrvSock;
 	ÆÄÀÏ¼­¹ö ¿¬°á ÇÃ·¡±×
 */
 extern int fileServerConnectFlag;
+
+/**
+	@var int errorLevel
+	µð¹ö±× Ç¥½Ã¿ë ¿¡·¯·¹º§
+*/
+extern int errorLevel;
 
 //socket Handler
 /**
@@ -243,6 +246,14 @@ void procFileDownDemo(SOCKET hClientSock);
 	@author ¸Û¸Û¾Æ¾ß¿ËÇØºÁ
 */
 void checkRelayConfig();
+
+/**
+	@fn void setErrorLevel()
+	@brief ¿¡·¯·¹º§ ¼³Á¤
+	@author ¸Û¸Û¾Æ¾ß¿ËÇØºÁ
+*/
+void setErrorLevel();
+
 /**
 	@fn void readMySQLConfig(MYSQL_SERVER *serverInfo)
 	@brief MySQL ¼­¹ö ¼³Á¤ ÀÐ¾î¿È

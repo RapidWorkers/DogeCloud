@@ -38,9 +38,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #pragma comment(lib, "DC_Common.lib")
 #pragma comment(lib, "ws2_32.lib")
 
-//에러레벨 설정
-#define DC_ERRORLEVEL 0
-
 typedef struct _contacts {
 	char name[31];
 	char email[51];
@@ -60,8 +57,8 @@ typedef struct _contacts {
 */
 #define sendData(hSocket, packetBuffer, packetSize, flag) \
 if (!sendRaw(hSocket, packetBuffer, packetSize, flag)) {\
-	printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "중계서버와의 연결에 문제가 발생했습니다: %d", WSAGetLastError());\
-	printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");\
+	printDebugMsg(DC_ERROR, errorLevel, "중계서버와의 연결에 문제가 발생했습니다: %d", WSAGetLastError());\
+	printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");\
 	system("pause");\
 	exit(1);\
 }
@@ -77,8 +74,8 @@ if (!sendRaw(hSocket, packetBuffer, packetSize, flag)) {\
 */
 #define recvData(hSocket, packetBuffer, packetSize, flag) \
 if (!recvRaw(hSocket, packetBuffer, packetSize, flag)) {\
-	printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "중계서버와의 연결에 문제가 발생했습니다: %d", WSAGetLastError());\
-	printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");\
+	printDebugMsg(DC_ERROR, errorLevel, "중계서버와의 연결에 문제가 발생했습니다: %d", WSAGetLastError());\
+	printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");\
 	system("pause");\
 	exit(1);\
 }
@@ -99,6 +96,11 @@ extern char currentUsername[100];
 	중계서버 인증 세션키 저장용 변수
 */
 extern char sessionKey[32];
+/**
+	@var int errorLevel
+	중계서버 인증 세션키 저장용 변수
+*/
+extern int errorLevel;
 
 //AuthHelper
 /**
@@ -132,6 +134,13 @@ void userLogout(SOCKET hSocket);
 	@author 멍멍아야옹해봐
 */
 void checkDogeConfig();
+
+/**
+	@fn void setErrorLevel()
+	@brief 에러레벨 설정
+	@author 멍멍아야옹해봐
+*/
+void setErrorLevel();
 
 /**
 	@fn void checkDogeConfig()

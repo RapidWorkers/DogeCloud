@@ -98,8 +98,8 @@ void userLogin(SOCKET hSocket) {
 		downloadPersonalDBFile(hSocket);//개인 DB 파일을 서버에서 다운로드
 	}
 	else {//그 외의 값을 전달받은 경우
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "중계서버에서 예상하지 못한 데이터를 전송받았습니다. statusCode: %d", LoginDoneResp.Data.statusCode);
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "중계서버에서 예상하지 못한 데이터를 전송받았습니다. statusCode: %d", LoginDoneResp.Data.statusCode);
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -186,7 +186,7 @@ void userRegister(SOCKET hSocket) {
 	RegisterStartResp.Data.dataLen = ntohl(RegisterStartResp.Data.dataLen);
 
 	if (RegisterStartResp.Data.statusCode == 0) {//만약 회원가입 불가 상태라면
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "현재 회원가입은 불가능합니다. 나중에 다시 시도해 주세요.");
+		printDebugMsg(DC_ERROR, errorLevel, "현재 회원가입은 불가능합니다. 나중에 다시 시도해 주세요.");
 		system("pause");
 		return;
 	}
@@ -235,8 +235,8 @@ void userRegister(SOCKET hSocket) {
 		downloadPersonalDBFile(hSocket); //개인 DB 파일 서버에서 다운로드
 		break;
 	default://그 외 응답
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "중계서버에서 예상하지 못한 데이터를 전송받았습니다. statusCode: %d", RegisterDone.Data.statusCode);
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "중계서버에서 예상하지 못한 데이터를 전송받았습니다. statusCode: %d", RegisterDone.Data.statusCode);
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 		break;

@@ -43,7 +43,7 @@ void initFSConnection(SOCKET *hFileSrvSock, SOCKADDR_IN *fileSrvAddr) {
 	//소켓 생성
 	*hFileSrvSock = socket(PF_INET, SOCK_STREAM, 0);
 	if (*hFileSrvSock == INVALID_SOCKET) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Invalid Socket");
+		printDebugMsg(DC_ERROR, errorLevel, "Invalid Socket");
 		return;
 	}
 
@@ -51,7 +51,7 @@ void initFSConnection(SOCKET *hFileSrvSock, SOCKADDR_IN *fileSrvAddr) {
 	int err = (connect(*hFileSrvSock, (SOCKADDR*)fileSrvAddr, sizeof(*fileSrvAddr)) == SOCKET_ERROR);
 	if (err) //생성된 소켓으로 서버에 연결
 	{
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FS Connection Failled: %d", WSAGetLastError());
+		printDebugMsg(DC_ERROR, errorLevel, "FS Connection Failled: %d", WSAGetLastError());
 		return;
 	}
 
@@ -70,9 +70,9 @@ void initFSConnection(SOCKET *hFileSrvSock, SOCKADDR_IN *fileSrvAddr) {
 	
 	//등록 성공 유무 판단
 	if (RegisterFileServerResp.Data.statusCode == 1)
-		printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Successfully Connected and Registered to File Server");
+		printDebugMsg(DC_INFO, errorLevel, "Successfully Connected and Registered to File Server");
 	else {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Failled to Register");
+		printDebugMsg(DC_ERROR, errorLevel, "Failled to Register");
 		return;
 	}
 

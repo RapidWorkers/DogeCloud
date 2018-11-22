@@ -65,8 +65,8 @@ void downloadPersonalDBFile(SOCKET hSocket) {
 
 	//다운로드 모드 시작
 	if (fopen_s(&downFile, "myinfoClient.db", "wb+")) {//DB 파일 다운로드를 위해 파일 열기
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일을 쓰기용으로 열 수 없습니다");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "파일을 쓰기용으로 열 수 없습니다");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -86,8 +86,8 @@ void downloadPersonalDBFile(SOCKET hSocket) {
 			toWrite = 4096U;//4KiB만큼 받아옴
 
 		if (!recvRaw(hSocket, dataBuffer, toWrite, 0)) {//서버로부터 다운로드
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "전송 실패");
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+			printDebugMsg(DC_ERROR, errorLevel, "전송 실패");
+			printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 			system("pause");
 			exit(1);
 		}
@@ -112,8 +112,8 @@ void downloadPersonalDBFile(SOCKET hSocket) {
 	getFileHash(downFile, fileHash);
 
 	if (!memcmp(fileHash, DownloadInfoResp.Data.hash, 32)) {//만약 해쉬값이 다르다면
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터 불일치");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "데이터 불일치");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -144,8 +144,8 @@ void uploadPersonalDBFile(SOCKET hSocket, char* originalHash) {
 
 	//DB파일 오픈
 	if (fopen_s(&infoFile, "./myinfoClient.db", "rb")) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일을 읽기용으로 열 수 없습니다");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "파일을 읽기용으로 열 수 없습니다");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -214,8 +214,8 @@ void uploadPersonalDBFile(SOCKET hSocket, char* originalHash) {
 
 			//읽어온 버퍼를 서버로 전송
 			if (!sendRaw(hSocket, dataBuffer, toRead, 0)) {
-				printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "전송 실패");
-				printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+				printDebugMsg(DC_ERROR, errorLevel, "전송 실패");
+				printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 				system("pause");
 				exit(1);
 			}
@@ -238,10 +238,10 @@ void uploadPersonalDBFile(SOCKET hSocket, char* originalHash) {
 			break;
 
 		if (!flag && count == 3) {//3번 다 실패한 경우
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "중계서버에 파일을 저장할 수 없었습니다.");
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "myinfoClient.db 파일을 수동으로 백업해 주십시오.");
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "그 후 관리자에게 이메일로 전송해 주시면 수동으로 적용됩니다.");
-			printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+			printDebugMsg(DC_ERROR, errorLevel, "중계서버에 파일을 저장할 수 없었습니다.");
+			printDebugMsg(DC_ERROR, errorLevel, "myinfoClient.db 파일을 수동으로 백업해 주십시오.");
+			printDebugMsg(DC_ERROR, errorLevel, "그 후 관리자에게 이메일로 전송해 주시면 수동으로 적용됩니다.");
+			printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 			system("pause");
 			exit(1);
 		}
@@ -282,8 +282,8 @@ void addContacts() {
 	char *insertMemo = "INSERT into contacts VALUES(NULL, '%q', '%q', '%q', '%q', '%q');";
 
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -330,8 +330,8 @@ void modifyContacts(int count) {
 	/** @brief sqlite3을 위한 handle */
 	sqlite3 *dbHandle;
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -398,7 +398,7 @@ void modifyContacts(int count) {
 			clearStdinBuffer();
 			break;
 		default:
-			printDebugMsg(DC_WARN, DC_ERRORLEVEL, "올바르지 않은 입력입니다.");
+			printDebugMsg(DC_WARN, errorLevel, "올바르지 않은 입력입니다.");
 			Sleep(1000);
 			break;
 		}
@@ -456,8 +456,8 @@ void deleteContacts(int count) {
 	/** @brief sqlite3을 위한 handle */
 	sqlite3 *dbHandle;
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -527,8 +527,8 @@ void addMemo() {
 
 	//임시파일 생성
 	if (fopen_s(&tmpFile, tmpFileName, "wb+")) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일을 쓰기용으로 열 수 없습니다");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "파일을 쓰기용으로 열 수 없습니다");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -540,15 +540,15 @@ void addMemo() {
 	system(cmd);
 
 	if (fopen_s(&tmpFile, tmpFileName, "rb")) {//DB저장을 위해서 다시 파일을 연다
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일을 읽기용으로 열 수 없습니다");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "파일을 읽기용으로 열 수 없습니다");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
 
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -571,7 +571,7 @@ void addMemo() {
 	char* text = (void*)calloc(1, memoFileSize+1);
 
 	if (text == NULL) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "메모리 할당에 실패했습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "메모리 할당에 실패했습니다.");
 		return;
 	}
 
@@ -654,8 +654,8 @@ void modifyMemo(int count) {
 	//유저 입력 끝
 
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -668,8 +668,8 @@ void modifyMemo(int count) {
 
 	//임시파일 생성
 	if (fopen_s(&tmpFile, tmpFileName, "wb+")) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일을 쓰기용으로 열 수 없습니다");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "파일을 쓰기용으로 열 수 없습니다");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -714,8 +714,8 @@ void modifyMemo(int count) {
 	system(cmd);
 
 	if (fopen_s(&tmpFile, tmpFileName, "rb")) {//DB읽기를 위해서 파일을 연다
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일을 읽기용으로 열 수 없습니다");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "파일을 읽기용으로 열 수 없습니다");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -741,7 +741,7 @@ void modifyMemo(int count) {
 	char* newText = (void*)calloc(1, newMemoFileSize + 1);
 
 	if (newText == NULL) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "메모리 할당에 실패했습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "메모리 할당에 실패했습니다.");
 		return;
 	}
 
@@ -821,8 +821,8 @@ void deleteMemo(int count) {
 	/** @brief sqlite3을 위한 handle */
 	sqlite3 *dbHandle;
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}

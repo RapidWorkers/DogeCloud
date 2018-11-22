@@ -5,7 +5,7 @@
 #include "RelayServer.h"
 
 void procFileUpDemo(SOCKET hClientSock) {
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Upload Started...");
+	printDebugMsg(DC_INFO, errorLevel, "File Upload Started...");
 	FILE *downFile;
 
 	if ((downFile = fopen("Server_downloaddFromClient", "wb+")) == NULL) {
@@ -39,7 +39,7 @@ void procFileUpDemo(SOCKET hClientSock) {
 	cnt = cnt;
 
 	fclose(downFile);
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "File Upload Done...");
+	printDebugMsg(DC_INFO, errorLevel, "File Upload Done...");
 }
 
 void procFileDownDemo(SOCKET hClientSock) {

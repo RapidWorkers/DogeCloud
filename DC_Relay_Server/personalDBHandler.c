@@ -61,7 +61,7 @@ void procDownloadPersonalDBFile(SOCKET hClientSock) {
 	//sqlite open으로 열어보기
 	sqlite3 *dbHandle;
 	if (sqlite3_open(fileName, &dbHandle)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "ERROR Reading Database File");
+		printDebugMsg(DC_ERROR, errorLevel, "ERROR Reading Database File");
 		sqlite3_close(dbHandle);
 		return;
 	}
@@ -87,7 +87,7 @@ void procDownloadPersonalDBFile(SOCKET hClientSock) {
 
 	unsigned long fileSize;
 	if (fopen_s(&infoFile, fileName, "rb")) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "ERROR Reading Database File");
+		printDebugMsg(DC_ERROR, errorLevel, "ERROR Reading Database File");
 		return;
 	}
 
@@ -159,8 +159,8 @@ void procUploadPersonalDBFile(SOCKET hClientSock) {
 		sprintf_s(tmpFileName + (2 * i), 3, "%02x", tmpHash[i]);
 
 	if (fopen_s(&infoFile, tmpFileName, "wb+")) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: CANNOT Create TEMP FILE!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: CANNOT Create TEMP FILE!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);
 	}

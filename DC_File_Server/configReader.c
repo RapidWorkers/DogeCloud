@@ -35,11 +35,23 @@ void checkFileConfig() {
 	FILE *fp;
 
 	if (fopen_s(&fp, "./FileServerConfig.ini", "r")) {//열어보고 없으면 에러
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: FileServerConfig.ini File Error");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: FileServerConfig.ini File Error");
 		system("pause");
 		exit(1);//exit with error
 	}
 	fclose(fp);//파일을 닫는다
+	return;
+}
+
+/**
+	@fn void setErrorLevel()
+	@brief 에러레벨 설정
+	@author 멍멍아야옹해봐
+*/
+void setErrorLevel() {
+	checkFileConfig();
+
+	errorLevel = GetPrivateProfileInt("DC_Common", "errorLevel", 0, "./FileServerConfig.ini");
 	return;
 }
 

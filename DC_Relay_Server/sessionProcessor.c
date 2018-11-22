@@ -121,9 +121,9 @@ void doLogin(SOCKET hClientSock) {
 
 	//MySQL Prepared Statement 초기화
 	if ((stmt = mysql_stmt_init(&sqlHandle)) == NULL) {//stmt is local variable so this must be done before calling sqlPrepareAndExecute
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);//exit with error
 	}
@@ -133,9 +133,9 @@ void doLogin(SOCKET hClientSock) {
 
 	//결과물 가져오기
 	if (mysql_stmt_fetch(stmt)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: Got no data from Database!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: Got no data from Database!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);//exit with error
 	}
@@ -162,7 +162,7 @@ void doLogin(SOCKET hClientSock) {
 
 	//클라이언트에 데이터 전송
 	sendData(hClientSock, LoginDoneResp.buf, sizeof(LoginDoneResp), 0);
-	printDebugMsg(DC_INFO, DC_ERRORLEVEL, "Sent LoginDoneResp to Client");
+	printDebugMsg(DC_INFO, errorLevel, "Sent LoginDoneResp to Client");
 
 	//mysql 정리
 	mysql_stmt_close(stmt);
@@ -275,9 +275,9 @@ void doRegister(SOCKET hClientSock) {
 
 	//MySQL Prepared Statement 준비
 	if ((stmt = mysql_stmt_init(&sqlHandle)) == NULL) {//stmt is local variable so this must be done before calling sqlPrepareAndExecute
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);//exit with error
 	}
@@ -287,9 +287,9 @@ void doRegister(SOCKET hClientSock) {
 
 	//결과 받아오기
 	if (mysql_stmt_fetch(stmt)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: Got no data from Database!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: Got no data from Database!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);//exit with error
 	}
@@ -330,9 +330,9 @@ void doRegister(SOCKET hClientSock) {
 
 	//Prepared Statement 준비 => 회원가입 쿼리
 	if ((stmt = mysql_stmt_init(&sqlHandle)) == NULL) {//stmt is local variable so this must be done before calling sqlPrepareAndExecute
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);//exit with error
 	}
@@ -343,9 +343,9 @@ void doRegister(SOCKET hClientSock) {
 
 	//Prepared Statement 준비 => UID 가져오기
 	if ((stmt = mysql_stmt_init(&sqlHandle)) == NULL) {//stmt is local variable so this must be done before calling sqlPrepareAndExecute
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);//exit with error
 	}
@@ -363,9 +363,9 @@ void doRegister(SOCKET hClientSock) {
 
 	//결과 가져오기
 	if (mysql_stmt_fetch(stmt)) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "FATAL ERROR: Got no data from Database!!!");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "MySQL Error: %s", mysql_stmt_error(stmt));
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "Exiting Program");
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: Got no data from Database!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
 		system("pause");
 		exit(1);//exit with error
 	}

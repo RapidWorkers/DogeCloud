@@ -35,13 +35,25 @@ void checkDogeConfig() {
 	FILE *fp;
 
 	if (fopen_s(&fp, "./DogeConfig.ini", "r")) {//파일 있는지 검사
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "DogeConfig 파일이 없습니다.");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "파일을 생성 해 주세요.");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "DogeConfig 파일이 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "파일을 생성 해 주세요.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);//프로그램 에러코드 발생 및 종료
 	}
 	fclose(fp);//파일 닫기
+	return;
+}
+
+/**
+	@fn void setErrorLevel()
+	@brief 에러레벨 설정
+	@author 멍멍아야옹해봐
+*/
+void setErrorLevel() {
+	checkDogeConfig();
+
+	errorLevel = GetPrivateProfileInt("DC_Common", "errorLevel", 0, "./DogeConfig.ini");
 	return;
 }
 

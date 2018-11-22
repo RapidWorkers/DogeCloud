@@ -44,8 +44,8 @@ void manageContacts(SOCKET hSocket) {
 
 	//DB파일 열기
 	if (fopen_s(&fp, "./myinfoClient.db", "rb")) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -59,8 +59,8 @@ void manageContacts(SOCKET hSocket) {
 	/** @brief sqlite3을 위한 handle */
 	sqlite3 *dbHandle;
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -82,8 +82,8 @@ void manageContacts(SOCKET hSocket) {
 				count = sqlite3_column_int(stmt, 0);
 			}
 			else {
-				printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
-				printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+				printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
+				printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 				system("pause");
 				exit(1);
 			}
@@ -150,7 +150,7 @@ void manageContacts(SOCKET hSocket) {
 			return;
 			break;
 		default: //유효하지 않은 입력
-			printDebugMsg(DC_WARN, DC_ERRORLEVEL, "올바르지 않은 입력입니다.");
+			printDebugMsg(DC_WARN, errorLevel, "올바르지 않은 입력입니다.");
 			Sleep(1000);
 			break;
 		}
@@ -175,8 +175,8 @@ void manageMemo(SOCKET hSocket) {
 
 	//DB파일 열기
 	if (fopen_s(&fp, "./myinfoClient.db", "rb")) {
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -189,8 +189,8 @@ void manageMemo(SOCKET hSocket) {
 	/** @brief sqlite3을 위한 handle */
 	sqlite3 *dbHandle;
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
-		printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
 		exit(1);
 	}
@@ -212,8 +212,8 @@ void manageMemo(SOCKET hSocket) {
 				count = sqlite3_column_int(stmt, 0);
 			}
 			else {
-				printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "데이터베이스 파일을 읽을 수 없습니다.");
-				printDebugMsg(DC_ERROR, DC_ERRORLEVEL, "프로그램을 종료합니다.");
+				printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
+				printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 				system("pause");
 				exit(1);
 			}
@@ -291,7 +291,7 @@ void manageMemo(SOCKET hSocket) {
 			return;
 			break;
 		default: //유효하지 않은 입력
-			printDebugMsg(DC_WARN, DC_ERRORLEVEL, "올바르지 않은 입력입니다.");
+			printDebugMsg(DC_WARN, errorLevel, "올바르지 않은 입력입니다.");
 			Sleep(1000);
 			break;
 		}
