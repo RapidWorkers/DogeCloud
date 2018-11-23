@@ -66,7 +66,7 @@ extern "C" {
 		printf_s("\r%d / %d [", current, total);
 		percent = (double)current / total * 100;
 
-		int count = percent / tickrate;
+		int count = (int)(percent / tickrate);
 
 		for (int i = 0; i < length; i++) {
 			if (count > i)

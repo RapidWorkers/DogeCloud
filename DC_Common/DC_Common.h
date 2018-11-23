@@ -40,7 +40,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 //패킷 구조체 선언된 헤더들
 #include "DataManagePacket.h"
 #include "SessionPacket.h"
-#include "UserCommPacket.h"
 #include "FileServerCommPacket.h"
 
 typedef struct {

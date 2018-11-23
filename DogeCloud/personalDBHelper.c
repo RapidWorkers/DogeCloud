@@ -679,7 +679,7 @@ void modifyMemo(int count) {
 	{
 		if (sqlite3_step(stmt) == SQLITE_ROW) {
 			const unsigned char *user_text = sqlite3_column_text(stmt, 0);
-			unsigned long orgMemoFileSize = strlen(user_text) + 1;
+			unsigned long orgMemoFileSize = (unsigned long)strlen(user_text) + 1;
 			unsigned long left = orgMemoFileSize;
 
 			/** @brief 얼마만큼 쓸지 */
