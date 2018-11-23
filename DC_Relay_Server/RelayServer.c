@@ -225,6 +225,8 @@ int main()
 
 	closesocket(hServSock);//서버 종료시 소켓 종료
 	WSACleanup();//라이브러리 해제
+	free(sessionList);
+	free(hClientSocks);
 	printDebugMsg(1, errorLevel, "Server Terminated");
 	system("pause");
 	return 0;
