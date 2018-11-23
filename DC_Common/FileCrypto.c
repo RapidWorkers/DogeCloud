@@ -33,16 +33,16 @@ extern "C" {
 		LEA_KEY leaKey;
 		lea_set_key(&leaKey, encKey, 32);
 
-		//init read and encryption buffer
-		char org_buffer[2048];
-		char enc_buffer[2048];
+		//init read and encryption buffer 256KiB
+		char org_buffer[262144];
+		char enc_buffer[262144];
 		int toRead;
 
 		while (left) {
-			if (left < 2048)
+			if (left < 262144)
 				toRead = left;
 			else
-				toRead = 2048;
+				toRead = 262144;
 
 			fread(org_buffer, toRead, 1, infile); //read original data
 			lea_ctr_enc(enc_buffer, org_buffer, toRead, ctr_counter, &leaKey);//encrypt it
@@ -81,16 +81,16 @@ extern "C" {
 		LEA_KEY leaKey;
 		lea_set_key(&leaKey, encKey, 32);
 
-		//init read and encryption buffer
-		char org_buffer[8192];
-		char dec_buffer[8192];
+		//init read and encryption buffer 256KiB
+		char org_buffer[262144];
+		char dec_buffer[262144];
 		int toRead;
 
 		while (left) {
-			if (left < 8192)
+			if (left < 262144)
 				toRead = left;
 			else
-				toRead = 8192;
+				toRead = 262144;
 
 			fread(org_buffer, toRead, 1, infile); //read original data
 			lea_ctr_dec(dec_buffer, org_buffer, toRead, ctr_counter, &leaKey);//encrypt it
