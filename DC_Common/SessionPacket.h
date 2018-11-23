@@ -22,27 +22,27 @@ extern "C" {
 
 	typedef union {//use union to send packets network easily
 		struct {
-			unsigned long opCode;//operation code -> to classify packet
-			unsigned long dataLen;
-			unsigned long clientVersion;
+			unsigned long opCode;//opCode => 패킷 구분용
+			unsigned long dataLen;//데이터 길이
+			unsigned long clientVersion;//클라이언트 버전
 		} Data;
 		char buf[12];
 	}cs_LoginStart;
 
 	typedef union {
 		struct {
-			unsigned long opCode;
-			unsigned long dataLen;
-			unsigned char statusCode;
+			unsigned long opCode;//opCode => 패킷 구분용
+			unsigned long dataLen;//데이터 길이
+			unsigned char statusCode;//상태 코드
 		} Data;
 		char buf[9];
 	}sc_LoginStartResp;
 
 	typedef union {
 		struct {
-			unsigned long opCode;
-			unsigned long dataLen;
-			char Username[100];
+			unsigned long opCode;//opCode => 패킷 구분용
+			unsigned long dataLen;//데이터 길이
+			char Username[100];//아이디
 			char Password[100];//raw password
 		} Data;
 		char buf[208];
@@ -50,8 +50,8 @@ extern "C" {
 
 	typedef union {
 		struct {
-			unsigned long opCode;
-			unsigned long dataLen;
+			unsigned long opCode;//opCode => 패킷 구분용
+			unsigned long dataLen;//데이터 길이
 			unsigned char statusCode;//0 = fail, 1 = success
 			unsigned char sessionKey[32];//use random sha256 hash, if login has failled, fill this with 0
 		} Data;
@@ -60,17 +60,17 @@ extern "C" {
 
 	typedef union {
 		struct {
-			unsigned long opCode;
-			unsigned long dataLen;
-			unsigned char SessionKey[32];
+			unsigned long opCode;//opCode => 패킷 구분용
+			unsigned long dataLen;//데이터 길이
+			unsigned char SessionKey[32];//세션키
 		} Data;
 		char buf[40];
 	}cs_LogoutStart;
 
 	typedef union {
 		struct {
-			unsigned long opCode;
-			unsigned long dataLen;
+			unsigned long opCode;//opCode => 패킷 구분용
+			unsigned long dataLen;//데이터 길이
 			unsigned char statusCode;//0 = fail, 1 = success
 		} Data;
 		char buf[9];
@@ -78,8 +78,8 @@ extern "C" {
 
 	typedef union {
 		struct {
-			unsigned long opCode;
-			unsigned long dataLen;
+			unsigned long opCode;//opCode => 패킷 구분용
+			unsigned long dataLen;//데이터 길이
 			unsigned long clientVersion;//0 = fail, 1 = success
 		} Data;
 		char buf[12];
@@ -87,19 +87,19 @@ extern "C" {
 
 	typedef union {
 		struct {
-			unsigned long opCode;
-			unsigned long dataLen;
-			unsigned char statusCode;
+			unsigned long opCode;//opCode => 패킷 구분용
+			unsigned long dataLen;//데이터 길이
+			unsigned char statusCode;//상태 코드
 		} Data;
 		char buf[9];
 	}sc_RegisterStartResp;
 
 	typedef union {
 		struct {
-			unsigned long opCode;
-			unsigned long dataLen;
-			char email[100];
-			char Username[100];
+			unsigned long opCode;//opCode => 패킷 구분용
+			unsigned long dataLen;//데이터 길이
+			char email[100];//이메일
+			char Username[100];//아이디
 			char Password[100];//raw password
 		} Data;
 		char buf[308];
@@ -107,8 +107,8 @@ extern "C" {
 	
 	typedef union {
 		struct {
-			unsigned long opCode;
-			unsigned long dataLen;
+			unsigned long opCode;//opCode => 패킷 구분용
+			unsigned long dataLen;//데이터 길이
 			unsigned char statusCode;//0 = fail, 1 = dup id, 2 = success
 			unsigned char sessionKey[32];//use random sha256 hash, if login has failled, fill this with 0
 		} Data;

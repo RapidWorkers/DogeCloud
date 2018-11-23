@@ -59,9 +59,6 @@
     <ClInclude Include="DC_Common.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="UserCommPacket.h">
-      <Filter>Packets</Filter>
-    </ClInclude>
     <ClInclude Include="SessionPacket.h">
       <Filter>Packets</Filter>
     </ClInclude>
@@ -73,9 +70,6 @@
     </ClInclude>
     <ClInclude Include="..\lib\CSPRNG\duthomhas\csprng.h">
       <Filter>lib\CSPRNG</Filter>
-    </ClInclude>
-    <ClInclude Include="CommonPacket.h">
-      <Filter>Packets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

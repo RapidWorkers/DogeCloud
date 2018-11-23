@@ -36,10 +36,8 @@
     <ClInclude Include="..\lib\CSPRNG\duthomhas\csprng.h" />
     <ClInclude Include="..\lib\dllLEA\include\config.h" />
     <ClInclude Include="..\lib\dllLEA\include\lea.h" />
-    <ClInclude Include="CommonPacket.h" />
     <ClInclude Include="DataManagePacket.h" />
     <ClInclude Include="FileServerCommPacket.h" />
-    <ClInclude Include="UserCommPacket.h" />
     <ClInclude Include="SessionPacket.h" />
     <ClInclude Include="DC_Common.h" />
   </ItemGroup>

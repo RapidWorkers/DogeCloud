@@ -42,7 +42,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "SessionPacket.h"
 #include "UserCommPacket.h"
 #include "FileServerCommPacket.h"
-#include "CommonPacket.h"
 
 typedef struct {
 	SOCKET *hSocket;
@@ -65,8 +64,8 @@ typedef struct {
 
 //프로그램 정보
 #define MAJOR_VERSION 0
-#define MINOR_VERSION 1
-#define VER_STATUS "In-dev"
+#define MINOR_VERSION 8
+#define VER_STATUS "Pre-Release"
 
 //에러 표기용
 #define DC_ERROR 3

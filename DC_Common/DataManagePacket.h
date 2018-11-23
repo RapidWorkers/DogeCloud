@@ -14,16 +14,16 @@ extern "C" {
 	typedef union {
 		struct {
 			unsigned long opCode;//opCode => 패킷 구분용
-			unsigned long dataLen;
-			unsigned char hash[32];
+			unsigned long dataLen;//데이터 길이
+			unsigned char hash[32];//해쉬값
 		} Data;
 		char buf[40];
 	} cs_PersonalDBEditDone;
 
 	typedef union {
 		struct {
-			unsigned long opCode;
-			unsigned long dataLen;
+			unsigned long opCode;//opCode => 패킷 구분용
+			unsigned long dataLen;//데이터 길이
 			unsigned char statusCode;//0 = fail, 1 = success
 		} Data;
 		char buf[9];
@@ -31,17 +31,17 @@ extern "C" {
 
 	typedef union {
 		struct {
-			unsigned long opCode;
-			unsigned long dataLen;
+			unsigned long opCode;//opCode => 패킷 구분용
+			unsigned long dataLen;//데이터 길이
 		} Data;
 		char buf[8];
 	} cs_DownloadPersonalDBReq;
 
 	typedef union {
 		struct {
-			unsigned long opCode;
-			unsigned long dataLen;
-			unsigned char hash[32];
+			unsigned long opCode;//opCode => 패킷 구분용
+			unsigned long dataLen;//데이터 길이
+			unsigned char hash[32];//해쉬값
 	} Data;
 		char buf[40];
 	} sc_DownloadPersonalDBResp;
