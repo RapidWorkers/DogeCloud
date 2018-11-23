@@ -28,7 +28,6 @@
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">TurnOffAllWarnings</WarningLevel>
     </ClCompile>
     <ClCompile Include="configReader.c" />
-    <ClCompile Include="dataProcessor.c" />
     <ClCompile Include="fileServerRegister.c" />
     <ClCompile Include="MariaDBConnector.c" />
     <ClCompile Include="personalDBHandler.c" />

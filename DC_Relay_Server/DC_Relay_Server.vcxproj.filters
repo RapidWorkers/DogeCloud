@@ -39,9 +39,6 @@
     <ClCompile Include="RelayServer.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="dataProcessor.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="MariaDBConnector.c">
       <Filter>소스 파일</Filter>
     </ClCompile>

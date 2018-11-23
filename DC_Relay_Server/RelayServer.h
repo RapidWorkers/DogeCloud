@@ -231,12 +231,6 @@ void procRegisterStart(SOCKET hClientSock);
 */
 void doRegister(SOCKET hClientSock);
 
-//이 블록은 제거 예정
-//data Processors
-void procFileUpDemo(SOCKET hClientSock);
-void procFileDownDemo(SOCKET hClientSock);
-//제거 예정 블록 끝
-
 //Configuration Reader
 /**
 	@fn void checkRelayConfig()

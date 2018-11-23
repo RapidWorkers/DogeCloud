@@ -26,7 +26,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 #include "DogeCloud.h"
 #include <sqlite3.h>
-#include <stdlib.h>
 
 /**
 	@fn void downloadPersonalDBFile(SOCKET hSocket)
