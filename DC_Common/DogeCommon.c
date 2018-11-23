@@ -79,6 +79,50 @@ extern "C" {
 	}
 
 	/**
+	@fn void minimizeFileSize(unsigned long size, char *output);
+	@brief 파일 사이즈를 최소한으로 표기
+	@author 멍멍아야옹해봐
+	@param size 파일 사이즈(바이트)
+	@param *output 결과값 출력할 곳(사이즈 32 이상)
+	*/
+	DLL void minimizeFileSize(unsigned long size, char *output)
+	{
+		int unit = 0; //0은 바이트 의미
+		double tmpSize = size;
+		unsigned int tmp;
+		while (1) {
+			tmp = (int)tmpSize / 1024;
+			if (tmp == 0) break; //다음 단위로 나아갈 수 없으면 그만
+			tmpSize /= 1024; 
+			if (unit == 4) break;
+			unit++;//다음 단위로 넘김
+		}
+
+		char *unitPtr = NULL;
+		switch (unit) {
+		case 0:
+			unitPtr = "B";
+			break;
+		case 1:
+			unitPtr = "KB";
+			break;
+		case 2:
+			unitPtr = "MB";
+			break;
+		case 3:
+			unitPtr = "GB";
+			break;
+		case 4:
+			unitPtr = "TB";
+			break;
+		}
+
+		sprintf_s(output, 32, "%.2lf %s", tmpSize, unitPtr);
+
+		return;
+	}
+
+	/**
 		@fn void SHA256_Text(const char* text, char* buf)
 		@brief 문자열의 SHA256 구하기
 		@author 멍멍아야옹해봐

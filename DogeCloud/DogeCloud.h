@@ -170,42 +170,37 @@ void openFileServer(char *fileServerAddr, unsigned long fileServerPort, unsigned
 void doFileManage(SOCKET hFileSrvSock);
 
 /**
-	@fn void showFileList(SOCKET hFileSrvSock, int *errorFlag)
+	@fn void showFileList(SOCKET hFileSrvSock, int *fileCount, unsigned char *page, unsigned char *maxPage, int *errorFlag)
 	@brief DogeCloud 파일 목록 보여주기
 	@author 멍멍아야옹해봐
 	@param hFileSrvSock 파일서버 연결된 소켓
+	@param *page 현재 페이지 변수
+	@param *fileCount 파일 개수 담을 변수
+	@param *maxPage 전체 페이지 수 담을 변수
 	@param *errorFlag 에러 플래그
 */
-void showFileList(SOCKET hFileSrvSock, int *errorFlag);
+void showFileList(SOCKET hFileSrvSock, int *fileCount, unsigned char *page, unsigned char *maxPage, int *errorFlag);
 
 /**
-	@fn void moveDir(SOCKET hFileSrvSock, int *errorFlag)
-	@brief DogeCloud 파일서버 디렉토리 이동
-	@author 멍멍아야옹해봐
-	@param hFileSrvSock 파일서버 연결된 소켓
-	@param *errorFlag 에러 플래그
-*/
-void moveDir(SOCKET hFileSrvSock, int *errorFlag);
-
-/**
-	@fn moveFileListPage(SOCKET hFileSrvSock, char type, int *errorFlag)
-	@brief DogeCloud 파일 목록 페이지 이동
-	@author 멍멍아야옹해봐
-	@param hFileSrvSock 파일서버 연결된 소켓
-	@param type 0= 이전 페이지, 1=다음 페이지
-	@param *errorFlag 에러 플래그
-*/
-void moveFileListPage(SOCKET hFileSrvSock, char type, int *errorFlag);
-
-/**
-	@fn void doFileJob(SOCKET hFileSrvSock, int jobType, int *errorFlag)
+	@fn void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag)
 	@brief DogeCloud 파일 업/다운로드
 	@author 멍멍아야옹해봐
 	@param hFileSrvSock 파일서버 연결된 소켓
-	@param jobType 0= 업로드, 1=다운로드
+	@param jobType 0= 업로드, 1= 다운로드
+	@param fileCount 현재 파일 개수
 	@param *errorFlag 에러 플래그
 */
-void doFileJob(SOCKET hFileSrvSock, int jobType, int *errorFlag);
+void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag);
+
+/**
+	@fn void deleteFile(SOCKET hFileSrvSock, int fileCount, int *errorFlag)
+	@brief DogeCloud 파일 삭제
+	@author 멍멍아야옹해봐
+	@param hFileSrvSock 파일서버 연결된 소켓
+	@param fileCount 현재 파일 개수
+	@param *errorFlag 에러 플래그
+*/
+void deleteFile(SOCKET hFileSrvSock, int fileCount, int *errorFlag);
 
 //userDataHelper
 /**

@@ -92,17 +92,19 @@ void procFileLogin(SOCKET hClientSock) {
 	//패킷 데이터 설정
 	LoginFileResp.Data.statusCode = 0;//일단 0으로
 
+	int userUID = 0;
+
 	//인증 대기열에서 인증 요청 받은 키 검색
 	WaitForSingleObject(hMutex, INFINITE);
 	for (int i = 0; i < authWaitCount; i++) {
 		if (!memcmp(LoginFile.Data.UserFileServerAuthKey, authWaitList[i].authKey, 32)) {//일치하는 키 값이 있을 경우
-			for (int j = 0; i < clientCount; j++) {
+			for (int j = 0; j < clientCount; j++) {
 				if (hClientSock == hClientSocks[j]) {
 					memcpy(sessionList[j].authKey, LoginFile.Data.UserFileServerAuthKey, 32); //copy generated sessionKey
 					sessionList[j].userUID = authWaitList[i].userUID;
-					memcpy(sessionList[j].directory, "/", 2);//초기 디렉토리는 루트로 설정
 					authWaitList[i].authWaitTime = 0; //GC가 인증이 완료된 목록을 자동으로 제거하도록
 					LoginFileResp.Data.statusCode = 1;//인증 성공
+					userUID = sessionList[j].userUID;
 					break;
 				}
 			}

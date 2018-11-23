@@ -59,7 +59,6 @@ typedef struct {
 typedef struct {
 	char authKey[32];
 	unsigned long userUID;
-	char directory[255];
 } DC_FILE_SESSION;
 
 /**

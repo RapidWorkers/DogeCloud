@@ -84,16 +84,24 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 	printDebugMsg(DC_DEBUG, errorLevel, "Got OpCode: %d", opCode);
 	switch (opCode) {//opCode에 따라 선택
 	case OP_SF_REGISTERFILESERVER:
+		printDebugMsg(DC_INFO, errorLevel, "Relay Server FileSrv Register Req: %s", clientIP);
 		procRegisterFileServer(hClientSock);
 		break;
 	case OP_SF_AUTHUSER:
+		printDebugMsg(DC_INFO, errorLevel, "Auth User Req: %s", clientIP);
 		procAddUserAuthWaitList(hClientSock);
 		break;
 	case OP_CF_LOGINFILE:
+		printDebugMsg(DC_INFO, errorLevel, "File Server Login Req: %s", clientIP);
 		procFileLogin(hClientSock);
 		break;
 	case OP_CF_LISTFILE:
+		printDebugMsg(DC_INFO, errorLevel, "List File Req: %s", clientIP);
 		procListFile(hClientSock);
+		break;
+	case OP_CF_DELETEFILEREQ:
+		printDebugMsg(DC_INFO, errorLevel, "Delete File Req: %s", clientIP);
+		//procDeleteFile(hClientSock);
 		break;
 	default:
 		printDebugMsg(DC_ERROR, errorLevel, "Unknown Packet: %s", clientIP);

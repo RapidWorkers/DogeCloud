@@ -100,9 +100,11 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 		procFileServerConnReq(hClientSock);
 		break;
 	case OP_CS_DOWNLOADUSERINFOREQ:
+		printDebugMsg(DC_INFO, errorLevel, "DownloadPersonalDBFile Req: %s", clientIP);
 		procDownloadPersonalDBFile(hClientSock);
 		break;
 	case OP_CS_PERSONALDBEDITDONE:
+		printDebugMsg(DC_INFO, errorLevel, "UploadPersonalDBFile Req: %s", clientIP);
 		procUploadPersonalDBFile(hClientSock);
 		break;
 	default:

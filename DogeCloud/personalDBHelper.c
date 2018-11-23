@@ -319,8 +319,8 @@ void modifyContacts(int count) {
 	scanf_s("%d", &contactsID);
 	clearStdinBuffer();
 
-	if (contactsID <= 0) return;
-	else if (contactsID > count) {
+	if (contactsID == 0) return;
+	if (contactsID < 0 || contactsID > count) {
 		puts("유효하지 않은 입력입니다.");
 		system("pause");
 		return;
@@ -436,8 +436,8 @@ void deleteContacts(int count) {
 	scanf_s("%d", &contactsID);
 	clearStdinBuffer();
 
-	if (contactsID <= 0) return;
-	else if (contactsID > count) {
+	if (contactsID == 0) return;
+	if (contactsID > count || contactsID < 0) {
 		puts("유효하지 않은 입력입니다.");
 		system("pause");
 		return;
@@ -644,8 +644,8 @@ void modifyMemo(int count) {
 	scanf_s("%d", &memoID);
 	clearStdinBuffer();
 
-	if (memoID <= 0) return;
-	else if (memoID > count) {
+	if (memoID == 0) return;
+	else if (memoID > count || memoID < 0) {
 		puts("유효하지 않은 입력입니다.");
 		system("pause");
 		return;
@@ -801,8 +801,8 @@ void deleteMemo(int count) {
 	scanf_s("%d", &memoID);
 	clearStdinBuffer();
 
-	if (memoID <= 0) return;
-	else if (memoID > count) {
+	if (memoID == 0) return;
+	else if (memoID > count || memoID < 0) {
 		puts("유효하지 않은 입력입니다.");
 		system("pause");
 		return;

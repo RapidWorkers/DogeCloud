@@ -130,23 +130,27 @@ void doFileManage(SOCKET hFileSrvSock) {
 	/** @brief 파일 서버 주소 저장하는 구조체 */
 
 	/** @brief 현재 페이지 저장 */
-	int currentPage = 1; //처음 페이지는 1페이지
+	unsigned char page = 1; //처음 페이지는 1페이지
+
 	while (1) {//메뉴 출력은 종료할 때 까지 무한반복
 
 		/** @brief 에러 감지용 */
 		int errorFlag = 0;
 
+		int fileCount = 0;
+		unsigned char maxPage = 0;
+
 		system("cls");
-		showFileList(hFileSrvSock, &errorFlag);//파일 리스트 출력
+
+		showFileList(hFileSrvSock, &fileCount, &page, &maxPage, &errorFlag);//파일 리스트 출력
 
 		printf_s("\n\t*********  메   뉴   *********");
 		printf_s("\n\t1. 업로드");
 		printf_s("\n\t2. 다운로드");
 		printf_s("\n\t3. 파일 삭제");
-		printf_s("\n\t4. 폴더 이동");
-		printf_s("\n\t5. 이전 페이지");
-		printf_s("\n\t6. 다음 페이지");
-		printf_s("\n\t7. 나가기");
+		printf_s("\n\t4. 이전 페이지");
+		printf_s("\n\t5. 다음 페이지");
+		printf_s("\n\t6. 나가기");
 		printf_s("\n\t******************************");
 		printf_s("\n\t메뉴 선택 : ");
 
@@ -157,24 +161,21 @@ void doFileManage(SOCKET hFileSrvSock) {
 
 		switch (select) {
 		case 1://업로드
-			doFileJob(hFileSrvSock, 0, &errorFlag);
+			doFileJob(hFileSrvSock, 0, fileCount, &errorFlag);
 			break;
 		case 2://다운로드
-			doFileJob(hFileSrvSock, 1, &errorFlag);
+			doFileJob(hFileSrvSock, 1, fileCount, &errorFlag);
 			break;
 		case 3://파일 삭제
-			//deleteFile(hFileSrvSock);
+			deleteFile(hFileSrvSock, fileCount, &errorFlag);
 			break;
-		case 4://폴더 이동
-			moveDir(hFileSrvSock, &errorFlag);
+		case 4://이전 페이지
+			if (page > 1) page--;
 			break;
-		case 5://이전 페이지로 이동
-			moveFileListPage(hFileSrvSock, 0, &errorFlag);
+		case 5://다음 페이지
+			if (maxPage > page) page++;
 			break;
-		case 6://다음 페이지로 이동
-			moveFileListPage(hFileSrvSock, 1, &errorFlag);
-			break;
-		case 7://나가기
+		case 6://나가기
 			return;//이 함수 종료시 계속되는 코드에서 소켓 종료됨
 			break;
 		default: //유효하지 않은 입력
@@ -189,99 +190,20 @@ void doFileManage(SOCKET hFileSrvSock) {
 			system("pause");
 			return;//파일서버 연결 종료
 		}
-
 	}
 }
 
 /**
-	@fn void moveDir(SOCKET hFileSrvSock, int *errorFlag)
-	@brief DogeCloud 파일서버 디렉토리 이동
-	@author 멍멍아야옹해봐
-	@param hFileSrvSock 파일서버 연결된 소켓
-	@param *errorFlag 에러 플래그
-*/
-void moveDir(SOCKET hFileSrvSock, int *errorFlag) {
-	//패킷 저장할 메모리 할당 및 초기화
-	cf_MoveDir MoveDir;
-	fc_MoveDirResp MoveDirResp;
-	memset(&MoveDir, 0, sizeof(cf_MoveDir));//0으로 초기화
-	memset(&MoveDirResp, 0, sizeof(fc_MoveDirResp));
-
-	//유저에게 이동할 디렉토리 받아옴
-	char directory[255];
-	printf_s("이동할 디렉토리 입력(최대 254자) : ");
-	scanf_s("%s", directory, 255);
-
-	//디렉토리 이동 패킷 설정
-	MoveDir.Data.opCode = htonl(OP_CF_MOVEDIR);
-	MoveDir.Data.dataLen = htonl(sizeof(cf_MoveDir) - 8);
-	strcpy_s(MoveDir.Data.moveDir, 255, directory);
-
-	*errorFlag = 1;//일단 errorFlag = 1로 설정
-	//디렉토리 이동 패킷 전송
-	sendData(hFileSrvSock, MoveDir.buf, sizeof(cf_MoveDir), 0);
-	//응답 받아옴
-	recvData(hFileSrvSock, MoveDirResp.buf, sizeof(fc_MoveDirResp), 0);
-	*errorFlag = 0;//위 함수들이 정상적으로 종료되면 계속 함수가 진행되므로 다시 0으로 설정
-
-	//받아온 숫자를 호스트 특정 인디안으로 변경
-	MoveDirResp.Data.opCode = ntohl(MoveDirResp.Data.opCode);
-	MoveDirResp.Data.dataLen = ntohl(MoveDirResp.Data.dataLen);
-
-	if (!MoveDirResp.Data.statusCode) {//디렉토리 변경 실패시
-		printDebugMsg(DC_WARN, errorLevel, "존재하지 않는 디렉토리이거나 요청이 실패했습니다.");
-	}
-
-	return;
-}
-
-/**
-	@fn void moveFileListPage(SOCKET hFileSrvSock, char type, int *errorFlag)
-	@brief DogeCloud 파일 목록 페이지 이동
-	@author 멍멍아야옹해봐
-	@param hFileSrvSock 파일서버 연결된 소켓
-	@param type 0= 이전 페이지, 1=다음 페이지
-	@param *errorFlag 에러 플래그
-*/
-void moveFileListPage(SOCKET hFileSrvSock, char type, int *errorFlag) {
-	//패킷 저장할 메모리 할당 및 초기화
-	cf_ListPageMove ListPageMove;
-	fc_ListPageMoveResp ListPageMoveResp;
-	memset(&ListPageMove, 0, sizeof(cf_ListPageMove));//0으로 초기화
-	memset(&ListPageMoveResp, 0, sizeof(fc_ListPageMoveResp));
-
-	//페이지 이동용 패킷 설정
-	ListPageMove.Data.opCode = htonl(OP_CF_LISTPAGEMOVE);
-	ListPageMove.Data.dataLen = htonl(sizeof(cf_ListPageMove) - 8);
-	ListPageMove.Data.moveTo = type;
-
-	*errorFlag = 1;//일단 errorFlag = 1로 설정
-	//페이지 이동 패킷 전송
-	sendData(hFileSrvSock, ListPageMove.buf, sizeof(cf_ListPageMove), 0);
-	//응답 가져옴
-	recvData(hFileSrvSock, ListPageMoveResp.buf, sizeof(fc_ListPageMoveResp), 0);
-	*errorFlag = 0;//위 함수들이 정상적으로 종료되면 계속 함수가 진행되므로 다시 0으로 설정
-
-	//받아온 숫자를 호스트 특정 인디안으로 변경
-	ListPageMove.Data.opCode = ntohl(ListPageMove.Data.opCode);
-	ListPageMove.Data.dataLen = ntohl(ListPageMove.Data.dataLen);
-
-	if (!ListPageMoveResp.Data.statusCode) {//실패시
-		*errorFlag = 1;
-		printDebugMsg(DC_ERROR, errorLevel, "요청이 실패했습니다.");
-	}
-
-	return;
-}
-
-/**
-	@fn void showFileList(SOCKET hFileSrvSock, int *errorFlag)
+	@fn void showFileList(SOCKET hFileSrvSock, int *fileCount, unsigned char *page, unsigned char *maxPage, int *errorFlag)
 	@brief DogeCloud 파일 목록 보여주기
 	@author 멍멍아야옹해봐
 	@param hFileSrvSock 파일서버 연결된 소켓
+	@param *page 현재 페이지 변수
+	@param *fileCount 파일 개수 담을 변수
+	@param *maxPage 전체 페이지 수 담을 변수
 	@param *errorFlag 에러 플래그
 */
-void showFileList(SOCKET hFileSrvSock, int *errorFlag) {
+void showFileList(SOCKET hFileSrvSock, int *fileCount, unsigned char *page, unsigned char *maxPage, int *errorFlag) {
 	//패킷 저장할 메모리 할당 및 초기화
 	cf_ListFile ListFile;
 	fc_ListFileResp ListFileResp;
@@ -291,6 +213,7 @@ void showFileList(SOCKET hFileSrvSock, int *errorFlag) {
 	//패킷 설정
 	ListFile.Data.opCode = htonl(OP_CF_LISTFILE);
 	ListFile.Data.dataLen = htonl(sizeof(cf_ListFile) - 8);
+	ListFile.Data.page = *page;
 
 	*errorFlag = 1;//일단 errorFlag = 1로 설정
 	//패킷 전송
@@ -309,33 +232,243 @@ void showFileList(SOCKET hFileSrvSock, int *errorFlag) {
 		return;
 	}
 
-	printf_s("\n\t******************************");
-	printf_s("\n\t\t현재 디렉토리 : %s", ListFileResp.Data.currentDir);
+	puts("\n******************************************************************************************");
 	if (!ListFileResp.Data.fileCount) {//파일이 없을 경우
-		printf_s("\n\t 빈 디렉토리 입니다.");
+		printf_s("\n\t 파일이 없습니다.");
 	}
 	else {//비어있지 않으면
-		printf_s("\n\t순번 \t파일명 \t파일 타입");
+		printf_s("\n%4s %30s %30s", "순번", "파일명", "파일 용량");
 		for (int i = 0; i < ListFileResp.Data.fileCount; i++) {//파일목록 출력
-			printf_s("\n\t%d. %s ", i + 1, ListFileResp.Data.fileName[i]);
-			if (ListFileResp.Data.fileType[i] == 0)//파일 타입 출력
-				printf_s("파일");
-			else if (ListFileResp.Data.fileType[i] == 1)
-				printf_s("폴더");
+			char fileSize[32] = { 0, };
+			minimizeFileSize(ListFileResp.Data.fileSize[i], fileSize);
+			printf_s("\n%4d %30s %30s", i + 1, ListFileResp.Data.fileName[i], fileSize);
 		}
 	}
 	printf_s("\n\t\t페이지 %d / %d", ListFileResp.Data.currentPage, ListFileResp.Data.totalPage);//페이지 출력
-	printf_s("\n\t******************************\n");
+	puts("\n******************************************************************************************");
+
+	*fileCount = ListFileResp.Data.fileCount;
+	*maxPage = ListFileResp.Data.totalPage;
+	*page = ListFileResp.Data.currentPage;
+
+	return;
 }
 
 /**
-	@fn void doFileJob(SOCKET hFileSrvSock, int jobType, int *errorFlag)
+	@fn void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag)
 	@brief DogeCloud 파일 업/다운로드
 	@author 멍멍아야옹해봐
 	@param hFileSrvSock 파일서버 연결된 소켓
-	@param jobType 0= 업로드, 1=다운로드
+	@param jobType 0= 업로드, 1= 다운로드
+	@param fileCount 현재 파일 개수
 	@param *errorFlag 에러 플래그
 */
-void doFileJob(SOCKET hFileSrvSock, int jobType, int *errorFlag) {
+void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag) {
+	//패킷 선언 및 초기화
+	cf_FileJobReq FileJobReq;
+	cffc_FileInfo FileInfo;
+	fc_FileJobResult FileJobResult;
+	memset(&FileJobReq, 0, sizeof(cf_FileJobReq));
+	memset(&FileInfo, 0, sizeof(cffc_FileInfo));
+	memset(&FileJobResult, 0, sizeof(fc_FileJobResult));
 
+	/** @brief 임시로 생성할 파일을 위한 구조체 포인터 */
+	FILE *filePtr;
+
+	/** @brief 파일 이름 */
+	char fileName[255];
+
+	/** @brief 파일 해쉬 */
+	char fileHash[32];
+
+	/** @brief 파일 사이즈 */
+	unsigned long fileSize;
+
+	/** @brief 파일 비밀번호 */
+	char password[100];
+
+	/** @brief 암호화를 위해 해쉬로 변환된 비밀번호 */
+	char pwdHash[32];
+
+	/** @brief 임시로 생성할 숫자 */
+	unsigned char tmpRandomNum[16] = { 0, };
+
+	/** @brief 임시로 생성된 숫자의 해쉬 저장용 */
+	unsigned char tmpHash[32] = { 0, };
+
+	/** @brief 암복호화를 위해 임시로 생성할 파일 이름 */
+	char leaFileName[65] = { 0, };
+
+	system("cls");
+
+	if (jobType == 0) {//업로드
+		puts("업로드 할 파일을 upload 폴더에 넣으신 후 파일 이름을 입력하세요.");
+		printf_s("파일 이름: ");
+		scanf_s("%s", fileName, 255);
+
+		if (strlen(fileName) > 220) {
+			puts("파일 이름이 너무 깁니다. 220자 미만으로 줄여 주세요.");
+			system("pause");
+			return;
+		}
+
+		char tmpFileName[255];
+		sprintf_s(tmpFileName, 255, "./upload/%s", fileName);
+
+		if (fopen_s(&filePtr, tmpFileName, "rb")) {
+			puts("존재하지 않는 파일입니다.");
+			system("pause");
+			return;
+		}
+
+		puts("파일의 암호화를 위한 비밀번호를 입력해주세요. 한 번 잊어버리면 복구 불가합니다!!");
+		printf_s("파일 이름: ");
+		scanf_s("%99s", password, 100);
+
+		//비밀번호 해싱
+		SHA256_Text(password, pwdHash);
+
+		//파일 해쉬 구하기
+		getFileHash(filePtr, fileHash);
+		
+		//원본 파일 사이즈 구하기
+		fseek(filePtr, 0, SEEK_END);
+		fileSize = ftell(filePtr);
+		rewind(filePtr);
+
+		//임시로 사용할 파일이름 생성
+		GenerateCSPRNG(tmpRandomNum, 15);
+		SHA256_Text(tmpRandomNum, tmpHash);
+		for (int i = 0; i < 32; i++)
+			sprintf_s(leaFileName + (2 * i), 3, "%02x", tmpHash[i]);
+
+		//암호화를 위해 임시파일 생성
+		FILE *encTmpFile;
+		if (fopen_s(&encTmpFile, leaFileName, "wb+")) {
+			printDebugMsg(DC_ERROR, errorLevel, "파일을 쓰기용으로 열 수 없습니다");
+			printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
+			system("pause");
+			exit(1);
+		}
+
+		//IV 생성
+		unsigned char encIV[16] = { 0, };
+		GenerateCSPRNG(encIV, 16);
+
+		//암호화 하기
+		puts("암호화 처리중입니다... 잠시만 기다려 주세요...");
+		encryptFileLEA(filePtr, encTmpFile, pwdHash, encIV);
+
+		//요청 패킷 설정
+		FileJobReq.Data.opCode = htonl(OP_CF_FILEJOBREQ);
+		FileJobReq.Data.dataLen = htonl(sizeof(cf_FileJobReq) - 8);
+		FileJobReq.Data.jobType = 0;
+
+		//패킷 전송
+		sendData(hFileSrvSock, FileJobReq.buf, sizeof(cf_FileJobReq), 0);
+
+		//업로드 모드
+
+		//업로드 모드 끝
+
+		//파일 정보 패킷 설정
+		FileInfo.Data.opCode = htonl(OP_CFFC_FILEINFO);
+		FileInfo.Data.dataLen = htonl(sizeof(cffc_FileInfo) - 8);
+		FileInfo.Data.fileSize = htonl(fileSize);
+		memcpy(FileInfo.Data.fileName, fileName, 255);
+		memcpy(FileInfo.Data.fileHash, fileHash, 32);
+		memcpy(FileInfo.Data.IV, encIV, 16);
+
+		//파일 정보 전송
+		sendData(hFileSrvSock, FileInfo.buf, sizeof(cffc_FileInfo), 0);
+
+		//응답 패킷 받음
+		recvData(hFileSrvSock, FileJobResult.buf, sizeof(fc_FileJobResult), 0);
+
+		//호스트 특정 엔디안으로 변경
+		FileJobResult.Data.opCode = ntohl(FileJobResult.Data.opCode);
+		FileJobResult.Data.dataLen = ntohl(FileJobResult.Data.dataLen);
+
+		//성공유무 판단
+		if (FileJobResult.Data.statusCode != 1) {
+			puts("파일 전송이 실패하였습니다.");
+			system("pause");
+			return;
+		}
+		else {
+			puts("파일 전송이 성공하였습니다.");
+			system("pause");
+			return;
+		}
+	
+	}
+	else if (jobType == 1) {//다운로드
+
+	}
+	else {//잘못된 입력은 진행하지 않음
+		return;
+	}
+}
+
+/**
+	@fn void deleteFile(SOCKET hFileSrvSock, int fileCount, int *errorFlag)
+	@brief DogeCloud 파일 삭제
+	@author 멍멍아야옹해봐
+	@param hFileSrvSock 파일서버 연결된 소켓
+	@param fileCount 현재 파일 개수
+	@param *errorFlag 에러 플래그
+*/
+void deleteFile(SOCKET hFileSrvSock, int fileCount, int *errorFlag) {
+	//패킷 선언 및 초기화
+	cf_DeleteFileReq DeleteFileReq;
+	fc_DeleteFileResp DeleteFileResp;
+	memset(&DeleteFileReq, 0, sizeof(DeleteFileReq));
+	memset(&DeleteFileResp, 0, sizeof(DeleteFileResp));
+
+	//유저에게 입력 받음
+	unsigned long fileID;
+	printf_s("몇 번 파일을 삭제하시겠습니까? (취소: 0): ");
+	scanf_s("%u", &fileID);
+	clearStdinBuffer();
+
+	if (fileID == 0) return;
+	if (fileID > fileCount || fileID < 0) {
+		puts("유효하지 않은 입력입니다.");
+		system("pause");
+		return;
+	}
+
+	unsigned char userInput;
+	do {
+		printf_s("정말 %d번 파일을 삭제하시겠습니까? (Y/N): ", fileID);
+		scanf_s("%c", &userInput, 1);
+		clearStdinBuffer();
+	} while (userInput != 'Y' && userInput != 'y' && userInput != 'N' && userInput != 'n');
+	if (userInput == 'N' || userInput == 'n') return;
+	//유저 입력 끝
+
+	//패킷 설정
+	DeleteFileReq.Data.opCode = htonl(OP_CF_DELETEFILEREQ);
+	DeleteFileReq.Data.dataLen = htonl(sizeof(cf_DeleteFileReq));
+	DeleteFileReq.Data.fileID = htonl(fileID);
+
+	//패킷 전송
+	sendData(hFileSrvSock, DeleteFileReq.buf, sizeof(cf_DeleteFileReq), 0);
+
+	//응답 받기
+	recvData(hFileSrvSock, DeleteFileResp.buf, sizeof(fc_DeleteFileResp), 0);
+
+	//호스트 특정 인디안으로 변환
+	DeleteFileResp.Data.opCode = ntohl(DeleteFileResp.Data.opCode);
+	DeleteFileResp.Data.dataLen = ntohl(DeleteFileResp.Data.dataLen);
+
+	if (DeleteFileResp.Data.statusCode != 1) {
+		puts("삭제 실패!");
+	}
+	else {
+		puts("삭제 성공!");
+	}
+
+	system("pause");
+	return;
 }

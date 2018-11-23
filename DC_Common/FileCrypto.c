@@ -21,7 +21,8 @@ extern "C" {
 	DLL void encryptFileLEA(FILE *infile, FILE *outfile, char* encKey, char* nonceIV) {
 		if (infile == NULL || outfile == NULL) return;
 		fseek(infile, 0, SEEK_END);
-		unsigned int left = ftell(infile);
+		unsigned int fileSize = ftell(infile);
+		unsigned int left = fileSize;
 		fseek(infile, 0, SEEK_SET);//return to start pos
 
 		//copy iv to new var -> it'll be modified after encryption
@@ -46,7 +47,7 @@ extern "C" {
 			fread(org_buffer, toRead, 1, infile); //read original data
 			lea_ctr_enc(enc_buffer, org_buffer, toRead, ctr_counter, &leaKey);//encrypt it
 			fwrite(enc_buffer, toRead, 1, outfile);//write to output
-
+			updateProgress(fileSize - left, fileSize);//프로그레스 바 업데이트(생성)
 			left -= toRead;
 		}
 
@@ -68,7 +69,8 @@ extern "C" {
 	DLL void decryptFileLEA(FILE *infile, FILE *outfile, char* encKey, char* nonceIV) {
 		if (infile == NULL || outfile == NULL) return;
 		fseek(infile, 0, SEEK_END);
-		unsigned int left = ftell(infile);
+		unsigned int fileSize = ftell(infile);
+		unsigned int left = fileSize;
 		fseek(infile, 0, SEEK_SET);//return to start pos
 
 		//copy iv to new var -> it'll be modified after encryption
@@ -80,20 +82,20 @@ extern "C" {
 		lea_set_key(&leaKey, encKey, 32);
 
 		//init read and encryption buffer
-		char org_buffer[2048];
-		char dec_buffer[2048];
+		char org_buffer[8192];
+		char dec_buffer[8192];
 		int toRead;
 
 		while (left) {
-			if (left < 2048)
+			if (left < 8192)
 				toRead = left;
 			else
-				toRead = 2048;
+				toRead = 8192;
 
 			fread(org_buffer, toRead, 1, infile); //read original data
 			lea_ctr_dec(dec_buffer, org_buffer, toRead, ctr_counter, &leaKey);//encrypt it
 			fwrite(dec_buffer, toRead, 1, outfile);//write to output
-
+			updateProgress(fileSize - left, fileSize);//프로그레스 바 업데이트(생성)
 			left -= toRead;
 		}
 
@@ -122,13 +124,13 @@ extern "C" {
 		int toRead;
 
 		//init read Buffer
-		char buffer[2048];
+		char buffer[8192];
 
 		while (left) {
-			if (left < 2048)
+			if (left < 8192)
 				toRead = left;
 			else
-				toRead = 2048;
+				toRead = 8192;
 
 			fread(buffer, toRead, 1, file); //read original data
 			sha256_update(&hSHA256, buffer, toRead);//calc sha256

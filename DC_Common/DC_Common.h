@@ -110,6 +110,15 @@ extern "C" {
 	*/
 	DLL void updateProgress(int current, int total);
 
+	/**
+	@fn void minimizeFileSize(unsigned long size, char *output);
+	@brief 파일 사이즈를 최소한으로 표기
+	@author 멍멍아야옹해봐
+	@param size 파일 사이즈(바이트)
+	@param *output 결과값 출력할 곳(사이즈 15 이상)
+	*/
+	DLL void minimizeFileSize(unsigned long size, char *output);
+
 	//암호화 함수들
 
 	/**

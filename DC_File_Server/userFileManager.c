@@ -33,9 +33,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 	@param hClientSock 클라이언트 연결된 소켓
 */
 void procListFile(SOCKET hClientSock) {
-	//아래 코드는 테스트용으로 작성된 코드입니다.
-	//반드시 수정이 필요합니다.
-
 	cf_ListFile ListFile;
 	fc_ListFileResp ListFileResp;
 	memset(&ListFile, 0, sizeof(cf_ListFile));
@@ -43,22 +40,91 @@ void procListFile(SOCKET hClientSock) {
 
 	recvData(hClientSock, ListFile.buf + 4, sizeof(cf_ListFile) - 4, 0);
 
+	int page = ListFile.Data.page;
+
 	ListFileResp.Data.opCode = htonl(OP_FC_LISTFILERESP);
 	ListFileResp.Data.dataLen = htonl(sizeof(fc_ListFileResp) - 8);
 	ListFileResp.Data.statusCode = 1;
 
-	ListFileResp.Data.fileCount = 8;
-	for (int i = 0; i < 8; i++) {
-		ListFileResp.Data.fileType[i] = 1;
-		strcpy_s(ListFileResp.Data.fileName[i], 255, "TEST FILE.PLACEHOLDER");
+	int userUID = 0;
+	char* currentDir[255] = { 0, };
+	WaitForSingleObject(hMutex, INFINITE);
+			for (int j = 0; j < clientCount; j++) {
+				if (hClientSock == hClientSocks[j]) {
+					userUID = sessionList[j].userUID;
+					break;
+				}
+		}
+	ReleaseMutex(hMutex);
+
+	//파일 개수 확인
+	char *getFileCountQuery = "SELECT count(id) FROM fileList WHERE owner = ?";
+
+	//쿼리 바인더 준비
+	MYSQL_BIND bind_getFileCount_set[1];
+	memset(bind_getFileCount_set, 0, sizeof(bind_getFileCount_set));
+	bind_getFileCount_set[0].buffer_type = MYSQL_TYPE_LONG;
+	bind_getFileCount_set[0].buffer = &userUID;
+	bind_getFileCount_set[0].buffer_length = 4;
+
+	//결과 바인더 준비
+	int fileCount = 0;
+	MYSQL_BIND bind_getFileCount_res[1];
+	memset(&bind_getFileCount_res, 0, sizeof(bind_getFileCount_res)); //init bind
+	bind_getFileCount_res[0].buffer_type = MYSQL_TYPE_LONG;
+	bind_getFileCount_res[0].buffer = &fileCount;
+	bind_getFileCount_res[0].buffer_length = 4;
+
+	//MySQL Prepared Statement 초기화
+	MYSQL_STMT *stmt;
+	if ((stmt = mysql_stmt_init(&sqlHandle)) == NULL) {//stmt is local variable so this must be done before calling sqlPrepareAndExecute
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: SQL Prepared Statement Initialize fail!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
+		system("pause");
+		exit(1);//exit with error
 	}
 
-	ListFileResp.Data.currentPage = 1;
-	ListFileResp.Data.totalPage = 2;
+	//SQL 실행
+	sqlPrepareAndExecute(&sqlHandle, stmt, getFileCountQuery, bind_getFileCount_set, bind_getFileCount_res);
 
-	strcpy_s(ListFileResp.Data.currentDir, 255, "/");
+	//결과물 가져오기
+	if (mysql_stmt_fetch(stmt)) {
+		printDebugMsg(DC_ERROR, errorLevel, "FATAL ERROR: Got no data from Database!!!");
+		printDebugMsg(DC_ERROR, errorLevel, "MySQL Error: %s", mysql_stmt_error(stmt));
+		printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
+		system("pause");
+		exit(1);//exit with error
+	}
 
-	sendData(hClientSock, ListFileResp.buf, sizeof(fc_ListFileResp), 0);
+	mysql_stmt_free_result(stmt);
+
+	//파일 개수 패킷에 복사
+	ListFileResp.Data.fileCount = fileCount;
+
+	int totalPage = (fileCount - 1) / 10 + 1;
+	ListFileResp.Data.totalPage = totalPage;
+
+	if (page > totalPage) page = totalPage;
+	else if (page < 1) page = 1;
+
+	ListFileResp.Data.currentPage = page;
+
+	if(fileCount == 0){//파일 개수가 0개면
+
+		sendData(hClientSock, ListFileResp.buf, sizeof(fc_ListFileResp), 0);
+		return;
+	}
+
+	//for (int i = 0; i < fileCount; i++) {
+	//	strcpy_s(ListFileResp.Data.fileName[i], 255, "TEST FILE.PLACEHOLDER");
+	//	ListFileResp.Data.fileSize[i] = 536870912;
+	//}
+
+	//ListFileResp.Data.currentPage = 1;
+	//ListFileResp.Data.totalPage = 2;
+
+	//sendData(hClientSock, ListFileResp.buf, sizeof(fc_ListFileResp), 0);
 
 	return;
 }
