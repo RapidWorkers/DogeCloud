@@ -6,24 +6,15 @@ CREATE TABLE `accounts` (
 	PRIMARY KEY (`id`)
 );
 
-CREATE TABLE `FileList` (
-	`id` bigint NOT NULL AUTO_INCREMENT,
-	`owner` bigint NOT NULL,
-	`fileSize` bigint NOT NULL,
-	`file_iv` BINARY(16) NOT NULL,
-	`directory` varchar(255) NOT NULL,
-	`savedName` varchar(255) NOT NULL,
-	`origName` varchar(255) NOT NULL,
-	`origFileHash` BINARY(64) NOT NULL,
-	PRIMARY KEY (`id`)
+CREATE TABLE `filelist` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `owner` bigint(20) NOT NULL,
+  `fileSize` bigint(20) NOT NULL,
+  `file_iv` binary(16) NOT NULL,
+  `savedName` varchar(255) NOT NULL,
+  `origName` varchar(255) NOT NULL,
+  `origFileHash` binary(64) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FileList_fk0` (`owner`),
+  CONSTRAINT `FileList_fk0` FOREIGN KEY (`owner`) REFERENCES `accounts` (`id`)
 );
-
-CREATE TABLE `FileDirectory` (
-	`id` bigint NOT NULL AUTO_INCREMENT,
-	`dirName` varchar(255) NOT NULL,
-	`owner` bigint NOT NULL,
-	PRIMARY KEY (`id`)
-);
-
-ALTER TABLE `FileList` ADD CONSTRAINT `FileList_fk0` FOREIGN KEY (`owner`) REFERENCES `accounts`(`id`);
-ALTER TABLE `FileDirectory` ADD CONSTRAINT `FileDirectory_fk0` FOREIGN KEY (`owner`) REFERENCES `accounts`(`id`);
