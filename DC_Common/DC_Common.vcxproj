@@ -95,7 +95,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(SolutionDir)lib\CSPRNG;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\dllLEA\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -103,11 +103,11 @@
     <LibraryPath>$(SolutionDir)lib\dllLEA\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(SolutionDir)lib\CSPRNG;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\dllLEA\Win32;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)lib\crypto-algorithms;$(SolutionDir)lib\dllLEA\include;$(SolutionDir)lib\CSPRNG;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\dllLEA\x64;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>

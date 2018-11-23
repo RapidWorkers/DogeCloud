@@ -123,7 +123,7 @@ void procDownloadPersonalDBFile(SOCKET hClientSock) {
 	getFileHash(infoFile, fileHash);
 	memcpy(DownloadInfoResp.Data.hash, fileHash, 32);
 
-	sendData(hClientSock, DownloadInfoReq.buf, sizeof(sc_DownloadPersonalDBResp), 0);
+	sendData(hClientSock, DownloadInfoResp.buf, sizeof(sc_DownloadPersonalDBResp), 0);
 
 	fclose(infoFile);
 }

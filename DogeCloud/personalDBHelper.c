@@ -111,7 +111,7 @@ void downloadPersonalDBFile(SOCKET hSocket) {
 	//다운로드 받은 파일의 해쉬 구하기
 	getFileHash(downFile, fileHash);
 
-	if (!memcmp(fileHash, DownloadInfoResp.Data.hash, 32)) {//만약 해쉬값이 다르다면
+	if (memcmp(fileHash, DownloadInfoResp.Data.hash, 32)) {//만약 해쉬값이 다르다면
 		printDebugMsg(DC_ERROR, errorLevel, "데이터 불일치");
 		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
 		system("pause");
