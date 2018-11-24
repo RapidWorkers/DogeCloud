@@ -41,7 +41,7 @@ void procDownloadPersonalDBFile(SOCKET hClientSock) {
 
 	recvData(hClientSock, DownloadInfoReq.buf + 4, sizeof(cs_DownloadPersonalDBReq) - 4, 0);
 
-	DownloadInfoReq.Data.opCode = OP_CS_DOWNLOADUSERINFOREQ;
+	DownloadInfoReq.Data.opCode = OP_CS_DOWNLOADUPERSONALDBREQ;
 	DownloadInfoReq.Data.dataLen = ntohl(DownloadInfoReq.Data.dataLen);
 
 	//업로드 모드 시작
@@ -116,7 +116,7 @@ void procDownloadPersonalDBFile(SOCKET hClientSock) {
 	}
 
 	//Done Uploading
-	DownloadInfoResp.Data.opCode = htonl(OP_SC_DOWNLOADUSERINFORESP);
+	DownloadInfoResp.Data.opCode = htonl(OP_SC_DOWNLOADPERSONALDBRESP);
 	DownloadInfoResp.Data.dataLen = htonl(sizeof(cs_FileSrvConReq) - 8);
 
 	unsigned char fileHash[32];

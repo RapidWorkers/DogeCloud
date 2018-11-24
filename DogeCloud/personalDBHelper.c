@@ -56,7 +56,7 @@ void downloadPersonalDBFile(SOCKET hSocket) {
 	unsigned char fileHash[32];
 
 	//패킷 설정
-	DownloadInfoReq.Data.opCode = htonl(OP_CS_DOWNLOADUSERINFOREQ);
+	DownloadInfoReq.Data.opCode = htonl(OP_CS_DOWNLOADUPERSONALDBREQ);
 	DownloadInfoReq.Data.dataLen = htonl(sizeof(cs_FileSrvConReq) - 8);
 
 	//다운로드 요청 패킷 전송
