@@ -99,11 +99,12 @@ extern "C" {
 			unsigned long opCode;//opCode => 패킷 구분용
 			unsigned long dataLen;//데이터 길이
 			unsigned char fileName[255]; //since NTFS filesystem's max file name length is 255
-			unsigned char fileHash[32];//파일 해쉬
+			unsigned char orgFileHash[32];//파일 해쉬
+			unsigned char encFileHash[32];//암호화된 파일 해쉬
 			unsigned char IV[16];//IV값은 DB에 저장되거나 복호화에 사용됨
-			unsigned long fileSize;//파일 사이즈
+			unsigned long fileSize;//원본 파일 사이즈
 		}Data;
-		char buf[315];
+		char buf[347];
 	} cffc_FileInfo;
 
 	typedef union {

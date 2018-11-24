@@ -186,10 +186,11 @@ void procUploadPersonalDBFile(SOCKET hClientSock) {
 		left -= toRead;
 		if (!left) break;//완료시 탈출
 	}
+	//다운로드 모드 끝
 
-	//업로드 모드 끝
-	PersonalDBEditDoneResp.Data.opCode = ntohl(PersonalDBEditDoneResp.Data.opCode);
-	PersonalDBEditDoneResp.Data.dataLen = ntohl(PersonalDBEditDoneResp.Data.dataLen);
+	//패킷 설정
+	PersonalDBEditDoneResp.Data.opCode = ntohl(OP_SC_PERSONALDBEDITDONERESP);
+	PersonalDBEditDoneResp.Data.dataLen = ntohl(sizeof(sc_PersonalDBEditDoneResp)-8);
 
 	fseek(infoFile, 0, SEEK_SET);//처음으로 이동
 	getFileHash(infoFile, fileHash);

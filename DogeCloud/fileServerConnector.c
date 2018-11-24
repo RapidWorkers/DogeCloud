@@ -276,19 +276,22 @@ void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag) 
 	FILE *filePtr;
 
 	/** @brief 파일 이름 */
-	char fileName[255];
+	char fileName[255] = { 0, };
 
-	/** @brief 파일 해쉬 */
-	char fileHash[32];
+	/** @brief 원본 파일 해쉬 */
+	char orgFileHash[32] = { 0, };
+
+	/** @brief 암호화 파일 해쉬 */
+	char encFileHash[32] = { 0, };
 
 	/** @brief 파일 사이즈 */
-	unsigned long fileSize;
+	unsigned long fileSize = 0;
 
 	/** @brief 파일 비밀번호 */
-	char password[100];
+	char password[100] = { 0, };
 
 	/** @brief 암호화를 위해 해쉬로 변환된 비밀번호 */
-	char pwdHash[32];
+	char pwdHash[32] = { 0, };
 
 	/** @brief 임시로 생성할 숫자 */
 	unsigned char tmpRandomNum[16] = { 0, };
@@ -322,14 +325,17 @@ void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag) 
 		}
 
 		puts("파일의 암호화를 위한 비밀번호를 입력해주세요. 한 번 잊어버리면 복구 불가합니다!!");
-		printf_s("파일 이름: ");
+		printf_s("비밀번호: ");
 		scanf_s("%99s", password, 100);
 
 		//비밀번호 해싱
 		SHA256_Text(password, pwdHash);
 
 		//파일 해쉬 구하기
-		getFileHash(filePtr, fileHash);
+		puts("\n해쉬 계산중입니다... 잠시만 기다려 주세요...");
+		getFileHashProgress(filePtr, orgFileHash);
+		puts("");
+		
 		
 		//원본 파일 사이즈 구하기
 		fseek(filePtr, 0, SEEK_END);
@@ -357,7 +363,12 @@ void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag) 
 
 		//암호화 하기
 		puts("암호화 처리중입니다... 잠시만 기다려 주세요...");
-		encryptFileLEA(filePtr, encTmpFile, pwdHash, encIV);
+		encryptFileLEAProgress(filePtr, encTmpFile, pwdHash, encIV);
+
+		//암호화된 파일의 해쉬 구하기
+		puts("\n해쉬 계산중입니다... 잠시만 기다려 주세요...");
+		getFileHashProgress(encTmpFile, encFileHash);
+		puts("");
 
 		//요청 패킷 설정
 		FileJobReq.Data.opCode = htonl(OP_CF_FILEJOBREQ);
@@ -367,7 +378,51 @@ void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag) 
 		//패킷 전송
 		sendData(hFileSrvSock, FileJobReq.buf, sizeof(cf_FileJobReq), 0);
 
-		//업로드 모드
+		//업로드 모드 진입
+		fseek(encTmpFile, 0, SEEK_END);
+		/** @brief 업로드할 파일 사이즈 */
+		unsigned long uploadFileSize = ftell(encTmpFile);
+		/** @brief 업로드할 남은 용량 */
+		unsigned long left = uploadFileSize;
+		/** @brief 읽어올 바이트 수 */
+		unsigned int toRead;
+		rewind(encTmpFile);
+
+		//파일 사이즈 전송
+		uploadFileSize = htonl(fileSize);
+		sendData(hFileSrvSock, (char*)&uploadFileSize, 4, 0);
+		uploadFileSize = ntohl(uploadFileSize);
+
+		/**
+		@var unsigned char dataBuffer[4096]
+		업로드 버퍼 4KiB
+		*/
+		unsigned char dataBuffer[4096];
+
+		puts("파일 전송 시작");
+		while (1) {//업로드 끝날때 까지 반복
+			if (left < 4096U)//4KB보다 작은만큼 남으면
+				toRead = left;//남은 만큼 보냄
+			else//아니면
+				toRead = 4096U;//4KiB만큼 보냄
+
+							   //파일 읽어서 버퍼에 저장
+			fread(dataBuffer, toRead, 1, encTmpFile);
+
+			//읽어온 버퍼를 서버로 전송
+			if (!sendRaw(hFileSrvSock, dataBuffer, toRead, 0)) {
+				printDebugMsg(DC_ERROR, errorLevel, "전송 실패");
+				printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
+				system("pause");
+				exit(1);
+			}
+
+			left -= toRead;//보낸만큼 뺀다
+			updateProgress(uploadFileSize - left, uploadFileSize);//프로그레스 바 업데이트(생성)
+			if (!left) break;//완료시 탈출
+		}
+
+		puts("\n파일 전송 완료");
 
 		//업로드 모드 끝
 
@@ -376,7 +431,8 @@ void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag) 
 		FileInfo.Data.dataLen = htonl(sizeof(cffc_FileInfo) - 8);
 		FileInfo.Data.fileSize = htonl(fileSize);
 		memcpy(FileInfo.Data.fileName, fileName, 255);
-		memcpy(FileInfo.Data.fileHash, fileHash, 32);
+		memcpy(FileInfo.Data.orgFileHash, orgFileHash, 32);
+		memcpy(FileInfo.Data.encFileHash, encFileHash, 32);
 		memcpy(FileInfo.Data.IV, encIV, 16);
 
 		//파일 정보 전송
@@ -389,17 +445,21 @@ void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag) 
 		FileJobResult.Data.opCode = ntohl(FileJobResult.Data.opCode);
 		FileJobResult.Data.dataLen = ntohl(FileJobResult.Data.dataLen);
 
+		//임시파일 삭제
+		fclose(encTmpFile);
+		fclose(filePtr);
+		remove(leaFileName);
+
 		//성공유무 판단
 		if (FileJobResult.Data.statusCode != 1) {
 			puts("파일 전송이 실패하였습니다.");
 			system("pause");
-			return;
 		}
 		else {
 			puts("파일 전송이 성공하였습니다.");
 			system("pause");
-			return;
 		}
+		return;
 	
 	}
 	else if (jobType == 1) {//다운로드

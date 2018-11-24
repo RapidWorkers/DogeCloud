@@ -99,6 +99,10 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 		printDebugMsg(DC_INFO, errorLevel, "List File Req: %s", clientIP);
 		procListFile(hClientSock);
 		break;
+	case OP_CF_FILEJOBREQ:
+		printDebugMsg(DC_INFO, errorLevel, "File Job Req: %s", clientIP);
+		procFileJob(hClientSock);
+		break;
 	case OP_CF_DELETEFILEREQ:
 		printDebugMsg(DC_INFO, errorLevel, "Delete File Req: %s", clientIP);
 		//procDeleteFile(hClientSock);

@@ -72,6 +72,11 @@ typedef struct {
 #define DC_INFO 1
 #define DC_DEBUG 0
 
+//암호화 함수 캐시 사이즈
+//일반적으로 커지면 커질수록 속도는 증가하는 양상을 띕니다.
+//추천 사이즈는 256KiB = 262144
+#define CRYPTOGRAPHY_READ_CACHE_SIZE 262144
+
 #ifdef __cplusplus //C++ 환경에서의 호환성 위해
 extern "C" {
 #endif
@@ -205,6 +210,36 @@ extern "C" {
 	*/
 	DLL void decryptFileLEA(FILE *infile, FILE *outfile, char* encKey, char* nonceIV);
 
+	/**
+	@fn void getFileHash(FILE *file, char* result)
+	@brief 파일의 SHA256 해쉬 구함(프로그레스 바 생성 버전)
+	@author 멍멍아야옹해봐
+	@param *file 파일 구조체 포인터
+	@param *result 결과를 저장할 공간(32바이트)
+	*/
+	DLL void getFileHashProgress(FILE *file, unsigned char* result);
+
+	/**
+	@fn void encryptFileLEAProgress(FILE *infile, FILE *outfile, char* encKey, char* nonceIV)
+	@brief LEA 암호화 알고리즘으로 파일 암호화(프로그레스 바 생성 버전)
+	@author 멍멍아야옹해봐
+	@param *infile 입력 파일
+	@param *outfile 출력 파일
+	@param *encKey 암호화 키(32바이트)
+	@param *nonceIV 초기화 난수(16바이트)
+	*/
+	DLL void encryptFileLEAProgress(FILE *infile, FILE *outfile, char* encKey, char* nonceIV);
+
+	/**
+	@fn void decryptFileLEAProgress(FILE *infile, FILE *outfile, char* encKey, char* nonceIV)
+	@brief LEA 암호화 알고리즘으로 파일 복호화(프로그레스 바 생성 버전)
+	@author 멍멍아야옹해봐
+	@param *infile 입력 파일
+	@param *outfile 출력 파일
+	@param *encKey 암호화 키(32바이트)
+	@param *nonceIV 초기화 난수(16바이트), 암호화 시와 동일 키 사용해야함
+	*/
+	DLL void decryptFileLEAProgress(FILE *infile, FILE *outfile, char* encKey, char* nonceIV);
 #ifdef __cplusplus
 }
 #endif

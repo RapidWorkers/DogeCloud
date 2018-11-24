@@ -77,6 +77,26 @@ void printMenu() {
 int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelayServAddr) {
 	printProgramInfo();
 
+	//업로드 폴더 생성
+	if (!CreateDirectory("./upload", NULL)) {
+		if (GetLastError() != ERROR_ALREADY_EXISTS) {//이미 폴더가 존재할 때의 경우를 제외한 모든 에러는 프로그램 정지
+			printDebugMsg(DC_ERROR, errorLevel, "Create Directory Fail");
+			printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
+			system("pause");
+			exit(1);
+		}
+	};
+
+	//다운로드 폴더 생성
+	if (!CreateDirectory("./download", NULL)) {
+		if (GetLastError() != ERROR_ALREADY_EXISTS) {//이미 폴더가 존재할 때의 경우를 제외한 모든 에러는 프로그램 정지
+			printDebugMsg(DC_ERROR, errorLevel, "Create Directory Fail");
+			printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
+			system("pause");
+			exit(1);
+		}
+	};
+
 	if (WSAStartup(MAKEWORD(2, 2), wsaData) != 0) { //소켓 라이브러리 초기화
 		printDebugMsg(DC_ERROR, errorLevel, "WSAStartup 실패!\n");
 		return 0;

@@ -261,3 +261,10 @@ unsigned int WINAPI waitingListGC();
 	@param hClientSock 클라이언트 연결된 소켓
 */
 void procListFile(SOCKET hClientSock);
+/**
+@fn void procListFile(SOCKET hClientSock)
+@brief 유저 업다운 처리
+@author 멍멍아야옹해봐
+@param hClientSock 클라이언트 연결된 소켓
+*/
+void procFileJob(SOCKET hClientSock);

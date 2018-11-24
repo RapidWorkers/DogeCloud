@@ -100,6 +100,15 @@ int main()
 	/** @brief 가비지 콜렉터용 멀티쓰레드 핸들 */
 	HANDLE hGCThread = NULL;
 
+	if (!CreateDirectory("./storage", NULL)) {
+		if (GetLastError() != ERROR_ALREADY_EXISTS) {//이미 폴더가 존재할 때의 경우를 제외한 모든 에러는 프로그램 정지
+			printDebugMsg(DC_ERROR, errorLevel, "Create Directory Fail");
+			printDebugMsg(DC_ERROR, errorLevel, "Exiting Program");
+			system("pause");
+			exit(1);
+		}
+	};
+
 	//뮤텍스 생성
 	hMutex = CreateMutex(NULL, FALSE, NULL);
 	//DWORD dwErrorCode = 0;
