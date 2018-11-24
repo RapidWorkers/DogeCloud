@@ -232,24 +232,36 @@ void showFileList(SOCKET hFileSrvSock, int *fileCount, unsigned char *page, unsi
 		return;
 	}
 
+	//포인터로 받은 변수 설정
+	*maxPage = ListFileResp.Data.totalPage;
+	*fileCount = ListFileResp.Data.fileCount;
+	*page = ListFileResp.Data.currentPage;
+
 	puts("\n******************************************************************************************");
 	if (!ListFileResp.Data.fileCount) {//파일이 없을 경우
 		printf_s("\n\t 파일이 없습니다.");
 	}
 	else {//비어있지 않으면
 		printf_s("\n%4s %30s %30s", "순번", "파일명", "파일 용량");
-		for (int i = 0; i < ListFileResp.Data.fileCount; i++) {//파일목록 출력
+
+		int iteration = 0;
+		if (*maxPage == *page) {
+			iteration = (ListFileResp.Data.fileCount % 10);
+			if (iteration == 0) iteration = 10;
+		}
+		else iteration = 10;
+
+		for (int i = 0; i < iteration; i++) {//파일목록 출력
 			char fileSize[32] = { 0, };
 			minimizeFileSize(ListFileResp.Data.fileSize[i], fileSize);
-			printf_s("\n%4d %30s %30s", i + 1, ListFileResp.Data.fileName[i], fileSize);
+			int currentID = (*page - 1) * 10 + i + 1;
+			printf_s("\n%4d %30s %30s", currentID, ListFileResp.Data.fileName[i], fileSize);
 		}
 	}
 	printf_s("\n\t\t페이지 %d / %d", ListFileResp.Data.currentPage, ListFileResp.Data.totalPage);//페이지 출력
 	puts("\n******************************************************************************************");
 
-	*fileCount = ListFileResp.Data.fileCount;
-	*maxPage = ListFileResp.Data.totalPage;
-	*page = ListFileResp.Data.currentPage;
+
 
 	return;
 }
@@ -272,7 +284,7 @@ void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag) 
 	memset(&FileInfo, 0, sizeof(cffc_FileInfo));
 	memset(&FileJobResult, 0, sizeof(fc_FileJobResult));
 
-	/** @brief 임시로 생성할 파일을 위한 구조체 포인터 */
+	/** @brief 암복호화 할 파일을 위한 구조체 포인터 */
 	FILE *filePtr;
 
 	/** @brief 파일 이름 */
@@ -302,9 +314,8 @@ void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag) 
 	/** @brief 암복호화를 위해 임시로 생성할 파일 이름 */
 	char leaFileName[65] = { 0, };
 
-	system("cls");
-
 	if (jobType == 0) {//업로드
+		system("cls");
 		puts("업로드 할 파일을 upload 폴더에 넣으신 후 파일 이름을 입력하세요.");
 		printf_s("파일 이름: ");
 		scanf_s("%s", fileName, 255);
@@ -379,50 +390,16 @@ void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag) 
 		sendData(hFileSrvSock, FileJobReq.buf, sizeof(cf_FileJobReq), 0);
 
 		//업로드 모드 진입
-		fseek(encTmpFile, 0, SEEK_END);
-		/** @brief 업로드할 파일 사이즈 */
-		unsigned long uploadFileSize = ftell(encTmpFile);
-		/** @brief 업로드할 남은 용량 */
-		unsigned long left = uploadFileSize;
-		/** @brief 읽어올 바이트 수 */
-		unsigned int toRead;
-		rewind(encTmpFile);
-
-		//파일 사이즈 전송
-		uploadFileSize = htonl(fileSize);
-		sendData(hFileSrvSock, (char*)&uploadFileSize, 4, 0);
-		uploadFileSize = ntohl(uploadFileSize);
-
-		/**
-		@var unsigned char dataBuffer[4096]
-		업로드 버퍼 4KiB
-		*/
-		unsigned char dataBuffer[4096];
-
-		puts("파일 전송 시작");
-		while (1) {//업로드 끝날때 까지 반복
-			if (left < 4096U)//4KB보다 작은만큼 남으면
-				toRead = left;//남은 만큼 보냄
-			else//아니면
-				toRead = 4096U;//4KiB만큼 보냄
-
-							   //파일 읽어서 버퍼에 저장
-			fread(dataBuffer, toRead, 1, encTmpFile);
-
-			//읽어온 버퍼를 서버로 전송
-			if (!sendRaw(hFileSrvSock, dataBuffer, toRead, 0)) {
-				printDebugMsg(DC_ERROR, errorLevel, "전송 실패");
-				printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
-				system("pause");
-				exit(1);
-			}
-
-			left -= toRead;//보낸만큼 뺀다
-			updateProgress(uploadFileSize - left, uploadFileSize);//프로그레스 바 업데이트(생성)
-			if (!left) break;//완료시 탈출
+		if (!uploadFileProgress(hFileSrvSock, encTmpFile)) {
+			printDebugMsg(DC_ERROR, errorLevel, "파일을 전송할 수 없습니다.");
+			printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
+			system("pause");
+			exit(1);
+			return;
 		}
 
 		puts("\n파일 전송 완료");
+		puts("서버로부터 데이터를 기다리는 중...");
 
 		//업로드 모드 끝
 
@@ -463,11 +440,126 @@ void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag) 
 	
 	}
 	else if (jobType == 1) {//다운로드
+		//유저에게 입력 받음
+		unsigned long fileID;
+		printf_s("몇 번 파일을 다운로드 받으시겠습니까? (취소: 0): ");
+		scanf_s("%u", &fileID);
+		clearStdinBuffer();
 
-	}
-	else {//잘못된 입력은 진행하지 않음
+		if (fileID == 0) return;
+		if (fileID > fileCount || fileID < 0) {
+			puts("유효하지 않은 입력입니다.");
+			system("pause");
+			return;
+		}
+
+		system("cls");
+
+		//요청 패킷 설정
+		FileJobReq.Data.opCode = htonl(OP_CF_FILEJOBREQ);
+		FileJobReq.Data.dataLen = htonl(sizeof(cf_FileJobReq) - 8);
+		FileJobReq.Data.jobType = 1;
+		FileJobReq.Data.fileID = htonl(fileID);
+
+		//패킷 전송
+		sendData(hFileSrvSock, FileJobReq.buf, sizeof(cf_FileJobReq), 0);
+
+		puts("서버로부터 데이터를 기다리는 중...");
+
+		//다운로드 받기 위해 복호화 전 임시로 사용할 파일이름 생성
+		GenerateCSPRNG(tmpRandomNum, 15);
+		SHA256_Text(tmpRandomNum, tmpHash);
+		for (int i = 0; i < 32; i++)
+			sprintf_s(leaFileName + (2 * i), 3, "%02x", tmpHash[i]);
+
+		//복호화를 위해 임시파일로 다운로드
+		FILE *downTmpFile;
+		if (fopen_s(&downTmpFile, leaFileName, "wb+")) {
+			printDebugMsg(DC_ERROR, errorLevel, "파일을 쓰기용으로 열 수 없습니다");
+			printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
+			system("pause");
+			exit(1);
+		}
+
+		//다운로드 모드 진입
+		if (!downloadFileProgress(hFileSrvSock, downTmpFile)) {
+			printDebugMsg(DC_ERROR, errorLevel, "파일을 받을 수 없습니다.");
+			printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
+			system("pause");
+			exit(1);
+			return;
+		}
+
+		//파일 정보 받기
+		recvData(hFileSrvSock, FileInfo.buf, sizeof(cffc_FileInfo), 0);
+
+		//호스트 엔디안으로 변환
+		FileInfo.Data.opCode = ntohl(FileInfo.Data.opCode);
+		FileInfo.Data.dataLen = ntohl(FileInfo.Data.dataLen);
+		FileInfo.Data.fileSize = ntohl(FileInfo.Data.fileSize);
+
+		//받은 파일의 해쉬 계산
+		puts("\n해쉬 계산중입니다... 잠시만 기다려 주세요...");
+		getFileHashProgress(downTmpFile, encFileHash);
+		puts("");
+
+		//성공유무 판단
+		if (memcmp(FileInfo.Data.encFileHash, encFileHash, 32)) {//해쉬 불일치
+			fclose(downTmpFile);
+			remove(leaFileName);
+			puts("파일 수신이 실패하였습니다.");
+			system("pause");
+			return;
+		}
+
+		puts("파일의 복호화를 위한 비밀번호를 입력해주세요. 잊어버린 비밀번호는 복구 불가합니다.");
+		printf_s("비밀번호: ");
+		scanf_s("%99s", password, 100);
+
+		//비밀번호 해싱
+		SHA256_Text(password, pwdHash);
+
+		sprintf_s(fileName, 255, "./download/%s", FileInfo.Data.fileName);
+
+		//복호화 결과 저장할 파일 오픈
+		if (fopen_s(&filePtr, fileName, "wb+")) {
+			printDebugMsg(DC_ERROR, errorLevel, "파일을 쓰기용으로 열 수 없습니다");
+			printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
+			system("pause");
+			exit(1);
+		}
+
+		//복호화 하기
+		puts("복호화 처리중입니다... 잠시만 기다려 주세요...");
+		decryptFileLEAProgress(downTmpFile, filePtr, pwdHash, FileInfo.Data.IV);
+
+		//복호화된 파일의 해쉬 구하기
+		puts("\n해쉬 계산중입니다... 잠시만 기다려 주세요...");
+		getFileHashProgress(filePtr, orgFileHash);
+		puts("");
+
+		//성공유무 판단
+		if (memcmp(FileInfo.Data.orgFileHash, orgFileHash, 32)) {//해쉬 불일치
+			fclose(downTmpFile);
+			fclose(filePtr);
+			remove(leaFileName);
+			remove(fileName);
+			puts("파일 복호화가 실패하였습니다.");
+			puts("주로 복호화 키가 잘못되었을 가능성이 높습니다.");
+			system("pause");
+			return;
+		}
+
+		fclose(downTmpFile);
+		fclose(filePtr);
+		remove(leaFileName);
+		puts("파일 수신이 성공하였습니다.");
+		system("pause");
+
 		return;
 	}
+	
+	return;
 }
 
 /**

@@ -46,7 +46,6 @@ void procDownloadPersonalDBFile(SOCKET hClientSock) {
 
 	//업로드 모드 시작
 	FILE *infoFile;
-	unsigned int toRead;
 	char fileName[255] = { 0, };
 
 	WaitForSingleObject(hMutex, INFINITE);//to protect global var access
@@ -85,34 +84,14 @@ void procDownloadPersonalDBFile(SOCKET hClientSock) {
 	sqlite3_exec(dbHandle, memoDB, 0, 0, 0);
 	sqlite3_close(dbHandle);
 
-	unsigned long fileSize;
 	if (fopen_s(&infoFile, fileName, "rb")) {
 		printDebugMsg(DC_ERROR, errorLevel, "ERROR Reading Database File");
 		return;
 	}
 
-	fseek(infoFile, 0, SEEK_END);
-
-	fileSize = ftell(infoFile);
-
-	fileSize = htonl(fileSize);
-	sendData(hClientSock, (char*)&fileSize, 4, 0);
-	fileSize = ntohl(fileSize);
-
-	fseek(infoFile, 0, SEEK_SET);
-
-	unsigned long left = fileSize;
-
-	unsigned char dataBuffer[4096]; //4KiB
-	while (left) {
-		if (left < 4096U)
-			toRead = left;
-		else
-			toRead = 4096U;
-
-		fread_s(dataBuffer, 4096, toRead, 1, infoFile);
-		sendData(hClientSock, dataBuffer, toRead, 0);
-		left -= toRead;
+	if (!uploadFile(hClientSock, infoFile)) {
+		printDebugMsg(DC_ERROR, errorLevel, "ERROR Sending Database File");
+		return;
 	}
 
 	//Done Uploading
@@ -166,27 +145,10 @@ void procUploadPersonalDBFile(SOCKET hClientSock) {
 	}
 
 	//다운로드 모드 진입
-	unsigned long fileSize = 0;
-
-	//파일 사이즈 수신
-	recvData(hClientSock, (char*)&fileSize, 4, 0);
-	fileSize = ntohl(fileSize);
-	unsigned int left = fileSize;
-	unsigned int toRead;
-
-	unsigned char dataBuffer[4096]; //4KiB
-	while (1) {
-		if (left < 4096U)
-			toRead = left;
-		else
-			toRead = 4096U;
-
-		recvData(hClientSock, dataBuffer, toRead, 0);
-		fwrite(dataBuffer, toRead, 1, infoFile);
-		left -= toRead;
-		if (!left) break;//완료시 탈출
+	if (!downloadFile(hClientSock, infoFile)) {
+		printDebugMsg(DC_ERROR, errorLevel, "ERROR Receiving Database File");
+		return;
 	}
-	//다운로드 모드 끝
 
 	//패킷 설정
 	PersonalDBEditDoneResp.Data.opCode = ntohl(OP_SC_PERSONALDBEDITDONERESP);

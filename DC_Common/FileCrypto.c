@@ -201,7 +201,7 @@ extern "C" {
 
 	/**
 		@fn void getFileHash(FILE *file, char* result)
-		@brief 파일의 SHA256 해쉬 구함(프로그레스 생성 버전)
+		@brief 파일의 SHA256 해쉬 구함
 		@author 멍멍아야옹해봐
 		@param *file 파일 구조체 포인터
 		@param *result 결과를 저장할 공간(32바이트)
@@ -238,7 +238,7 @@ extern "C" {
 
 	/**
 	@fn void getFileHashProgress(FILE *file, char* result)
-	@brief 파일의 SHA256 해쉬 구함
+	@brief 파일의 SHA256 해쉬 구함(프로그레스 생성 버전)
 	@author 멍멍아야옹해봐
 	@param *file 파일 구조체 포인터
 	@param *result 결과를 저장할 공간(32바이트)

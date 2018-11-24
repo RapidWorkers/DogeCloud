@@ -105,7 +105,7 @@ void packetHandler(SOCKET hClientSock, const char *clientIP, unsigned long opCod
 		break;
 	case OP_CF_DELETEFILEREQ:
 		printDebugMsg(DC_INFO, errorLevel, "Delete File Req: %s", clientIP);
-		//procDeleteFile(hClientSock);
+		procDeleteFile(hClientSock);
 		break;
 	default:
 		printDebugMsg(DC_ERROR, errorLevel, "Unknown Packet: %s", clientIP);

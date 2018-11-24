@@ -87,8 +87,9 @@ extern "C" {
 			unsigned long opCode;//opCode => 패킷 구분용
 			unsigned long dataLen;//데이터 길이
 			unsigned char jobType; //0 = download, 1 = upload (from the viewpoint of client)
+			unsigned long fileID; //다운로드시만, 업로드에는 쓰지 않음
 		}Data;
-		char buf[9];
+		char buf[13];
 	} cf_FileJobReq;
 
 	typedef union {

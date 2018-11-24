@@ -43,15 +43,6 @@ void downloadPersonalDBFile(SOCKET hSocket) {
 	/** @brief 다운로드 받을 파일을 위한 구조체 */
 	FILE *downFile;
 
-	/** @brief 받아올 버퍼 크기 */
-	unsigned int toWrite;
-
-	/** @brief 받아올 파일 크기 */
-	unsigned long fileSize;
-
-	/** @brief 다운로드 버퍼 4KiB */
-	unsigned char dataBuffer[4096];
-
 	/** @brief 파일 해쉬값 저장용 */
 	unsigned char fileHash[32];
 
@@ -70,31 +61,14 @@ void downloadPersonalDBFile(SOCKET hSocket) {
 		exit(1);
 	}
 
-	recvData(hSocket, (char*)&fileSize, 4, 0);
-	fileSize = ntohl(fileSize);//호스트 특정 인디안으로 변환
-
-	/** @brief 남은 파일 크기 */
-	unsigned long left = fileSize;
-
 	puts("\n유저 정보 다운로드 시작...");
 
-	while (1) {//남은 크기가 0이 될때 까지 반복
-		if (left < 4096U)//4KB보다 작은만큼 남으면
-			toWrite = left;//남은 만큼 받아옴
-		else//아니면
-			toWrite = 4096U;//4KiB만큼 받아옴
-
-		if (!recvRaw(hSocket, dataBuffer, toWrite, 0)) {//서버로부터 다운로드
-			printDebugMsg(DC_ERROR, errorLevel, "전송 실패");
-			printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
-			system("pause");
-			exit(1);
-		}
-
-		fwrite(dataBuffer, toWrite, 1, downFile);//파일에 받아온 만큼 작성
-		left -= toWrite;//받아온 만큼 뺀다
-		updateProgress(fileSize - left, fileSize);//프로그레스 바 업데이트(생성)
-		if (!left) break;//완료시 탈출
+	if (!downloadFileProgress(hSocket, downFile)) {
+		printDebugMsg(DC_ERROR, errorLevel, "파일을 받을 수 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
+		system("pause");
+		exit(1);
+		return;
 	}
 
 	puts("\n수신 완료");
@@ -158,93 +132,40 @@ void uploadPersonalDBFile(SOCKET hSocket, char* originalHash) {
 	}
 
 	//수정된 파일이라면 계속 진행한다.
-	
+
 	//패킷 설정
 	PersonalDBEditDone.Data.opCode = htonl(OP_CS_PERSONALDBEDITDONE);
 	PersonalDBEditDone.Data.dataLen = htonl(sizeof(cs_PersonalDBEditDone) - 8);
 	memcpy(PersonalDBEditDone.Data.hash, fileHash, 32);
 
-	/** @brief 업로드 성공 유무 플래그 */
-	int flag = 0;
+	puts("\n유저 정보 업로드 시작...");
 
-	/** @brief 업로드 횟수 카운트 */
-	int count = 0;
+	//패킷 전송
+	sendData(hSocket, PersonalDBEditDone.buf, sizeof(cs_PersonalDBEditDone), 0);
 
-	while (1) {//업로드 횟수 채울때 까지 반복시킴
-		puts("\n유저 정보 업로드 시작...");
-		count++;//카운트 증가
-
-		//패킷 전송
-		sendData(hSocket, PersonalDBEditDone.buf, sizeof(cs_PersonalDBEditDone), 0);
-
-		//업로드 모드 진입
-		fseek(infoFile, 0, SEEK_END);
-
-		/** @brief 업로드할 파일 사이즈 */
-		unsigned int fileSize = ftell(infoFile);
-
-		/** @brief 업로드할 남은 용량 */
-		unsigned int left = fileSize;
-
-		/** @brief 읽어올 바이트 수 */
-		unsigned int toRead;
-
-		fseek(infoFile, 0, SEEK_SET);
-
-		//파일 사이즈 전송
-		fileSize = htonl(fileSize);
-		sendData(hSocket, (char*)&fileSize, 4, 0);
-		fileSize = ntohl(fileSize);
-
-		/**
-			@var unsigned char dataBuffer[4096]
-			업로드 버퍼 4KiB
-		*/
-		unsigned char dataBuffer[4096];
-
-		while (1) {//업로드 끝날때 까지 반복
-			if (left < 4096U)//4KB보다 작은만큼 남으면
-				toRead = left;//남은 만큼 보냄
-			else//아니면
-				toRead = 4096U;//4KiB만큼 보냄
-
-			//파일 읽어서 버퍼에 저장
-			fread(dataBuffer, toRead, 1, infoFile);
-
-			//읽어온 버퍼를 서버로 전송
-			if (!sendRaw(hSocket, dataBuffer, toRead, 0)) {
-				printDebugMsg(DC_ERROR, errorLevel, "전송 실패");
-				printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
-				system("pause");
-				exit(1);
-			}
-
-			left -= toRead;//보낸만큼 뺀다
-			updateProgress(fileSize - left, fileSize);//프로그레스 바 업데이트(생성)
-			if (!left) break;//완료시 탈출
-		}
-
-		//업로드 모드 끝
-
-		//업로드 완료 패킷 가져옴
-		recvData(hSocket, PersonalDBEditDoneResp.buf, sizeof(sc_PersonalDBEditDoneResp), 0);
-
-		//숫자를 호스트 특정 인디안으로 변경
-		PersonalDBEditDoneResp.Data.opCode = ntohl(PersonalDBEditDoneResp.Data.opCode);
-		PersonalDBEditDoneResp.Data.dataLen = ntohl(PersonalDBEditDoneResp.Data.dataLen);
-
-		if (PersonalDBEditDoneResp.Data.statusCode)//성공시 탈출
-			break;
-
-		if (!flag && count == 3) {//3번 다 실패한 경우
-			printDebugMsg(DC_ERROR, errorLevel, "중계서버에 파일을 저장할 수 없었습니다.");
-			printDebugMsg(DC_ERROR, errorLevel, "myinfoClient.db 파일을 수동으로 백업해 주십시오.");
-			printDebugMsg(DC_ERROR, errorLevel, "그 후 관리자에게 이메일로 전송해 주시면 수동으로 적용됩니다.");
-			printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
-			system("pause");
-			exit(1);
-		}
+	if (!uploadFileProgress(hSocket, infoFile)) {
+		printDebugMsg(DC_ERROR, errorLevel, "파일을 전송할 수 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
+		system("pause");
+		exit(1);
+		return;
 	}
+
+	//업로드 완료 패킷 가져옴
+	recvData(hSocket, PersonalDBEditDoneResp.buf, sizeof(sc_PersonalDBEditDoneResp), 0);
+
+	//숫자를 호스트 특정 인디안으로 변경
+	PersonalDBEditDoneResp.Data.opCode = ntohl(PersonalDBEditDoneResp.Data.opCode);
+	PersonalDBEditDoneResp.Data.dataLen = ntohl(PersonalDBEditDoneResp.Data.dataLen);
+
+	if (!PersonalDBEditDoneResp.Data.statusCode) {
+		printDebugMsg(DC_ERROR, errorLevel, "파일을 전송할 수 없습니다.");
+		printDebugMsg(DC_ERROR, errorLevel, "프로그램을 종료합니다.");
+		system("pause");
+		exit(1);
+		return;
+	}
+
 	fclose(infoFile);
 	puts("\n유저 정보 업로드 완료");
 	system("pause");
@@ -365,7 +286,7 @@ void modifyContacts(int count) {
 		clearStdinBuffer();
 
 		char tmpName[31] = { 0, };
-		
+
 		switch (userInput) {
 		case 0:
 			break;
@@ -567,7 +488,7 @@ void addMemo() {
 	rewind(tmpFile);//처음 부분으로 이동
 
 	//쿼리문에 넣기 위해 메모 크기만큼 동적할당
-	char* text = (void*)calloc(1, memoFileSize+1);
+	char* text = (void*)calloc(1, memoFileSize + 1);
 
 	if (text == NULL) {
 		printDebugMsg(DC_ERROR, errorLevel, "메모리 할당에 실패했습니다.");
@@ -594,7 +515,7 @@ void addMemo() {
 
 	/** @brief 실행하기 위한 완성된 쿼리 */
 	char* query = sqlite3_mprintf(insertMemo, text);
-	
+
 	sqlite3_exec(dbHandle, query, NULL, NULL, NULL);//쿼리문 실행 => db 삽입
 
 	fclose(tmpFile);//파일 해제
@@ -706,7 +627,7 @@ void modifyMemo(int count) {
 	getFileHash(tmpFile, orgHash);
 
 	fclose(tmpFile);//수정을 위해 외부 프로그램이 열 수 있도록 파일 해제
-	
+
 	//메모장 실행
 	sprintf_s(cmd, 255, "notepad %s", tmpFileName);
 	puts("\n수정이 완료되면 저장하고 메모장을 닫아주세요.");
