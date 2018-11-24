@@ -546,7 +546,8 @@ void procDeleteFile(SOCKET hClientSock) {
 	char realFileName[255] = { 0, };
 	sprintf_s(realFileName, 255, "./storage/%s", tmpSavedFileName);
 
-	//remove(realFileName);
+	//저장된 파일 삭제
+	remove(realFileName);
 
 	//패킷 설정
 	DeleteFileResp.Data.opCode = htonl(OP_FC_DELETEFILERESP);
