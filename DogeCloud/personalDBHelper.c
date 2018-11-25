@@ -214,7 +214,7 @@ void addContacts() {
 	}
 
 	/** 실행하기 위한 완성된 쿼리 */
-	char* query = sqlite3_mprintf(insertMemo, tmpContacts.email, tmpContacts.name, tmpContacts.phone1, tmpContacts.phone2, tmpContacts.phone3);
+	char* query = sqlite3_mprintf(insertMemo, tmpContacts.name, tmpContacts.email, tmpContacts.phone1, tmpContacts.phone2, tmpContacts.phone3);
 
 	sqlite3_exec(dbHandle, query, NULL, NULL, NULL);//쿼리문 실행 => db 삽입
 	sqlite3_close(dbHandle);//db파일 닫기
@@ -267,10 +267,10 @@ void modifyContacts(int count) {
 	{
 		if (sqlite3_step(stmt) == SQLITE_ROW) {
 			memcpy(tmpContacts.name, sqlite3_column_text(stmt, 1), 31);
-			memcpy(tmpContacts.email, sqlite3_column_text(stmt, 1), 51);
-			memcpy(tmpContacts.phone1, sqlite3_column_text(stmt, 1), 21);
-			memcpy(tmpContacts.phone2, sqlite3_column_text(stmt, 1), 21);
-			memcpy(tmpContacts.phone3, sqlite3_column_text(stmt, 1), 21);
+			memcpy(tmpContacts.email, sqlite3_column_text(stmt, 2), 51);
+			memcpy(tmpContacts.phone1, sqlite3_column_text(stmt, 3), 21);
+			memcpy(tmpContacts.phone2, sqlite3_column_text(stmt, 4), 21);
+			memcpy(tmpContacts.phone3, sqlite3_column_text(stmt, 5), 21);
 		}
 	}
 	sqlite3_finalize(stmt);
