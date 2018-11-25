@@ -36,10 +36,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 void openFileServer(char *fileServerAddr, unsigned long fileServerPort, unsigned char *authKey) {
 
-	/** @brief 파일 서버 주소 저장하는 구조체 */
+	/** 파일 서버 주소 저장하는 구조체 */
 	SOCKADDR_IN fileSrvConAddr;
 
-	/** @brief 파일서버 소켓 */
+	/** 파일서버 소켓 */
 	SOCKET hFileSrvSock;
 	memset(&fileSrvConAddr, 0, sizeof(fileSrvConAddr));
 
@@ -127,14 +127,14 @@ void openFileServer(char *fileServerAddr, unsigned long fileServerPort, unsigned
 */
 void doFileManage(SOCKET hFileSrvSock) {
 
-	/** @brief 파일 서버 주소 저장하는 구조체 */
+	/** 파일 서버 주소 저장하는 구조체 */
 
-	/** @brief 현재 페이지 저장 */
+	/** 현재 페이지 저장 */
 	unsigned char page = 1; //처음 페이지는 1페이지
 
 	while (1) {//메뉴 출력은 종료할 때 까지 무한반복
 
-		/** @brief 에러 감지용 */
+		/** 에러 감지용 */
 		int errorFlag = 0;
 
 		int fileCount = 0;
@@ -284,34 +284,34 @@ void doFileJob(SOCKET hFileSrvSock, int jobType, int fileCount, int *errorFlag) 
 	memset(&FileInfo, 0, sizeof(cffc_FileInfo));
 	memset(&FileJobResult, 0, sizeof(fc_FileJobResult));
 
-	/** @brief 암복호화 할 파일을 위한 구조체 포인터 */
+	/** 암복호화 할 파일을 위한 구조체 포인터 */
 	FILE *filePtr;
 
-	/** @brief 파일 이름 */
+	/** 파일 이름 */
 	char fileName[255] = { 0, };
 
-	/** @brief 원본 파일 해쉬 */
+	/** 원본 파일 해쉬 */
 	char orgFileHash[32] = { 0, };
 
-	/** @brief 암호화 파일 해쉬 */
+	/** 암호화 파일 해쉬 */
 	char encFileHash[32] = { 0, };
 
-	/** @brief 파일 사이즈 */
+	/** 파일 사이즈 */
 	unsigned long fileSize = 0;
 
-	/** @brief 파일 비밀번호 */
+	/** 파일 비밀번호 */
 	char password[100] = { 0, };
 
-	/** @brief 암호화를 위해 해쉬로 변환된 비밀번호 */
+	/** 암호화를 위해 해쉬로 변환된 비밀번호 */
 	char pwdHash[32] = { 0, };
 
-	/** @brief 임시로 생성할 숫자 */
+	/** 임시로 생성할 숫자 */
 	unsigned char tmpRandomNum[16] = { 0, };
 
-	/** @brief 임시로 생성된 숫자의 해쉬 저장용 */
+	/** 임시로 생성된 숫자의 해쉬 저장용 */
 	unsigned char tmpHash[32] = { 0, };
 
-	/** @brief 암복호화를 위해 임시로 생성할 파일 이름 */
+	/** 암복호화를 위해 임시로 생성할 파일 이름 */
 	char leaFileName[65] = { 0, };
 
 	if (jobType == 0) {//업로드

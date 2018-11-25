@@ -40,10 +40,10 @@ void downloadPersonalDBFile(SOCKET hSocket) {
 	memset(&DownloadInfoReq, 0, sizeof(cs_DownloadPersonalDBReq));//0으로 초기화
 	memset(&DownloadInfoResp, 0, sizeof(sc_DownloadPersonalDBResp));
 
-	/** @brief 다운로드 받을 파일을 위한 구조체 */
+	/** 다운로드 받을 파일을 위한 구조체 */
 	FILE *downFile;
 
-	/** @brief 파일 해쉬값 저장용 */
+	/** 파일 해쉬값 저장용 */
 	unsigned char fileHash[32];
 
 	//패킷 설정
@@ -109,10 +109,10 @@ void uploadPersonalDBFile(SOCKET hSocket, char* originalHash) {
 	memset(&PersonalDBEditDone, 0, sizeof(cs_PersonalDBEditDone));//0으로 초기화
 	memset(&PersonalDBEditDoneResp, 0, sizeof(sc_PersonalDBEditDoneResp));
 
-	/** @brief 파일 해쉬값 저장용 */
+	/** 파일 해쉬값 저장용 */
 	unsigned char fileHash[32];
 
-	/** @brief DB 파일 위한 구조체 */
+	/** DB 파일 위한 구조체 */
 	FILE *infoFile;
 
 	//DB파일 오픈
@@ -172,6 +172,11 @@ void uploadPersonalDBFile(SOCKET hSocket, char* originalHash) {
 	return;
 }
 
+/**
+@fn void addContacts()
+@brief DogeCloud DB에 연락처 추가
+@author 멍멍아야옹해봐
+*/
 void addContacts() {
 	DC_CONTACTS tmpContacts;
 	memset(&tmpContacts, 0, sizeof(DC_CONTACTS));
@@ -195,10 +200,10 @@ void addContacts() {
 	scanf_s("%20[^\n]", tmpContacts.phone3, 21);
 	clearStdinBuffer();
 
-	/** @brief sqlite3 핸들 구조체 포인터 */
+	/** sqlite3 핸들 구조체 포인터 */
 	sqlite3 *dbHandle;
 
-	/** @brief 연락처 저장을 위한 쿼리 */
+	/** 연락처 저장을 위한 쿼리 */
 	char *insertMemo = "INSERT into contacts VALUES(NULL, '%q', '%q', '%q', '%q', '%q');";
 
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
@@ -208,7 +213,7 @@ void addContacts() {
 		exit(1);
 	}
 
-	/** @brief 실행하기 위한 완성된 쿼리 */
+	/** 실행하기 위한 완성된 쿼리 */
 	char* query = sqlite3_mprintf(insertMemo, tmpContacts.email, tmpContacts.name, tmpContacts.phone1, tmpContacts.phone2, tmpContacts.phone3);
 
 	sqlite3_exec(dbHandle, query, NULL, NULL, NULL);//쿼리문 실행 => db 삽입
@@ -229,9 +234,9 @@ void addContacts() {
 void modifyContacts(int count) {
 	DC_CONTACTS tmpContacts;
 
-	/** @brief 업데이트 쿼리 */
+	/** 업데이트 쿼리 */
 	char *selectContacts = "SELECT * FROM contacts WHERE id = %d;";
-	/** @brief 업데이트 쿼리 */
+	/** 업데이트 쿼리 */
 	char *updateContacts = "UPDATE contacts SET name = '%q', email = '%q', phone1 = '%q', phone2 = '%q', phone3 = '%q' WHERE id = %d;";
 
 	//유저에게 입력 받음
@@ -247,7 +252,7 @@ void modifyContacts(int count) {
 		return;
 	}
 
-	/** @brief sqlite3을 위한 handle */
+	/** sqlite3을 위한 handle */
 	sqlite3 *dbHandle;
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
 		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
@@ -325,7 +330,7 @@ void modifyContacts(int count) {
 
 	} while (userInput != 0);
 
-	/** @brief 완성된 삭제 쿼리 */
+	/** 완성된 삭제 쿼리 */
 	char* query = sqlite3_mprintf(updateContacts, tmpContacts.name, tmpContacts.email, tmpContacts.phone1, tmpContacts.phone2, tmpContacts.phone3, contactsID);
 	sqlite3_exec(dbHandle, query, NULL, NULL, NULL);//실행
 	sqlite3_free(query);//동적할당 free
@@ -342,13 +347,13 @@ void modifyContacts(int count) {
 */
 void deleteContacts(int count) {
 
-	/** @brief 삭제용 쿼리 */
+	/** 삭제용 쿼리 */
 	char *deleteContactsQuery = "DELETE FROM contacts WHERE id = %d;";
-	/** @brief 현재 줄 인덱스 값 확인 쿼리 */
+	/** 현재 줄 인덱스 값 확인 쿼리 */
 	char *selectIndex = "SELECT id FROM contacts LIMIT 1 OFFSET %d;";
-	/** @brief 인덱스 재설정 쿼리 */
+	/** 인덱스 재설정 쿼리 */
 	char *updateIndex = "UPDATE contacts SET id = %d WHERE id = %d;";
-	/** @brief auto increment 재설정 쿼리 */
+	/** auto increment 재설정 쿼리 */
 	char *reIndex = "delete from sqlite_sequence where name='contacts';";
 
 	//유저에게 입력 받음
@@ -373,7 +378,7 @@ void deleteContacts(int count) {
 	if (userInput == 'N' || userInput == 'n') return;
 	//유저 입력 끝
 
-	/** @brief sqlite3을 위한 handle */
+	/** sqlite3을 위한 handle */
 	sqlite3 *dbHandle;
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
 		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
@@ -382,21 +387,21 @@ void deleteContacts(int count) {
 		exit(1);
 	}
 
-	/** @brief 완성된 삭제 쿼리 */
+	/** 완성된 삭제 쿼리 */
 	char* query = sqlite3_mprintf(deleteContactsQuery, contactsID);
 	sqlite3_exec(dbHandle, query, NULL, NULL, NULL);//실행
 	sqlite3_free(query);//동적할당 free
 
 	//인덱스값 다시 설정
 
-	/** @brief sqlite3을 위한 stmt */
+	/** sqlite3을 위한 stmt */
 	sqlite3_stmt* stmt;
 	for (int i = contactsID; i < count; i++) {//삭제한 부분부터 시작
 		char *selIdxReady = sqlite3_mprintf(selectIndex, i - 1);
 		if (sqlite3_prepare(dbHandle, selIdxReady, -1, &stmt, NULL) == SQLITE_OK)
 		{
 			if (sqlite3_step(stmt) == SQLITE_ROW) {
-				/** @brief 인덱스 업데이트를 위한 완성된 쿼리 */
+				/** 인덱스 업데이트를 위한 완성된 쿼리 */
 				char *updateIdxReady = sqlite3_mprintf(updateIndex, i, sqlite3_column_int(stmt, 0));//줄 번호 = 인덱스 값
 				sqlite3_exec(dbHandle, updateIdxReady, NULL, NULL, NULL);
 				sqlite3_free(updateIdxReady);
@@ -418,25 +423,25 @@ void deleteContacts(int count) {
 	@author 멍멍아야옹해봐
 */
 void addMemo() {
-	/** @brief 임시로 생성할 파일 이름 */
+	/** 임시로 생성할 파일 이름 */
 	char tmpFileName[65] = { 0, };
 
-	/** @brief 임시로 생성할 숫자 */
+	/** 임시로 생성할 숫자 */
 	unsigned char tmpRandomNum[16] = { 0, };
 
-	/** @brief 임시로 생성된 숫자의 해쉬 저장용 */
+	/** 임시로 생성된 숫자의 해쉬 저장용 */
 	unsigned char tmpHash[32] = { 0, };
 
-	/** @brief 실행할 커맨드 저장용 */
+	/** 실행할 커맨드 저장용 */
 	char cmd[255] = { 0, };
 
-	/** @brief 임시로 생성할 파일을 위한 구조체 포인터 */
+	/** 임시로 생성할 파일을 위한 구조체 포인터 */
 	FILE *tmpFile;
 
-	/** @brief sqlite3 핸들 구조체 포인터 */
+	/** sqlite3 핸들 구조체 포인터 */
 	sqlite3 *dbHandle;
 
-	/** @brief 메모 저장을 위한 쿼리 */
+	/** 메모 저장을 위한 쿼리 */
 	char *insertMemo = "INSERT into memo VALUES(NULL, '%q');";
 
 	//임시로 사용할 파일이름 생성
@@ -473,7 +478,7 @@ void addMemo() {
 		exit(1);
 	}
 
-	/** @brief 메모 파일 사이즈 */
+	/** 메모 파일 사이즈 */
 	unsigned long memoFileSize;
 	fseek(tmpFile, 0, SEEK_END);
 	memoFileSize = ftell(tmpFile);
@@ -495,9 +500,9 @@ void addMemo() {
 		return;
 	}
 
-	/** @brief 앞으로 읽어와야 하는 크기 */
+	/** 앞으로 읽어와야 하는 크기 */
 	unsigned long left = memoFileSize;
-	/** @brief 얼마만큼 읽어올지 */
+	/** 얼마만큼 읽어올지 */
 	unsigned long toRead;
 
 	while (1) {//다 읽을 때 까지 반복
@@ -513,7 +518,7 @@ void addMemo() {
 		if (!left) break;//완료시 탈출
 	}
 
-	/** @brief 실행하기 위한 완성된 쿼리 */
+	/** 실행하기 위한 완성된 쿼리 */
 	char* query = sqlite3_mprintf(insertMemo, text);
 
 	sqlite3_exec(dbHandle, query, NULL, NULL, NULL);//쿼리문 실행 => db 삽입
@@ -536,27 +541,27 @@ void addMemo() {
 @param count 현재 메모 개수
 */
 void modifyMemo(int count) {
-	/** @brief 임시로 생성할 파일 이름 */
+	/** 임시로 생성할 파일 이름 */
 	char tmpFileName[65] = { 0, };
 
-	/** @brief 임시로 생성할 숫자 */
+	/** 임시로 생성할 숫자 */
 	unsigned char tmpRandomNum[16] = { 0, };
 
-	/** @brief 임시로 생성된 숫자의 해쉬 저장용 */
+	/** 임시로 생성된 숫자의 해쉬 저장용 */
 	unsigned char tmpHash[32] = { 0, };
 
-	/** @brief 실행할 커맨드 저장용 */
+	/** 실행할 커맨드 저장용 */
 	char cmd[255] = { 0, };
 
-	/** @brief 임시로 생성할 파일을 위한 구조체 포인터 */
+	/** 임시로 생성할 파일을 위한 구조체 포인터 */
 	FILE *tmpFile;
 
-	/** @brief sqlite3 핸들 구조체 포인터 */
+	/** sqlite3 핸들 구조체 포인터 */
 	sqlite3 *dbHandle;
 
-	/** @brief 수정할 메모를 찾아오는 쿼리 */
+	/** 수정할 메모를 찾아오는 쿼리 */
 	char *selectMemo = "SELECT user_text FROM memo WHERE id = %d;";
-	/** @brief 메모 수정을 위한 쿼리 */
+	/** 메모 수정을 위한 쿼리 */
 	char *modifyMemo = "UPDATE memo SET user_text = '%q' WHERE id = %d;";
 
 	//유저에게 입력 받음
@@ -603,7 +608,7 @@ void modifyMemo(int count) {
 			unsigned long orgMemoFileSize = (unsigned long)strlen(user_text) + 1;
 			unsigned long left = orgMemoFileSize;
 
-			/** @brief 얼마만큼 쓸지 */
+			/** 얼마만큼 쓸지 */
 			unsigned long toWrite;
 
 			while (1) {//다 쓸 때 까지 반복
@@ -640,7 +645,7 @@ void modifyMemo(int count) {
 		exit(1);
 	}
 
-	/** @brief 수정된 메모 파일 사이즈 */
+	/** 수정된 메모 파일 사이즈 */
 	unsigned long newMemoFileSize;
 	fseek(tmpFile, 0, SEEK_END);
 	newMemoFileSize = ftell(tmpFile);
@@ -665,9 +670,9 @@ void modifyMemo(int count) {
 		return;
 	}
 
-	/** @brief 앞으로 읽어와야 하는 크기 */
+	/** 앞으로 읽어와야 하는 크기 */
 	unsigned long left = newMemoFileSize;
-	/** @brief 얼마만큼 읽어올지 */
+	/** 얼마만큼 읽어올지 */
 	unsigned long toRead;
 
 	while (1) {//다 읽을 때 까지 반복
@@ -683,7 +688,7 @@ void modifyMemo(int count) {
 		if (!left) break;//완료시 탈출
 	}
 
-	/** @brief 실행하기 위한 완성된 쿼리 */
+	/** 실행하기 위한 완성된 쿼리 */
 	char* updateQueryRdy = sqlite3_mprintf(modifyMemo, newText, memoID);
 
 	sqlite3_exec(dbHandle, updateQueryRdy, NULL, NULL, NULL);//쿼리문 실행 => db 업데이트
@@ -707,13 +712,13 @@ void modifyMemo(int count) {
 */
 void deleteMemo(int count) {
 
-	/** @brief 삭제용 쿼리 */
+	/** 삭제용 쿼리 */
 	char *deleteMemoQuery = "DELETE FROM memo WHERE id = %d;";
-	/** @brief 현재 줄 인덱스 값 확인 쿼리 */
+	/** 현재 줄 인덱스 값 확인 쿼리 */
 	char *selectIndex = "SELECT id FROM memo LIMIT 1 OFFSET %d;";
-	/** @brief 인덱스 재설정 쿼리 */
+	/** 인덱스 재설정 쿼리 */
 	char *updateIndex = "UPDATE memo SET id = %d WHERE id = %d;";
-	/** @brief auto increment 재설정 쿼리 */
+	/** auto increment 재설정 쿼리 */
 	char *reIndex = "delete from sqlite_sequence where name='memo';";
 
 	//유저에게 입력 받음
@@ -738,7 +743,7 @@ void deleteMemo(int count) {
 	if (userInput == 'N' || userInput == 'n') return;
 	//유저 입력 끝
 
-	/** @brief sqlite3을 위한 handle */
+	/** sqlite3을 위한 handle */
 	sqlite3 *dbHandle;
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
 		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
@@ -747,21 +752,21 @@ void deleteMemo(int count) {
 		exit(1);
 	}
 
-	/** @brief 완성된 삭제 쿼리 */
+	/** 완성된 삭제 쿼리 */
 	char* query = sqlite3_mprintf(deleteMemoQuery, memoID);
 	sqlite3_exec(dbHandle, query, NULL, NULL, NULL);//실행
 	sqlite3_free(query);//동적할당 free
 
 	//인덱스값 다시 설정
 
-	/** @brief sqlite3을 위한 stmt */
+	/** sqlite3을 위한 stmt */
 	sqlite3_stmt* stmt;
 	for (int i = memoID; i < count; i++) {//삭제한 부분부터 시작
 		char *selIdxReady = sqlite3_mprintf(selectIndex, i - 1);
 		if (sqlite3_prepare(dbHandle, selIdxReady, -1, &stmt, NULL) == SQLITE_OK)
 		{
 			if (sqlite3_step(stmt) == SQLITE_ROW) {
-				/** @brief 인덱스 업데이트를 위한 완성된 쿼리 */
+				/** 인덱스 업데이트를 위한 완성된 쿼리 */
 				char *updateIdxReady = sqlite3_mprintf(updateIndex, i, sqlite3_column_int(stmt, 0));//줄 번호 = 인덱스 값
 				sqlite3_exec(dbHandle, updateIdxReady, NULL, NULL, NULL);
 				sqlite3_free(updateIdxReady);

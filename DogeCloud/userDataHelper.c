@@ -34,10 +34,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 	@param hSocket 중계서버 연결된 소켓
 */
 void manageContacts(SOCKET hSocket) {
-	/** @brief DB 파일 해쉬 저장용 */
+	/** DB 파일 해쉬 저장용 */
 	char originalHash[32];
 
-	/** @brief db 읽어오기 위한 파일 구조체 포인터 */
+	/** db 읽어오기 위한 파일 구조체 포인터 */
 	FILE *fp;
 
 	system("cls");
@@ -56,7 +56,7 @@ void manageContacts(SOCKET hSocket) {
 	//sqlite에서 열기 위해 파일 닫음
 	fclose(fp); 
 	
-	/** @brief sqlite3을 위한 handle */
+	/** sqlite3을 위한 handle */
 	sqlite3 *dbHandle;
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
 		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
@@ -70,7 +70,7 @@ void manageContacts(SOCKET hSocket) {
 
 	int count = 0;
 
-	/** @brief 현재 페이지 */
+	/** 현재 페이지 */
 	int page = 1;
 
 	while (1) {//종료될 때 까지 반복
@@ -90,7 +90,7 @@ void manageContacts(SOCKET hSocket) {
 		}
 		sqlite3_finalize(stmt);
 
-		/** @brief 최대 페이지 수 */
+		/** 최대 페이지 수 */
 		int maxpage = (count - 1) / 10 + 1;
 
 		system("cls");
@@ -165,10 +165,10 @@ void manageContacts(SOCKET hSocket) {
 	@param hSocket 중계서버 연결된 소켓
 */
 void manageMemo(SOCKET hSocket) {
-	/** @brief DB 파일 해쉬 저장용 */
+	/** DB 파일 해쉬 저장용 */
 	unsigned char originalHash[32];
 
-	/** @brief 파일 읽어오기 위한 구조체 포인터 */
+	/** 파일 읽어오기 위한 구조체 포인터 */
 	FILE *fp;
 
 	system("cls");
@@ -186,7 +186,7 @@ void manageMemo(SOCKET hSocket) {
 	//sqlite에서 열기 위해 파일 닫음
 	fclose(fp);
 
-	/** @brief sqlite3을 위한 handle */
+	/** sqlite3을 위한 handle */
 	sqlite3 *dbHandle;
 	if (sqlite3_open("myinfoClient.db", &dbHandle)) {//DB 오픈
 		printDebugMsg(DC_ERROR, errorLevel, "데이터베이스 파일을 읽을 수 없습니다.");
@@ -198,9 +198,9 @@ void manageMemo(SOCKET hSocket) {
 	char* countQuery = "SELECT count(id) FROM memo;";
 	char* selectMemoQuery = "SELECT * FROM memo LIMIT 10 OFFSET %d;";
 
-	/** @brief 메모 개수 */
+	/** 메모 개수 */
 	int count = 0;
-	/** @brief 현재 페이지 */
+	/** 현재 페이지 */
 	int page = 1;
 
 	while (1) {//종료될 때 까지 반복
@@ -220,7 +220,7 @@ void manageMemo(SOCKET hSocket) {
 		}
 		sqlite3_finalize(stmt);
 
-		/** @brief 최대 페이지 수 */
+		/** 최대 페이지 수 */
 		int maxpage = (count-1) / 10 + 1;
 
 		//메모 출력

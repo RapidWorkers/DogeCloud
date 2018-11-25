@@ -154,13 +154,13 @@ int errorLevel;
 */
 int main() {
 
-	/** @brief 라이브러리용 구조체 */
+	/** 라이브러리용 구조체 */
 	WSADATA wsaData;
 
-	/** @brief 서버 연결용 소켓 구조체 */
+	/** 서버 연결용 소켓 구조체 */
 	SOCKET hRelayServSocket;
 
-	/** @brief 서버 주소 저장하는 구조체 */
+	/** 서버 주소 저장하는 구조체 */
 	SOCKADDR_IN RelayServAddr;
 
 	//에러레벨 읽고 설정

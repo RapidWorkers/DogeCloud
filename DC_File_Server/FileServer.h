@@ -263,7 +263,7 @@ unsigned int WINAPI waitingListGC();
 */
 void procListFile(SOCKET hClientSock);
 /**
-@fn void procListFile(SOCKET hClientSock)
+@fn void procFileJob(SOCKET hClientSock)
 @brief 蜡历 诀促款 贸府
 @author 港港酒具克秦毫
 @param hClientSock 努扼捞攫飘 楷搬等 家南

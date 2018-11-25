@@ -100,7 +100,7 @@ extern char currentUsername[100];
 extern char sessionKey[32];
 /**
 	@var int errorLevel
-	중계서버 인증 세션키 저장용 변수
+	디버그 표시용 에러레벨
 */
 extern int errorLevel;
 
@@ -248,7 +248,7 @@ void downloadPersonalDBFile(SOCKET hSocket);
 void uploadPersonalDBFile(SOCKET hSocket, char* originalHash);
 
 /**
-	@fn void modifyContacts()
+	@fn void addContacts()
 	@brief DogeCloud DB에 연락처 추가
 	@author 멍멍아야옹해봐
 */
