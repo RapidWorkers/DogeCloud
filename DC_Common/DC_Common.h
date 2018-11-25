@@ -115,7 +115,7 @@ extern "C" {
 
 	/**
 	@fn void printDoge()
-	@brief 멍뭉이 출력 후 1초 대기
+	@brief 멍뭉이 출력 후 2초 대기
 	@author 멍멍아야옹해봐
 	@brief 이스터 에그 :)
 	*/
