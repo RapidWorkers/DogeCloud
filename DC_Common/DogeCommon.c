@@ -203,6 +203,43 @@ extern "C" {
 	}
 	
 	/**
+	@fn void printDoge()
+	@brief ¸Û¹¶ÀÌ Ãâ·Â ÈÄ 2ÃÊ ´ë±â
+	@author ¸Û¸Û¾Æ¾ß¿ËÇØºÁ
+	@brief ÀÌ½ºÅÍ ¿¡±× :)
+	*/
+	DLL void printDoge() {
+		puts("");
+		puts("                  Y.                      _");
+		puts("                  YiL                   .```.");
+		puts("                  Yii;      WOW       .; .;;`.");
+		puts("                  YY;ii._           .;`.;;;; :");
+		puts("                  iiYYYYYYiiiii;;;;i` ;;::;;;;");
+		puts("              _.;YYYYYYiiiiiiYYYii  .;;.   ;;;");
+		puts("           .YYYYYYYYYYiiYYYYYYYYYYYYii;`  ;;;;");
+		puts("         .YYYYYYY$$YYiiYY$$$$iiiYYYYYY;.ii;`..");
+		puts("        :YYY$!.  TYiiYY$$$$$YYYYYYYiiYYYYiYYii.");
+		puts("        Y$MM$:   :YYYYYY$!\"``\"4YYYYYiiiYYYYiiYY.");
+		puts("     `. :MM$$b.,dYY$$Yii\" :'   :YYYYllYiiYYYiYY");
+		puts("  _.._ :`4MM$!YYYYYYYYYii,.__.diii$$YYYYYYYYYYY");
+		puts("  .,._ $b`P`     \"4$$$$$iiiiiiii$$$$YY$$$$$$YiY;");
+		puts("     `,.`$:       :$$$$$$$$$YYYYY$$$$$$$$$YYiiYYL");
+		puts("      \"`;$$.    .;PPb$`.,.``T$$YY$$$$YYYYYYiiiYYU:");
+		puts("    ' ;$P$;;: ;;;;i$y$\"!Y$$$b;$$$Y$YY$$YYYiiiYYiYY");
+		puts("      $Fi$$ .. ``:iii.`-\";YYYYY$$YY$$$$$YYYiiYiYYY");
+		puts("      :Y$$rb ````  `_..;;i;YYY$YY$$$$$$$YYYYYYYiYY:");
+		puts("       :$$$$$i;;iiiiidYYYYYYYYYY$$$$$$YYYYYYYiiYYYY.");
+		puts("        `$$$$$$$YYYYYYYYYYYYY$$$$$$YYYYYYYYiiiYYYYYY");
+		puts("        .i!$$$$$$YYYYYYYYY$$$$$$YYY$$YYiiiiiiYYYYYYY");
+		puts("       :YYiii$$$$$$$YYYYYYY$$$$YY$$$$YYiiiiiYYYYYYi'");
+		puts("");
+
+		Sleep(2000);
+		system("cls");
+		return;
+	}
+
+	/**
 		@fn void printLicense()
 		@brief DogeCloud ¶óÀÌ¼±½º Ç¥½Ã
 		@author ¸Û¸Û¾Æ¾ß¿ËÇØºÁ

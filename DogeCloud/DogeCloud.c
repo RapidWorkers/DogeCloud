@@ -75,6 +75,9 @@ void printMenu() {
 	@return 0 = 실패, 1 = 성공
 */
 int initProgram(WSADATA *wsaData, SOCKET *hRelayServSocket, SOCKADDR_IN *RelayServAddr) {
+
+	printDoge();
+
 	printProgramInfo();
 
 	//업로드 폴더 생성

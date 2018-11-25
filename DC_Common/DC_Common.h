@@ -114,6 +114,14 @@ extern "C" {
 	DLL void printLicense();
 
 	/**
+	@fn void printDoge()
+	@brief 멍뭉이 출력 후 1초 대기
+	@author 멍멍아야옹해봐
+	@brief 이스터 에그 :)
+	*/
+	DLL void printDoge();
+
+	/**
 	@fn void updateProgress(int current, int total)
 	@brief 프로그레스 바 생성/업데이트
 	@author 멍멍아야옹해봐
