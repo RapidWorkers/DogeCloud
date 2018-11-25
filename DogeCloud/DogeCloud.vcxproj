@@ -96,6 +96,10 @@
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>echo Copying Sample Configuration to OutDir
+copy /y "$(ProjectDir)DogeConfig.sample.ini" "$(OutDir)DogeConfig.sample.ini"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -108,6 +112,10 @@
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>echo Copying Sample Configuration to OutDir
+copy /y "$(ProjectDir)DogeConfig.sample.ini" "$(OutDir)DogeConfig.sample.ini"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -122,6 +130,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PreBuildEvent>
+      <Command>echo Copying Sample Configuration to OutDir
+copy /y "$(ProjectDir)DogeConfig.sample.ini" "$(OutDir)DogeConfig.sample.ini"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -136,6 +148,10 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PreBuildEvent>
+      <Command>echo Copying Sample Configuration to OutDir
+copy /y "$(ProjectDir)DogeConfig.sample.ini" "$(OutDir)DogeConfig.sample.ini"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\lib\SQLite\shell.c">

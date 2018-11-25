@@ -150,6 +150,10 @@
       <Command>echo Copying MariaDB Dependencies
 copy /Y "$(SolutionDir)lib\mariadb\Win32\lib\libmariadb.dll" "$(OutDir)libmariadb.dll"</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>echo Copying Sample Configuration to OutDir
+copy /y "$(ProjectDir)RelayServerConfig.sample.ini" "$(OutDir)RelayServerConfig.sample.ini"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -165,6 +169,10 @@ copy /Y "$(SolutionDir)lib\mariadb\Win32\lib\libmariadb.dll" "$(OutDir)libmariad
       <Command>echo Copying MariaDB Dependencies
 copy /Y "$(SolutionDir)lib\mariadb\x64\lib\libmariadb.dll" "$(OutDir)libmariadb.dll"</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>echo Copying Sample Configuration to OutDir
+copy /y "$(ProjectDir)RelayServerConfig.sample.ini" "$(OutDir)RelayServerConfig.sample.ini"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -183,6 +191,10 @@ copy /Y "$(SolutionDir)lib\mariadb\x64\lib\libmariadb.dll" "$(OutDir)libmariadb.
       <Command>echo Copying MariaDB Dependencies
 copy /Y "$(SolutionDir)lib\mariadb\Win32\lib\libmariadb.dll" "$(OutDir)libmariadb.dll"</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>echo Copying Sample Configuration to OutDir
+copy /y "$(ProjectDir)RelayServerConfig.sample.ini" "$(OutDir)RelayServerConfig.sample.ini"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -201,6 +213,10 @@ copy /Y "$(SolutionDir)lib\mariadb\Win32\lib\libmariadb.dll" "$(OutDir)libmariad
       <Command>echo Copying MariaDB Dependencies
 copy /Y "$(SolutionDir)lib\mariadb\x64\lib\libmariadb.dll" "$(OutDir)libmariadb.dll"</Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>echo Copying Sample Configuration to OutDir
+copy /y "$(ProjectDir)RelayServerConfig.sample.ini" "$(OutDir)RelayServerConfig.sample.ini"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
