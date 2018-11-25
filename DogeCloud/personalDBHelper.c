@@ -343,7 +343,7 @@ void modifyContacts(int count) {
 void deleteContacts(int count) {
 
 	/** @brief 삭제용 쿼리 */
-	char *deleteMemo = "DELETE FROM contacts WHERE id = %d;";
+	char *deleteContactsQuery = "DELETE FROM contacts WHERE id = %d;";
 	/** @brief 현재 줄 인덱스 값 확인 쿼리 */
 	char *selectIndex = "SELECT id FROM contacts LIMIT 1 OFFSET %d;";
 	/** @brief 인덱스 재설정 쿼리 */
@@ -383,7 +383,7 @@ void deleteContacts(int count) {
 	}
 
 	/** @brief 완성된 삭제 쿼리 */
-	char* query = sqlite3_mprintf(deleteMemo, contactsID);
+	char* query = sqlite3_mprintf(deleteContactsQuery, contactsID);
 	sqlite3_exec(dbHandle, query, NULL, NULL, NULL);//실행
 	sqlite3_free(query);//동적할당 free
 
@@ -708,7 +708,7 @@ void modifyMemo(int count) {
 void deleteMemo(int count) {
 
 	/** @brief 삭제용 쿼리 */
-	char *deleteMemo = "DELETE FROM memo WHERE id = %d;";
+	char *deleteMemoQuery = "DELETE FROM memo WHERE id = %d;";
 	/** @brief 현재 줄 인덱스 값 확인 쿼리 */
 	char *selectIndex = "SELECT id FROM memo LIMIT 1 OFFSET %d;";
 	/** @brief 인덱스 재설정 쿼리 */
@@ -748,7 +748,7 @@ void deleteMemo(int count) {
 	}
 
 	/** @brief 완성된 삭제 쿼리 */
-	char* query = sqlite3_mprintf(deleteMemo, memoID);
+	char* query = sqlite3_mprintf(deleteMemoQuery, memoID);
 	sqlite3_exec(dbHandle, query, NULL, NULL, NULL);//실행
 	sqlite3_free(query);//동적할당 free
 
