@@ -240,6 +240,7 @@ void manageMemo(SOCKET hSocket) {
 
 					if (newLinePtr != NULL) {//다음 줄로 넘어가지 않도록 다음줄이 있는경우와 없는경우 출력을 달리함
 						int printLen = newLinePtr - str;
+						if (printLen > 60) printLen = 60;//한글 버그 fix
 						printf_s("\n%4d %60.*s", sqlite3_column_int(stmt, 0), printLen, str);
 					}
 					else {
